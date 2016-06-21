@@ -7,7 +7,7 @@ plugins {
 sourceCompatibility = 1.8
 group = 'se.gustavkarlsson.rocketchat'
 version = '1.0-SNAPSHOT'
-mainClassName = 'se.gustavkarlsson.rocketchat.jira-trigger.App'
+mainClassName = 'se.gustavkarlsson.rocketchat.jira_trigger.App'
 
 repositories {
     mavenCentral()
