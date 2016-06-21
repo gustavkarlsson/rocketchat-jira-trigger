@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.Validate.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -24,6 +27,7 @@ public class Configuration {
 	private static final String ICON_URL_KEY = "icon_url";
 	private static final String PRIORITY_COLORS_KEY = "priority_colors";
 	private static final String DEFAULT_COLOR_KEY = "default_color";
+	private static final String BLACKLISTED_USERNAMES_KEY = "blacklisted_usernames";
 
 	private static final String PRINT_DESCRIPTION_KEY = "print_description";
 	private static final String PRINT_ASSIGNEE_KEY = "print_assignee";
@@ -38,6 +42,7 @@ public class Configuration {
 	private static final int PORT_DEFAULT = 4567;
 	private static final boolean PRIORITY_COLORS_DEFAULT = true;
 	private static final String DEFAULT_COLOR_DEFAULT = "#205081";
+	private static final String BLACKLISTED_USERNAMES_DEFAULT = "rocket.cat,hubot";
 
 	private static final boolean PRINT_DESCRIPTION_DEFAULT = false;
 	private static final boolean PRINT_ASSIGNEE_DEFAULT = true;
@@ -103,6 +108,14 @@ public class Configuration {
 
 	public String getDefaultColor() {
 		return properties.getProperty(DEFAULT_COLOR_KEY, DEFAULT_COLOR_DEFAULT);
+	}
+
+	public Set<String> getBlacklistedNames() {
+		String property = properties.getProperty(BLACKLISTED_USERNAMES_KEY, BLACKLISTED_USERNAMES_DEFAULT);
+		return stream(property.split(","))
+				.map(String::trim)
+				.filter(s -> !s.isEmpty())
+				.collect(Collectors.toSet());
 	}
 
 	public boolean isPrintDescription() {
