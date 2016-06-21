@@ -110,7 +110,7 @@ public class Configuration {
 		return properties.getProperty(DEFAULT_COLOR_KEY, DEFAULT_COLOR_DEFAULT);
 	}
 
-	public Set<String> getBlacklistedNames() {
+	public Set<String> getBlacklistedUsernames() {
 		String property = properties.getProperty(BLACKLISTED_USERNAMES_KEY, BLACKLISTED_USERNAMES_DEFAULT);
 		return stream(property.split(","))
 				.map(String::trim)

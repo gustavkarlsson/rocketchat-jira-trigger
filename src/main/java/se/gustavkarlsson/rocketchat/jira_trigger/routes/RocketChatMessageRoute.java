@@ -11,7 +11,7 @@ import spark.Route;
 import static se.gustavkarlsson.rocketchat.jira_trigger.App.APPLICATION_JSON;
 
 abstract class RocketChatMessageRoute implements Route {
-	// 2016-06-15T15:11:05.270Z
+
 	private final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").create();
 
 	@Override

@@ -12,6 +12,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.models.OutgoingMessage;
 import spark.Request;
 import spark.Response;
 
+import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,16 +25,22 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 
 	private static final Pattern JIRA_ISSUE = Pattern.compile("((?<!([A-Za-z]{1,10})-?)[A-Z]+-\\d+)");
 
+
+	private final Set<String> blacklistednames;
 	private final IssueRestClient issueClient;
 	private final Function<Issue, IncomingMessage> converter;
 
-	public DetectIssueRoute(IssueRestClient issueClient, Function<Issue, IncomingMessage> converter) {
+	public DetectIssueRoute(Set<String> blacklistednames, IssueRestClient issueClient, Function<Issue, IncomingMessage> converter) {
+		this.blacklistednames = notNull(blacklistednames);
 		this.issueClient = notNull(issueClient);
 		this.converter = notNull(converter);
 	}
 
 	@Override
 	protected IncomingMessage handle(Request request, Response response, OutgoingMessage outgoing) throws Exception {
+		if (blacklistednames.contains(outgoing.getUserName())) {
+			return null;
+		}
 		Matcher matcher = JIRA_ISSUE.matcher(outgoing.getText());
 		if (!matcher.find()) {
 			return null;

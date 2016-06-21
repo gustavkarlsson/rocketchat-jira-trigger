@@ -52,11 +52,11 @@ public class OutgoingMessage {
 	}
 
 	public Date getTimestamp() {
-		return timestamp;
+		return new Date(timestamp.getTime());
 	}
 
 	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+		this.timestamp = new Date(timestamp.getTime());
 	}
 
 	public String getUserId() {

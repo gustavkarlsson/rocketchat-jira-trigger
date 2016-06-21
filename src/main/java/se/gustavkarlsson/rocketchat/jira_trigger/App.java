@@ -20,9 +20,8 @@ import java.util.function.Function;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class App {
-	private static final Logger log = getLogger(App.class);
-
 	public static final String APPLICATION_JSON = "application/json";
+	private static final Logger log = getLogger(App.class);
 
 	public static void main(String[] args) throws ParseException {
 		if (args.length < 1) {
@@ -49,7 +48,7 @@ public class App {
 		Function<Issue, IncomingMessage> converter = new IssueToRocketChatMessageConverter(config);
 
 		Spark.port(config.getPort());
-		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(issueClient, converter));
+		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getBlacklistedUsernames(), issueClient, converter));
 		Spark.exception(Exception.class, new UuidGeneratingExceptionHandler());
 	}
 
