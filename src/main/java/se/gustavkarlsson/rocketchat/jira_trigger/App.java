@@ -10,11 +10,14 @@ import se.gustavkarlsson.rocketchat.jira_trigger.configuration.ValidationExcepti
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.IssueToRocketChatMessageConverter;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
+import spark.Request;
+import spark.Response;
 import spark.Spark;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.function.Function;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -45,11 +48,21 @@ public class App {
 		AsynchronousJiraRestClientFactory factory = new AsynchronousJiraRestClientFactory();
 		JiraRestClient jiraClient = factory.createWithBasicHttpAuthentication(config.getJiraUri(), config.getJiraUsername(), config.getJiraPassword());
 		IssueRestClient issueClient = jiraClient.getIssueClient();
-		Function<Issue, IncomingMessage> converter = new IssueToRocketChatMessageConverter(config);
+		Function<Collection<Issue>, IncomingMessage> converter = new IssueToRocketChatMessageConverter(config);
 
 		Spark.port(config.getPort());
+		Spark.before((request, response) -> log(request));
 		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getBlacklistedUsernames(), issueClient, converter));
+		Spark.after((request, response) -> log(response));
 		Spark.exception(Exception.class, new UuidGeneratingExceptionHandler());
+	}
+
+	private static void log(Request request) {
+		log.info("Incoming request | IP: {} | Method: {} | Path: {} | Content-Length: {}", request.raw().getRemoteAddr(), request.requestMethod(), request.pathInfo(), request.contentLength());
+	}
+
+	private static void log(Response response) {
+		log.info("Outgoing response | Status: {} | Content-Length: {}", response.status(), response.raw().getHeader("Content-Length"));
 	}
 
 }

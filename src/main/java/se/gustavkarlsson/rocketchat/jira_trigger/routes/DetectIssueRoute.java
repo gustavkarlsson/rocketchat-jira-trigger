@@ -12,10 +12,11 @@ import se.gustavkarlsson.rocketchat.jira_trigger.models.OutgoingMessage;
 import spark.Request;
 import spark.Response;
 
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -25,30 +26,48 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 
 	private static final Pattern JIRA_ISSUE = Pattern.compile("((?<!([A-Za-z]{1,10})-?)[A-Z]+-\\d+)");
 
-
-	private final Set<String> blacklistednames;
+	private final Set<String> blacklistedNames;
 	private final IssueRestClient issueClient;
-	private final Function<Issue, IncomingMessage> converter;
+	private final Function<Collection<Issue>, IncomingMessage> converter;
 
-	public DetectIssueRoute(Set<String> blacklistednames, IssueRestClient issueClient, Function<Issue, IncomingMessage> converter) {
-		this.blacklistednames = notNull(blacklistednames);
+	public DetectIssueRoute(Set<String> blacklistedNames, IssueRestClient issueClient, Function<Collection<Issue>, IncomingMessage> converter) {
+		this.blacklistedNames = notNull(blacklistedNames);
 		this.issueClient = notNull(issueClient);
 		this.converter = notNull(converter);
 	}
 
 	@Override
 	protected IncomingMessage handle(Request request, Response response, OutgoingMessage outgoing) throws Exception {
-		if (blacklistednames.contains(outgoing.getUserName())) {
+		if (blacklistedNames.contains(outgoing.getUserName())) {
+			log.info("Blacklisted name encountered: {}. Ignoring", outgoing.getUserName());
 			return null;
 		}
-		Matcher matcher = JIRA_ISSUE.matcher(outgoing.getText());
-		if (!matcher.find()) {
+		log.debug("Parsing keys from text: \"{}\"", outgoing.getText());
+		List<String> jiraKeys = parseJiraKeys(outgoing.getText());
+		log.debug("Found keys: {}", jiraKeys);
+		log.debug("Fetching issues...");
+		List<Issue> issues = jiraKeys.parallelStream()
+				.map(this::getJiraIssue)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
+		if (issues.isEmpty()) {
+			log.debug("No matching issue found. Ignoring");
 			return null;
 		}
+		log.debug("Found issues: {}", issues.stream()
+				.map(Issue::getId)
+				.collect(Collectors.toList()));
+		log.debug("Converting issues");
+		return converter.apply(issues);
+	}
 
-		String jiraKey = matcher.group();
-		Issue issue = getJiraIssue(jiraKey);
-		return converter.apply(issue);
+	private List<String> parseJiraKeys(String messageText) {
+		Matcher matcher = JIRA_ISSUE.matcher(messageText);
+		List<String> jiraKeys = new ArrayList<>();
+		while (matcher.find()) {
+			jiraKeys.add(matcher.group());
+		}
+		return jiraKeys;
 	}
 
 	private Issue getJiraIssue(String jiraKey) {
@@ -56,12 +75,15 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		try {
 			return issuePromise.claim();
 		} catch (RestClientException e) {
-			Optional<Integer> statusCode = e.getStatusCode();
-			if (statusCode.isPresent() && statusCode.get() == HttpStatus.NOT_FOUND_404) {
+			if (isNotFound(e.getStatusCode())) {
 				return null;
 			}
 			throw e;
 		}
+	}
+
+	private boolean isNotFound(Optional<Integer> statusCode) {
+		return statusCode.isPresent() && statusCode.get() == HttpStatus.NOT_FOUND_404;
 	}
 
 }

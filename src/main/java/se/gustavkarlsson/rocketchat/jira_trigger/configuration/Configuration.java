@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -94,12 +93,12 @@ public class Configuration {
 		return getInteger(PORT_KEY, PORT_DEFAULT);
 	}
 
-	public Optional<String> getUsername() {
-		return Optional.ofNullable(properties.getProperty(USERNAME_KEY));
+	public String getUsername() {
+		return properties.getProperty(USERNAME_KEY);
 	}
 
-	public Optional<String> getIconUrl() {
-		return Optional.ofNullable(properties.getProperty(ICON_URL_KEY));
+	public String getIconUrl() {
+		return properties.getProperty(ICON_URL_KEY);
 	}
 
 	public boolean isPriorityColors() {

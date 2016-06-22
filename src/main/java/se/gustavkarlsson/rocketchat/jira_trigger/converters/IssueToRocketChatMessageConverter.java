@@ -13,14 +13,14 @@ import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
 import javax.ws.rs.core.UriBuilder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import static java.util.Collections.singletonList;
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class IssueToRocketChatMessageConverter implements Function<Issue, IncomingMessage> {
+public class IssueToRocketChatMessageConverter implements Function<Collection<Issue>, IncomingMessage> {
 
 	private static final String BLOCKER_COLOR = "#FF4437";
 	private static final String CRITICAL_COLOR = "#D04437";
@@ -37,29 +37,24 @@ public class IssueToRocketChatMessageConverter implements Function<Issue, Incomi
 	}
 
 	@Override
-	public IncomingMessage apply(Issue issue) {
-		if (issue == null) {
-			return null;
-		}
+	public IncomingMessage apply(Collection<Issue> issue) {
 		IncomingMessage message = new IncomingMessage();
-		Attachment attachment = new Attachment();
-		List<Field> fields = new ArrayList<>();
-		attachment.setFields(fields);
-		List<Attachment> attachments = singletonList(attachment);
+
+		message.setUsername(config.getUsername());
+		message.setIconUrl(config.getIconUrl());
+
+		List<Attachment> attachments = issue.stream()
+				.map(this::createAttachment)
+				.collect(Collectors.toList());
+
 		message.setAttachments(attachments);
 
-		message.setText(String.format("<%s|%s - %s>", parseTitleLink(issue), issue.getKey(), issue.getSummary()));
+		return message;
+	}
 
-
-		Optional<String> username = config.getUsername();
-		if (username.isPresent()) {
-			message.setUsername(username.get());
-		}
-
-		Optional<String> iconUrl = config.getIconUrl();
-		if (iconUrl.isPresent()) {
-			message.setIconUrl(iconUrl.get());
-		}
+	private Attachment createAttachment(Issue issue) {
+		Attachment attachment = new Attachment();
+		attachment.setTitle(createLink(issue));
 
 		if (config.isPriorityColors() && issue.getPriority() != null) {
 			attachment.setColor(getPriorityColor(issue.getPriority(), config.getDefaultColor()));
@@ -70,6 +65,44 @@ public class IssueToRocketChatMessageConverter implements Function<Issue, Incomi
 		if (config.isPrintDescription()) {
 			attachment.setText(issue.getDescription());
 		}
+
+		attachment.setFields(createFields(issue));
+
+		return attachment;
+	}
+
+	private String createLink(Issue issue) {
+		return String.format("<%s|%s - %s>", parseTitleLink(issue), issue.getKey(), issue.getSummary());
+	}
+
+	private String parseTitleLink(Issue issue) {
+		return UriBuilder.fromUri(issue.getSelf())
+				.replacePath(null)
+				.path("browse/")
+				.path(issue.getKey())
+				.build()
+				.toASCIIString();
+	}
+
+	private String getPriorityColor(BasicPriority priority, String fallbackColor) {
+		switch (priority.getName()) {
+			case "Blocker":
+				return BLOCKER_COLOR;
+			case "Critical":
+				return CRITICAL_COLOR;
+			case "Major":
+				return MAJOR_COLOR;
+			case "Minor":
+				return MINOR_COLOR;
+			case "Trivial":
+				return TRIVIAL_COLOR;
+			default:
+				return fallbackColor;
+		}
+	}
+
+	private List<Field> createFields(Issue issue) {
+		List<Field> fields = new ArrayList<>();
 
 		if (config.isPrintType()) {
 			fields.add(new Field("Type", issue.getIssueType().getName(), true));
@@ -110,34 +143,7 @@ public class IssueToRocketChatMessageConverter implements Function<Issue, Incomi
 		if (config.isPrintUpdated()) {
 			fields.add(new Field("Updated", formatDateTime(issue.getUpdateDate()), true));
 		}
-
-		return message;
-	}
-
-	private String getPriorityColor(BasicPriority priority, String fallbackColor) {
-		switch (priority.getName()) {
-			case "Blocker":
-				return BLOCKER_COLOR;
-			case "Critical":
-				return CRITICAL_COLOR;
-			case "Major":
-				return MAJOR_COLOR;
-			case "Minor":
-				return MINOR_COLOR;
-			case "Trivial":
-				return TRIVIAL_COLOR;
-			default:
-				return fallbackColor;
-		}
-	}
-
-	private String parseTitleLink(Issue issue) {
-		return UriBuilder.fromUri(issue.getSelf())
-				.replacePath(null)
-				.path("browse/")
-				.path(issue.getKey())
-				.build()
-				.toASCIIString();
+		return fields;
 	}
 
 	private synchronized String formatDateTime(DateTime dateTime) {
