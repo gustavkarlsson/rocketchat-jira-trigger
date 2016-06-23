@@ -53,16 +53,11 @@ public class App {
 		Spark.port(config.getPort());
 		Spark.before((request, response) -> log(request));
 		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getBlacklistedUsernames(), issueClient, converter));
-		Spark.after((request, response) -> log(response));
 		Spark.exception(Exception.class, new UuidGeneratingExceptionHandler());
 	}
 
 	private static void log(Request request) {
 		log.info("Incoming request | IP: {} | Method: {} | Path: {} | Content-Length: {}", request.raw().getRemoteAddr(), request.requestMethod(), request.pathInfo(), request.contentLength());
-	}
-
-	private static void log(Response response) {
-		log.info("Outgoing response | Status: {} | Content-Length: {}", response.status(), response.raw().getHeader("Content-Length"));
 	}
 
 }
