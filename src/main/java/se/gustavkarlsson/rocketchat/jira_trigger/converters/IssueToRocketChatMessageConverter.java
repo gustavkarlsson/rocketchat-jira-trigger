@@ -54,7 +54,7 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 
 	private Attachment createAttachment(Issue issue) {
 		Attachment attachment = new Attachment();
-		attachment.setTitle(createLink(issue));
+		attachment.setTitle(issue.getKey());
 
 		if (config.isPriorityColors() && issue.getPriority() != null) {
 			attachment.setColor(getPriorityColor(issue.getPriority(), config.getDefaultColor()));
@@ -62,17 +62,20 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 			attachment.setColor(config.getDefaultColor());
 		}
 
+		StringBuilder text = new StringBuilder(createSummaryLink(issue));
 		if (config.isPrintDescription()) {
-			attachment.setText(issue.getDescription());
+			text.append('\n');
+			text.append(issue.getDescription());
 		}
+		attachment.setText(text.toString());
 
 		attachment.setFields(createFields(issue));
 
 		return attachment;
 	}
 
-	private String createLink(Issue issue) {
-		return String.format("<%s|%s - %s>", parseTitleLink(issue), issue.getKey(), issue.getSummary());
+	private String createSummaryLink(Issue issue) {
+		return String.format("<%s|%s>", parseTitleLink(issue), issue.getSummary());
 	}
 
 	private String parseTitleLink(Issue issue) {
