@@ -1,0 +1,27 @@
+[app]
+port = 4567
+
+[jira]
+uri = "https://jira.secondlife.com" # required
+# username = "johndoe"
+# password = "monkey123"
+
+[message]
+username = "JIRA"
+icon_url = "https://confluence.atlassian.com/alldoc/files/169118009/169050326/4/1260504581635/jira_logo.png"
+priority_colors = true
+default_color= "#205081" # JIRA blue
+
+# These options control what fields will be printed in the response messages
+print_description = false
+print_assignee = true
+print_status = true
+print_reporter = true
+print_priority = true
+print_resolution = false
+print_type = true
+print_created = false
+print_updated = false
+
+[rocketchat]
+blacklisted_usernames = [ "rocket.cat", "hubot" ] # Messages from these users will not be processed. Default: rocket.cat,hubot

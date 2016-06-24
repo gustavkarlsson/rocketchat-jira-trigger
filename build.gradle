@@ -22,17 +22,13 @@ dependencies {
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'org.slf4j:slf4j-simple:1.7.21'
     compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'com.moandjiezana.toml:toml4j:0.6.0'
     testCompile 'junit:junit:4.12'
 }
 
 jar {
     manifest {
-        attributes 'Implementation-Title': name,
-                'Implementation-Version': version,
-                'Built-By': System.getProperty('user.name'),
-                'Built-Date': new Date(),
-                'Built-JDK': System.getProperty('java.version'),
-                'Main-Class': mainClassName
+        attributes 'Main-Class': mainClassName
     }
 }
 

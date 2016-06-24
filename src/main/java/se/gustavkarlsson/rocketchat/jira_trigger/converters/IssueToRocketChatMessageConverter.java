@@ -5,7 +5,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Resolution;
 import com.atlassian.jira.rest.client.api.domain.User;
 import org.joda.time.DateTime;
-import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Field;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
@@ -30,9 +30,9 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM, yyyy");
 
-	private final Configuration config;
+	private final MessageConfiguration config;
 
-	public IssueToRocketChatMessageConverter(Configuration config) {
+	public IssueToRocketChatMessageConverter(MessageConfiguration config) {
 		this.config = notNull(config);
 	}
 
