@@ -6,7 +6,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class MessageConfiguration {
+public class MessageConfiguration extends DefaultingTomlConfiguration {
+	private static final String KEY_PREFIX = "message.";
 	private static final String USERNAME_KEY = "username";
 	private static final String ICON_URL_KEY = "icon_url";
 	private static final String DATE_PATTERN_KEY = "date_pattern";
@@ -23,20 +24,6 @@ public class MessageConfiguration {
 	private static final String PRINT_CREATED_KEY = "print_created";
 	private static final String PRINT_UPDATED_KEY = "print_updated";
 
-	private static final String DATE_PATTERN_DEFAULT = "EEE, d MMM, yyyy";
-	private static final String DATE_LOCALE_DEFAULT = "en-US";
-	private static final boolean PRIORITY_COLORS_DEFAULT = true;
-	private static final String DEFAULT_COLOR_DEFAULT = "#205081";
-	private static final boolean PRINT_DESCRIPTION_DEFAULT = false;
-	private static final boolean PRINT_ASSIGNEE_DEFAULT = true;
-	private static final boolean PRINT_STATUS_DEFAULT = true;
-	private static final boolean PRINT_REPORTER_DEFAULT = false;
-	private static final boolean PRINT_PRIORITY_DEFAULT = false;
-	private static final boolean PRINT_RESOLUTION_DEFAULT = false;
-	private static final boolean PRINT_TYPE_DEFAULT = false;
-	private static final boolean PRINT_CREATED_DEFAULT = false;
-	private static final boolean PRINT_UPDATED_DEFAULT = false;
-
 	private final String username;
 	private final String iconUrl;
 	private final DateFormat dateFormat;
@@ -52,23 +39,24 @@ public class MessageConfiguration {
 	private final boolean printUpdated;
 	private final boolean printType;
 
-	MessageConfiguration(Toml toml) throws ValidationException {
+	MessageConfiguration(Toml toml, Toml defaults) throws ValidationException {
+		super(toml, defaults);
 		try {
-			username = toml.getString(USERNAME_KEY);
-			iconUrl = toml.getString(ICON_URL_KEY);
-			dateFormat = new SimpleDateFormat(toml.getString(DATE_PATTERN_KEY, DATE_PATTERN_DEFAULT),
-					Locale.forLanguageTag(toml.getString(DATE_LOCALE_KEY, DATE_LOCALE_DEFAULT)));
-			priorityColors = toml.getBoolean(PRIORITY_COLORS_KEY, PRIORITY_COLORS_DEFAULT);
-			defaultColor = toml.getString(DEFAULT_COLOR_KEY, DEFAULT_COLOR_DEFAULT);
-			printDescription = toml.getBoolean(PRINT_DESCRIPTION_KEY, PRINT_DESCRIPTION_DEFAULT);
-			printAssignee = toml.getBoolean(PRINT_ASSIGNEE_KEY, PRINT_ASSIGNEE_DEFAULT);
-			printStatus = toml.getBoolean(PRINT_STATUS_KEY, PRINT_STATUS_DEFAULT);
-			printReporter = toml.getBoolean(PRINT_REPORTER_KEY, PRINT_REPORTER_DEFAULT);
-			printPriority = toml.getBoolean(PRINT_PRIORITY_KEY, PRINT_PRIORITY_DEFAULT);
-			printResolution = toml.getBoolean(PRINT_RESOLUTION_KEY, PRINT_RESOLUTION_DEFAULT);
-			printCreated = toml.getBoolean(PRINT_CREATED_KEY, PRINT_CREATED_DEFAULT);
-			printUpdated = toml.getBoolean(PRINT_UPDATED_KEY, PRINT_UPDATED_DEFAULT);
-			printType = toml.getBoolean(PRINT_TYPE_KEY, PRINT_TYPE_DEFAULT);
+			username = getStringOrDefault(KEY_PREFIX + USERNAME_KEY);
+			iconUrl = getStringOrDefault(KEY_PREFIX + ICON_URL_KEY);
+			dateFormat = new SimpleDateFormat(getStringOrDefault(KEY_PREFIX + DATE_PATTERN_KEY),
+					Locale.forLanguageTag(getStringOrDefault(KEY_PREFIX + DATE_LOCALE_KEY)));
+			priorityColors = getBooleanOrDefault(KEY_PREFIX + PRIORITY_COLORS_KEY);
+			defaultColor = getStringOrDefault(KEY_PREFIX + DEFAULT_COLOR_KEY);
+			printDescription = getBooleanOrDefault(KEY_PREFIX + PRINT_DESCRIPTION_KEY);
+			printAssignee = getBooleanOrDefault(KEY_PREFIX + PRINT_ASSIGNEE_KEY);
+			printStatus = getBooleanOrDefault(KEY_PREFIX + PRINT_STATUS_KEY);
+			printReporter = getBooleanOrDefault(KEY_PREFIX + PRINT_REPORTER_KEY);
+			printPriority = getBooleanOrDefault(KEY_PREFIX + PRINT_PRIORITY_KEY);
+			printResolution = getBooleanOrDefault(KEY_PREFIX + PRINT_RESOLUTION_KEY);
+			printCreated = getBooleanOrDefault(KEY_PREFIX + PRINT_CREATED_KEY);
+			printUpdated = getBooleanOrDefault(KEY_PREFIX + PRINT_UPDATED_KEY);
+			printType = getBooleanOrDefault(KEY_PREFIX + PRINT_TYPE_KEY);
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}

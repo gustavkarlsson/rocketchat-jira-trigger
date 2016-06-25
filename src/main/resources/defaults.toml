@@ -1,10 +1,5 @@
 [app]
-port = 4567
-
-[jira]
-uri = "https://jira.secondlife.com" # required
-# username = "johndoe"
-# password = "monkey123"
+port = 4567 # The listening port of the server
 
 [message]
 username = "JIRA" # Override username
@@ -21,8 +16,8 @@ print_status = true
 print_reporter = true
 print_priority = true
 print_resolution = false
-print_type = true
-print_created = true
+print_type = false
+print_created = false
 print_updated = false
 
 [rocketchat]

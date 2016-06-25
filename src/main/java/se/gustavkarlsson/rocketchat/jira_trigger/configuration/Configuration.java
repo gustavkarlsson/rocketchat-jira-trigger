@@ -4,11 +4,8 @@ import com.moandjiezana.toml.Toml;
 
 import java.io.File;
 
-public class Configuration {
-	private static final String APP_KEY = "app";
-	private static final String JIRA_KEY = "jira";
-	private static final String MESSAGE_KEY = "message";
-	private static final String ROCKETCHAT_KEY = "rocketchat";
+public class Configuration extends DefaultingTomlConfiguration {
+	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
 
 	private final AppConfiguration app;
 	private final JiraConfiguration jira;
@@ -16,11 +13,19 @@ public class Configuration {
 	private final RocketChatConfiguration rocketchat;
 
 	public Configuration(String configFilePath) throws ValidationException {
-		Toml toml = new Toml().read(new File(configFilePath));
-		app = new AppConfiguration(toml.getTable(APP_KEY));
-		jira = new JiraConfiguration(toml.getTable(JIRA_KEY));
-		message = new MessageConfiguration(toml.getTable(MESSAGE_KEY));
-		rocketchat = new RocketChatConfiguration(toml.getTable(ROCKETCHAT_KEY));
+		super(parseToml(configFilePath), parseDefaults());
+		app = new AppConfiguration(toml, defaults);
+		jira = new JiraConfiguration(toml, defaults);
+		message = new MessageConfiguration(toml, defaults);
+		rocketchat = new RocketChatConfiguration(toml, defaults);
+	}
+
+	private static Toml parseToml(String configFilePath) {
+		return new Toml().read(new File(configFilePath));
+	}
+
+	private static Toml parseDefaults() {
+		return new Toml().read(Configuration.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
 	}
 
 	public AppConfiguration getAppConfiguration() {

@@ -10,6 +10,11 @@ indent_style = tab
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+[*.toml]
+indent_style = tab
+trim_trailing_whitespace = true
+insert_final_newline = true
+
 [*.xml]
 indent_style = tab
 trim_trailing_whitespace = true

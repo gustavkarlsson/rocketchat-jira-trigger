@@ -4,7 +4,8 @@ import com.moandjiezana.toml.Toml;
 
 import java.net.URI;
 
-public class JiraConfiguration {
+public class JiraConfiguration extends DefaultingTomlConfiguration {
+	private static final String KEY_PREFIX = "jira.";
 	private static final String JIRA_URI_KEY = "uri";
 	private static final String JIRA_USER_KEY = "username";
 	private static final String JIRA_PASSWORD_KEY = "password";
@@ -13,11 +14,12 @@ public class JiraConfiguration {
 	private final String username;
 	private final String password;
 
-	JiraConfiguration(Toml toml) throws ValidationException {
+	JiraConfiguration(Toml toml, Toml defaults) throws ValidationException {
+		super(toml, defaults);
 		try {
-			uri = URI.create(toml.getString(JIRA_URI_KEY));
-			username = toml.getString(JIRA_USER_KEY);
-			password = toml.getString(JIRA_PASSWORD_KEY);
+			uri = URI.create(getStringOrDefault(KEY_PREFIX + JIRA_URI_KEY));
+			username = getStringOrDefault(KEY_PREFIX + JIRA_USER_KEY);
+			password = getStringOrDefault(KEY_PREFIX + JIRA_PASSWORD_KEY);
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}

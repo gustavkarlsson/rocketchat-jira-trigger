@@ -4,16 +4,16 @@ import com.moandjiezana.toml.Toml;
 
 import static org.apache.commons.lang3.Validate.inclusiveBetween;
 
-public class AppConfiguration {
+public class AppConfiguration extends DefaultingTomlConfiguration {
+	private static final String KEY_PREFIX = "app.";
 	private static final String PORT_KEY = "port";
-
-	private static final long PORT_DEFAULT = 4567;
 
 	private final int port;
 
-	AppConfiguration(Toml toml) throws ValidationException {
+	AppConfiguration(Toml toml, Toml defaults) throws ValidationException {
+		super(toml, defaults);
 		try {
-			port = toml.getLong(PORT_KEY, PORT_DEFAULT).intValue();
+			port = getLongOrDefault(KEY_PREFIX + PORT_KEY).intValue();
 			inclusiveBetween(1, Integer.MAX_VALUE, port);
 		} catch (Exception e) {
 			throw new ValidationException(e);
