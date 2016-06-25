@@ -1,10 +1,12 @@
 plugins {
     id 'java'
+    id 'jacoco'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 group = 'se.gustavkarlsson.rocketchat'
 version = '1.0-SNAPSHOT'
 mainClassName = 'se.gustavkarlsson.rocketchat.jira_trigger.App'
@@ -28,6 +30,13 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
 jar {
     manifest {
         attributes 'Main-Class': mainClassName
@@ -41,3 +50,5 @@ shadowJar {
         exclude 'META-INF/*.RSA'
     }
 }
+
+check.dependsOn jacocoTestReport
