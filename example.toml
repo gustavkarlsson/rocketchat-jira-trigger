@@ -7,10 +7,12 @@ uri = "https://jira.secondlife.com" # required
 # password = "monkey123"
 
 [message]
-username = "JIRA"
-icon_url = "https://confluence.atlassian.com/alldoc/files/169118009/169050326/4/1260504581635/jira_logo.png"
-priority_colors = true
-default_color= "#205081" # JIRA blue
+username = "JIRA" # Override username
+icon_url = "https://confluence.atlassian.com/alldoc/files/169118009/169050326/4/1260504581635/jira_logo.png" # Override icon
+date_pattern = "EEE, d MMM, yyyy" # Format according to https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
+date_locale = "en-US" # Defines how things like week days and month names will be represented. Expects a IETF language tag
+priority_colors = true # Color attachments according to issue priority
+default_color= "#205081" # Fallback color when priority is not recognized
 
 # These options control what fields will be printed in the response messages
 print_description = false
@@ -20,7 +22,7 @@ print_reporter = true
 print_priority = true
 print_resolution = false
 print_type = true
-print_created = false
+print_created = true
 print_updated = false
 
 [rocketchat]

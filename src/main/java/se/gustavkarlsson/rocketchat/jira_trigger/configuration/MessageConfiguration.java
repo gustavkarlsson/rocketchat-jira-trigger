@@ -2,9 +2,15 @@ package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
 import com.moandjiezana.toml.Toml;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class MessageConfiguration {
 	private static final String USERNAME_KEY = "username";
 	private static final String ICON_URL_KEY = "icon_url";
+	private static final String DATE_PATTERN_KEY = "date_pattern";
+	private static final String DATE_LOCALE_KEY = "date_locale";
 	private static final String PRIORITY_COLORS_KEY = "priority_colors";
 	private static final String DEFAULT_COLOR_KEY = "default_color";
 	private static final String PRINT_DESCRIPTION_KEY = "print_description";
@@ -17,6 +23,8 @@ public class MessageConfiguration {
 	private static final String PRINT_CREATED_KEY = "print_created";
 	private static final String PRINT_UPDATED_KEY = "print_updated";
 
+	private static final String DATE_PATTERN_DEFAULT = "EEE, d MMM, yyyy";
+	private static final String DATE_LOCALE_DEFAULT = "en-US";
 	private static final boolean PRIORITY_COLORS_DEFAULT = true;
 	private static final String DEFAULT_COLOR_DEFAULT = "#205081";
 	private static final boolean PRINT_DESCRIPTION_DEFAULT = false;
@@ -29,24 +37,27 @@ public class MessageConfiguration {
 	private static final boolean PRINT_CREATED_DEFAULT = false;
 	private static final boolean PRINT_UPDATED_DEFAULT = false;
 
-	private String username;
-	private String iconUrl;
-	private Boolean priorityColors;
-	private String defaultColor;
-	private Boolean printDescription;
-	private Boolean printAssignee;
-	private Boolean printStatus;
-	private Boolean printReporter;
-	private Boolean printPriority;
-	private Boolean printResolution;
-	private Boolean printCreated;
-	private Boolean printUpdated;
-	private Boolean printType;
+	private final String username;
+	private final String iconUrl;
+	private final DateFormat dateFormat;
+	private final boolean priorityColors;
+	private final String defaultColor;
+	private final boolean printDescription;
+	private final boolean printAssignee;
+	private final boolean printStatus;
+	private final boolean printReporter;
+	private final boolean printPriority;
+	private final boolean printResolution;
+	private final boolean printCreated;
+	private final boolean printUpdated;
+	private final boolean printType;
 
 	MessageConfiguration(Toml toml) throws ValidationException {
 		try {
 			username = toml.getString(USERNAME_KEY);
 			iconUrl = toml.getString(ICON_URL_KEY);
+			dateFormat = new SimpleDateFormat(toml.getString(DATE_PATTERN_KEY, DATE_PATTERN_DEFAULT),
+					Locale.forLanguageTag(toml.getString(DATE_LOCALE_KEY, DATE_LOCALE_DEFAULT)));
 			priorityColors = toml.getBoolean(PRIORITY_COLORS_KEY, PRIORITY_COLORS_DEFAULT);
 			defaultColor = toml.getString(DEFAULT_COLOR_KEY, DEFAULT_COLOR_DEFAULT);
 			printDescription = toml.getBoolean(PRINT_DESCRIPTION_KEY, PRINT_DESCRIPTION_DEFAULT);
@@ -69,6 +80,10 @@ public class MessageConfiguration {
 
 	public String getIconUrl() {
 		return iconUrl;
+	}
+
+	public DateFormat getDateFormat() {
+		return dateFormat;
 	}
 
 	public boolean isPriorityColors() {

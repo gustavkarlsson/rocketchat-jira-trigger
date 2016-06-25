@@ -6,9 +6,10 @@ import static org.apache.commons.lang3.Validate.inclusiveBetween;
 
 public class AppConfiguration {
 	private static final String PORT_KEY = "port";
+
 	private static final long PORT_DEFAULT = 4567;
 
-	private int port;
+	private final int port;
 
 	AppConfiguration(Toml toml) throws ValidationException {
 		try {

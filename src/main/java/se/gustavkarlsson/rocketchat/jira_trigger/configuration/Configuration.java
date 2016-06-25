@@ -10,10 +10,10 @@ public class Configuration {
 	private static final String MESSAGE_KEY = "message";
 	private static final String ROCKETCHAT_KEY = "rocketchat";
 
-	private AppConfiguration app;
-	private JiraConfiguration jira;
-	private MessageConfiguration message;
-	private RocketChatConfiguration rocketchat;
+	private final AppConfiguration app;
+	private final JiraConfiguration jira;
+	private final MessageConfiguration message;
+	private final RocketChatConfiguration rocketchat;
 
 	public Configuration(String configFilePath) throws ValidationException {
 		Toml toml = new Toml().read(new File(configFilePath));

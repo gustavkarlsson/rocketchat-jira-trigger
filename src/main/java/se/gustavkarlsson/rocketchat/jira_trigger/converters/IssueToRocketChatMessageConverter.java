@@ -11,7 +11,6 @@ import se.gustavkarlsson.rocketchat.jira_trigger.models.Field;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
 
 import javax.ws.rs.core.UriBuilder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,8 +26,6 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 	private static final String MAJOR_COLOR = "#E3833C";
 	private static final String MINOR_COLOR = "#F6C342";
 	private static final String TRIVIAL_COLOR = "#707070";
-
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, d MMM, yyyy");
 
 	private final MessageConfiguration config;
 
@@ -150,7 +147,7 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 	}
 
 	private synchronized String formatDateTime(DateTime dateTime) {
-		return dateFormat.format(dateTime.toDate());
+		return config.getDateFormat().format(dateTime.toDate());
 	}
 
 }

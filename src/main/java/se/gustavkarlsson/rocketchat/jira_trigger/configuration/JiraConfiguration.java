@@ -9,9 +9,9 @@ public class JiraConfiguration {
 	private static final String JIRA_USER_KEY = "username";
 	private static final String JIRA_PASSWORD_KEY = "password";
 
-	private URI uri;
-	private String username;
-	private String password;
+	private final URI uri;
+	private final String username;
+	private final String password;
 
 	JiraConfiguration(Toml toml) throws ValidationException {
 		try {

@@ -11,7 +11,7 @@ public class RocketChatConfiguration {
 	private static final String BLACKLISTED_USERNAMES_KEY = "blacklisted_usernames";
 	private static final List<String> BLACKLISTED_USERNAMES_DEFAULT = Arrays.asList("rocket.cat", "hubot");
 
-	private HashSet<String> blacklistedUsernames;
+	private final Set<String> blacklistedUsernames;
 
 	RocketChatConfiguration(Toml toml) throws ValidationException {
 		try {
