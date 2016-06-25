@@ -6,7 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class MessageConfiguration extends DefaultingTomlConfiguration {
+public class MessageConfiguration {
 	private static final String KEY_PREFIX = "message.";
 	private static final String USERNAME_KEY = "username";
 	private static final String ICON_URL_KEY = "icon_url";
@@ -39,24 +39,23 @@ public class MessageConfiguration extends DefaultingTomlConfiguration {
 	private final boolean printUpdated;
 	private final boolean printType;
 
-	MessageConfiguration(Toml toml, Toml defaults) throws ValidationException {
-		super(toml, defaults);
+	MessageConfiguration(Toml toml) throws ValidationException {
 		try {
-			username = getStringOrDefault(KEY_PREFIX + USERNAME_KEY);
-			iconUrl = getStringOrDefault(KEY_PREFIX + ICON_URL_KEY);
-			dateFormat = new SimpleDateFormat(getStringOrDefault(KEY_PREFIX + DATE_PATTERN_KEY),
-					Locale.forLanguageTag(getStringOrDefault(KEY_PREFIX + DATE_LOCALE_KEY)));
-			priorityColors = getBooleanOrDefault(KEY_PREFIX + PRIORITY_COLORS_KEY);
-			defaultColor = getStringOrDefault(KEY_PREFIX + DEFAULT_COLOR_KEY);
-			printDescription = getBooleanOrDefault(KEY_PREFIX + PRINT_DESCRIPTION_KEY);
-			printAssignee = getBooleanOrDefault(KEY_PREFIX + PRINT_ASSIGNEE_KEY);
-			printStatus = getBooleanOrDefault(KEY_PREFIX + PRINT_STATUS_KEY);
-			printReporter = getBooleanOrDefault(KEY_PREFIX + PRINT_REPORTER_KEY);
-			printPriority = getBooleanOrDefault(KEY_PREFIX + PRINT_PRIORITY_KEY);
-			printResolution = getBooleanOrDefault(KEY_PREFIX + PRINT_RESOLUTION_KEY);
-			printCreated = getBooleanOrDefault(KEY_PREFIX + PRINT_CREATED_KEY);
-			printUpdated = getBooleanOrDefault(KEY_PREFIX + PRINT_UPDATED_KEY);
-			printType = getBooleanOrDefault(KEY_PREFIX + PRINT_TYPE_KEY);
+			username = toml.getString(KEY_PREFIX + USERNAME_KEY);
+			iconUrl = toml.getString(KEY_PREFIX + ICON_URL_KEY);
+			dateFormat = new SimpleDateFormat(toml.getString(KEY_PREFIX + DATE_PATTERN_KEY),
+					Locale.forLanguageTag(toml.getString(KEY_PREFIX + DATE_LOCALE_KEY)));
+			priorityColors = toml.getBoolean(KEY_PREFIX + PRIORITY_COLORS_KEY);
+			defaultColor = toml.getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
+			printDescription = toml.getBoolean(KEY_PREFIX + PRINT_DESCRIPTION_KEY);
+			printAssignee = toml.getBoolean(KEY_PREFIX + PRINT_ASSIGNEE_KEY);
+			printStatus = toml.getBoolean(KEY_PREFIX + PRINT_STATUS_KEY);
+			printReporter = toml.getBoolean(KEY_PREFIX + PRINT_REPORTER_KEY);
+			printPriority = toml.getBoolean(KEY_PREFIX + PRINT_PRIORITY_KEY);
+			printResolution = toml.getBoolean(KEY_PREFIX + PRINT_RESOLUTION_KEY);
+			printCreated = toml.getBoolean(KEY_PREFIX + PRINT_CREATED_KEY);
+			printUpdated = toml.getBoolean(KEY_PREFIX + PRINT_UPDATED_KEY);
+			printType = toml.getBoolean(KEY_PREFIX + PRINT_TYPE_KEY);
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}

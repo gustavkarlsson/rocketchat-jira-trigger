@@ -9,7 +9,7 @@ date_locale = "en-US" # Defines how things like week days and month names will b
 priority_colors = true # Color attachments according to issue priority
 default_color= "#205081" # Fallback color when priority is not recognized
 
-# These options control what fields will be printed in the response messages
+# These options control what fields will be printed in the response messages.
 print_description = false
 print_assignee = true
 print_status = true
@@ -21,4 +21,8 @@ print_created = false
 print_updated = false
 
 [rocketchat]
-blacklisted_usernames = [ "rocket.cat", "hubot" ] # Messages from these users will not be processed. Default: rocket.cat,hubot
+tokens = [] # Allowed tokens. An empty array means ALL tokens are allowed.
+whitelisted_users = [] # Only messages from these users are considered. An empty array accepts messages from all users (unless blacklisted).
+blacklisted_users = [ "rocket.cat", "hubot" ] # No messages from these users will be considered.
+whitelisted_channels = [] # Only messages from these channels are considered. An empty array accepts messages from all channels (unless blacklisted).
+blacklisted_channels = [] # No messages from these channels will be considered.

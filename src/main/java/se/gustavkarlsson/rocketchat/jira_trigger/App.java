@@ -44,7 +44,7 @@ public class App {
 		Spark.port(config.getAppConfiguration().getPort());
 		Spark.before((request, response) -> log(request));
 		Function<Collection<Issue>, IncomingMessage> converter = new IssueToRocketChatMessageConverter(config.getMessageConfiguration());
-		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration().getBlacklistedUsernames(), issueClient, converter));
+		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, converter));
 		Spark.exception(Exception.class, new UuidGeneratingExceptionHandler());
 	}
 
