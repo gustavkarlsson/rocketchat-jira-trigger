@@ -5,6 +5,8 @@ import com.moandjiezana.toml.Toml;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 public class RocketChatConfiguration {
 	private static final String KEY_PREFIX = "rocketchat.";
 	private static final String TOKENS_KEY = "tokens";
@@ -20,6 +22,7 @@ public class RocketChatConfiguration {
 	private final Set<String> blacklistedChannels;
 
 	RocketChatConfiguration(Toml toml) throws ValidationException {
+		notNull(toml);
 		try {
 			tokens = new HashSet<>(toml.getList(KEY_PREFIX + TOKENS_KEY));
 			whitelistedUsers = new HashSet<>(toml.getList(KEY_PREFIX + WHITELISTED_USERS));

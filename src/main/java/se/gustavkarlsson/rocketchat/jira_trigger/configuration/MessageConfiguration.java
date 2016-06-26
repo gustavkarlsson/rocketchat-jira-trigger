@@ -6,6 +6,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 public class MessageConfiguration {
 	private static final String KEY_PREFIX = "message.";
 	private static final String USERNAME_KEY = "username";
@@ -40,6 +42,7 @@ public class MessageConfiguration {
 	private final boolean printType;
 
 	MessageConfiguration(Toml toml) throws ValidationException {
+		notNull(toml);
 		try {
 			username = toml.getString(KEY_PREFIX + USERNAME_KEY);
 			iconUrl = toml.getString(KEY_PREFIX + ICON_URL_KEY);
