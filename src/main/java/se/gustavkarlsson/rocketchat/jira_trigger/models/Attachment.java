@@ -61,7 +61,7 @@ public final class Attachment {
 		this.imageUrl = imageUrl;
 		this.thumbUrl = thumbUrl;
 		this.timestamp = timestamp;
-		this.fields = fields;
+		setFields(fields);
 	}
 
 	public String getAuthorName() {
@@ -153,11 +153,11 @@ public final class Attachment {
 	}
 
 	public List<Field> getFields() {
-		return fields;
+		return new ArrayList<>(fields);
 	}
 
 	public void setFields(List<Field> fields) {
-		this.fields = fields;
+		this.fields = fields == null ? null : new ArrayList<>(fields);
 	}
 
 	public void addField(Field field) {

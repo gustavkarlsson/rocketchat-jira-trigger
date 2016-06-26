@@ -27,7 +27,7 @@ public final class IncomingMessage {
 		this.username = username;
 		this.iconUrl = iconUrl;
 		this.text = text;
-		this.attachments = attachments;
+		setAttachments(attachments);
 	}
 
 	public String getUsername() {
@@ -55,11 +55,11 @@ public final class IncomingMessage {
 	}
 
 	public List<Attachment> getAttachments() {
-		return attachments;
+		return new ArrayList<>(attachments);
 	}
 
 	public void setAttachments(List<Attachment> attachments) {
-		this.attachments = attachments;
+		this.attachments = attachments == null ? null : new ArrayList<>(attachments);
 	}
 
 	public void addAttachment(Attachment attachment) {

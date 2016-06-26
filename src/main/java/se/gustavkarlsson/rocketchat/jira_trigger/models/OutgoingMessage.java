@@ -39,7 +39,7 @@ public final class OutgoingMessage {
 		this.userId = userId;
 		this.userName = userName;
 		this.text = text;
-		this.timestamp = new Date(timestamp.getTime());
+		setTimestamp(timestamp);
 	}
 
 	public String getToken() {
@@ -95,7 +95,7 @@ public final class OutgoingMessage {
 	}
 
 	public void setTimestamp(Date timestamp) {
-		this.timestamp = new Date(timestamp.getTime());
+		this.timestamp = timestamp == null ? null : new Date(timestamp.getTime());
 	}
 
 	@Override
