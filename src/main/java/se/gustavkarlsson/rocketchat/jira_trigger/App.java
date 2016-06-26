@@ -16,6 +16,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import spark.Request;
 import spark.Spark;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.function.Function;
 
@@ -31,7 +32,7 @@ public class App {
 			System.exit(1);
 		}
 		try {
-			Configuration config = new Configuration(args[0]);
+			Configuration config = new Configuration(new File(args[0]));
 			setupServer(config);
 		} catch (Exception e) {
 			log.error("Fatal error", e);

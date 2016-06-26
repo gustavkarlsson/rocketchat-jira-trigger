@@ -4,6 +4,8 @@ import com.moandjiezana.toml.Toml;
 
 import java.io.File;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 public class Configuration {
 	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
 
@@ -12,16 +14,17 @@ public class Configuration {
 	private final MessageConfiguration message;
 	private final RocketChatConfiguration rocketchat;
 
-	public Configuration(String configFilePath) throws ValidationException {
-		Toml toml = parseToml(configFilePath);
+	public Configuration(File configFile) throws ValidationException {
+		notNull(configFile);
+		Toml toml = parseToml(configFile);
 		app = new AppConfiguration(toml);
 		jira = new JiraConfiguration(toml);
 		message = new MessageConfiguration(toml);
 		rocketchat = new RocketChatConfiguration(toml);
 	}
 
-	private static Toml parseToml(String configFilePath) {
-		return new Toml(parseDefaults()).read(new File(configFilePath));
+	private static Toml parseToml(File configFile) {
+		return new Toml(parseDefaults()).read(configFile);
 	}
 
 	private static Toml parseDefaults() {
