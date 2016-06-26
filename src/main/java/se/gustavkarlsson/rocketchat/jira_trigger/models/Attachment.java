@@ -2,15 +2,11 @@ package se.gustavkarlsson.rocketchat.jira_trigger.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Attachment {
-
-	@SerializedName("color")
-	private String color;
-
-	@SerializedName("pretext")
-	private String pretext;
+public final class Attachment {
 
 	@SerializedName("author_name")
 	private String authorName;
@@ -21,17 +17,20 @@ public class Attachment {
 	@SerializedName("author_icon")
 	private String authorIcon;
 
+	@SerializedName("color")
+	private String color;
+
 	@SerializedName("title")
 	private String title;
 
 	@SerializedName("title_link")
 	private String titleLink;
 
+	@SerializedName("pretext")
+	private String pretext;
+
 	@SerializedName("text")
 	private String text;
-
-	@SerializedName("fields")
-	private List<Field> fields;
 
 	@SerializedName("image_url")
 	private String imageUrl;
@@ -42,20 +41,27 @@ public class Attachment {
 	@SerializedName("ts")
 	private Long timestamp;
 
-	public String getColor() {
-		return color;
+	@SerializedName("fields")
+	private List<Field> fields;
+
+	public Attachment() {
 	}
 
-	public void setColor(String color) {
+	public Attachment(String authorName, String authorLink, String authorIcon, String color, String title,
+					  String titleLink, String pretext, String text, String imageUrl, String thumbUrl, Long timestamp,
+					  List<Field> fields) {
+		this.authorName = authorName;
+		this.authorLink = authorLink;
+		this.authorIcon = authorIcon;
 		this.color = color;
-	}
-
-	public String getPretext() {
-		return pretext;
-	}
-
-	public void setPretext(String pretext) {
+		this.title = title;
+		this.titleLink = titleLink;
 		this.pretext = pretext;
+		this.text = text;
+		this.imageUrl = imageUrl;
+		this.thumbUrl = thumbUrl;
+		this.timestamp = timestamp;
+		this.fields = fields;
 	}
 
 	public String getAuthorName() {
@@ -82,6 +88,14 @@ public class Attachment {
 		this.authorIcon = authorIcon;
 	}
 
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -98,20 +112,20 @@ public class Attachment {
 		this.titleLink = titleLink;
 	}
 
+	public String getPretext() {
+		return pretext;
+	}
+
+	public void setPretext(String pretext) {
+		this.pretext = pretext;
+	}
+
 	public String getText() {
 		return text;
 	}
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
 	}
 
 	public String getImageUrl() {
@@ -138,5 +152,61 @@ public class Attachment {
 		this.timestamp = timestamp;
 	}
 
+	public List<Field> getFields() {
+		return fields;
+	}
 
+	public void setFields(List<Field> fields) {
+		this.fields = fields;
+	}
+
+	public void addField(Field field) {
+		if (fields == null) {
+			fields = new ArrayList<>();
+		}
+		fields.add(field);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Attachment that = (Attachment) o;
+		return Objects.equals(authorName, that.authorName) &&
+				Objects.equals(authorLink, that.authorLink) &&
+				Objects.equals(authorIcon, that.authorIcon) &&
+				Objects.equals(color, that.color) &&
+				Objects.equals(title, that.title) &&
+				Objects.equals(titleLink, that.titleLink) &&
+				Objects.equals(pretext, that.pretext) &&
+				Objects.equals(text, that.text) &&
+				Objects.equals(imageUrl, that.imageUrl) &&
+				Objects.equals(thumbUrl, that.thumbUrl) &&
+				Objects.equals(timestamp, that.timestamp) &&
+				Objects.equals(fields, that.fields);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(authorName, authorLink, authorIcon, color, title, titleLink, pretext, text, imageUrl,
+				thumbUrl, timestamp, fields);
+	}
+
+	@Override
+	public String toString() {
+		return "Attachment{" +
+				"authorName='" + authorName + '\'' +
+				", authorLink='" + authorLink + '\'' +
+				", authorIcon='" + authorIcon + '\'' +
+				", color='" + color + '\'' +
+				", title='" + title + '\'' +
+				", titleLink='" + titleLink + '\'' +
+				", pretext='" + pretext + '\'' +
+				", text='" + text + '\'' +
+				", imageUrl='" + imageUrl + '\'' +
+				", thumbUrl='" + thumbUrl + '\'' +
+				", timestamp=" + timestamp +
+				", fields=" + fields +
+				'}';
+	}
 }

@@ -2,7 +2,9 @@ package se.gustavkarlsson.rocketchat.jira_trigger.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Field {
+import java.util.Objects;
+
+public final class Field {
 
 	@SerializedName("title")
 	private String title;
@@ -11,12 +13,15 @@ public class Field {
 	private String value;
 
 	@SerializedName("short")
-	private boolean aShort;
+	private Boolean shortValue;
 
-	public Field(String title, String value, boolean aShort) {
+	public Field() {
+	}
+
+	public Field(String title, String value, boolean shortValue) {
 		this.title = title;
 		this.value = value;
-		this.aShort = aShort;
+		this.shortValue = shortValue;
 	}
 
 	public String getTitle() {
@@ -35,11 +40,35 @@ public class Field {
 		this.value = value;
 	}
 
-	public boolean isAShort() {
-		return aShort;
+	public Boolean isAShort() {
+		return shortValue;
 	}
 
-	public void setAShort(boolean aShort) {
-		this.aShort = aShort;
+	public void setAShort(Boolean aShort) {
+		this.shortValue = aShort;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Field field = (Field) o;
+		return Objects.equals(title, field.title) &&
+				Objects.equals(value, field.value) &&
+				Objects.equals(shortValue, field.shortValue);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(title, value, shortValue);
+	}
+
+	@Override
+	public String toString() {
+		return "Field{" +
+				"title='" + title + '\'' +
+				", value='" + value + '\'' +
+				", shortValue=" + shortValue +
+				'}';
 	}
 }
