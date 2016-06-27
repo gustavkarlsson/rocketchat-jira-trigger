@@ -7,7 +7,7 @@ icon_url = "https://confluence.atlassian.com/alldoc/files/169118009/169050326/4/
 date_pattern = "EEE, d MMM, yyyy" # Format according to https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
 date_locale = "en-US" # Defines how things like week days and month names will be represented. Expects a IETF language tag
 priority_colors = true # Color attachments according to issue priority
-default_color= "#205081" # Fallback color when priority is not recognized
+default_color = "#205081" # Fallback color when priority is not recognized
 
 # These options control what fields will be printed in the response messages.
 print_description = false
