@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.jira_trigger.test.MinimalToml;
 
-public class AppConfigurationTest {
+public class JiraConfigurationTest {
 
 	private Toml minimal;
 
@@ -16,16 +16,27 @@ public class AppConfigurationTest {
 
 	@Test(expected = NullPointerException.class)
 	public void createWithNullTomlThrowsNPE() throws Exception {
-		new AppConfiguration(null);
+		new JiraConfiguration(null);
 	}
 
 	@Test
 	public void createWithMinimalToml() throws Exception {
-		new AppConfiguration(minimal);
+		new JiraConfiguration(minimal);
 	}
 
 	@Test
-	public void getPort() throws Exception {
-		new AppConfiguration(minimal).getPort();
+	public void getUri() throws Exception {
+		new JiraConfiguration(minimal).getUri();
 	}
+
+	@Test
+	public void getUsername() throws Exception {
+		new JiraConfiguration(minimal).getUsername();
+	}
+
+	@Test
+	public void getPassword() throws Exception {
+		new JiraConfiguration(minimal).getPassword();
+	}
+
 }
