@@ -10,7 +10,7 @@ Outgoing webhook integration for Rocket.Chat that summarizes any JIRA issues men
 Yeah, that's it.
 
 ## Building
-Run `./gradlew installApp` (`gradlew.bat installApp` on Windows). The binaries will be located in `build/install/rocketchat-jira-trigger`.
+Run `./gradlew installDist` (`gradlew.bat installDist` on Windows). The binaries will be located in `build/install/rocketchat-jira-trigger`.
 
 ## Configurating
 To get started you only need to configure the URI of your JIRA server and some user credentials (unless anonymous access is allowed).
