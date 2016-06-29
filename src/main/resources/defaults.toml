@@ -9,16 +9,29 @@ date_locale = "en-US" # Defines how things like week days and month names will b
 priority_colors = true # Color attachments according to issue priority
 default_color = "#205081" # Fallback color when priority is not recognized
 
-# These options control what fields will be printed in the response messages.
-print_description = false
-print_assignee = true
-print_status = true
-print_reporter = true
-print_priority = true
-print_resolution = false
-print_type = false
-print_created = false
-print_updated = false
+	# Message fields to print by default
+	[message.print_default]
+	description = false
+	assignee = true
+	status = true
+	reporter = true
+	priority = true
+	resolution = false
+	type = false
+	created = false
+	updated = false
+
+	# Message fields to print for extended messages
+	[message.print_extended]
+	description = true
+	assignee = true
+	status = true
+	reporter = true
+	priority = true
+	resolution = true
+	type = true
+	created = true
+	updated = true
 
 [rocketchat]
 tokens = [] # Allowed tokens. An empty array means ALL tokens are allowed.

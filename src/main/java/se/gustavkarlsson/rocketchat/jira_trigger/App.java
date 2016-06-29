@@ -10,15 +10,17 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.IssueToRocketChatMessageConverter;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.MessageCreator;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import spark.Request;
 import spark.Spark;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.function.Function;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -44,8 +46,9 @@ public class App {
 		IssueRestClient issueClient = createIssueRestClient(config.getJiraConfiguration());
 		Spark.port(config.getAppConfiguration().getPort());
 		Spark.before((request, response) -> log(request));
-		Function<Collection<Issue>, IncomingMessage> converter = new IssueToRocketChatMessageConverter(config.getMessageConfiguration());
-		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, converter));
+		Supplier<IncomingMessage> messageCreator = new MessageCreator(config.getMessageConfiguration());
+		BiFunction<Issue, Boolean, Attachment> attachmentConverter = new AttachmentConverter(config.getMessageConfiguration());
+		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageCreator, attachmentConverter));
 		Spark.exception(Exception.class, new UuidGeneratingExceptionHandler());
 	}
 

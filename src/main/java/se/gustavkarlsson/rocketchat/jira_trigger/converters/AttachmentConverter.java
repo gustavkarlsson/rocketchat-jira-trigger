@@ -6,20 +6,18 @@ import com.atlassian.jira.rest.client.api.domain.Resolution;
 import com.atlassian.jira.rest.client.api.domain.User;
 import org.joda.time.DateTime;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessagePrintConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Field;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
 
 import javax.ws.rs.core.UriBuilder;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.BiFunction;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class IssueToRocketChatMessageConverter implements Function<Collection<Issue>, IncomingMessage> {
+public class AttachmentConverter implements BiFunction<Issue, Boolean, Attachment> {
 
 	private static final String BLOCKER_COLOR = "#FF4437";
 	private static final String CRITICAL_COLOR = "#D04437";
@@ -28,28 +26,22 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 	private static final String TRIVIAL_COLOR = "#707070";
 
 	private final MessageConfiguration config;
+	private final MessagePrintConfiguration printDefaultConfig;
+	private final MessagePrintConfiguration printExtendedConfig;
 
-	public IssueToRocketChatMessageConverter(MessageConfiguration config) {
+	public AttachmentConverter(MessageConfiguration config) {
 		this.config = notNull(config);
+		this.printDefaultConfig = config.getPrintDefaultConfig();
+		this.printExtendedConfig = config.getPrintExtendedConfig();
 	}
 
 	@Override
-	public IncomingMessage apply(Collection<Issue> issue) {
-		IncomingMessage message = new IncomingMessage();
-
-		message.setUsername(config.getUsername());
-		message.setIconUrl(config.getIconUrl());
-
-		List<Attachment> attachments = issue.stream()
-				.map(this::createAttachment)
-				.collect(Collectors.toList());
-
-		message.setAttachments(attachments);
-
-		return message;
+	public Attachment apply(Issue issue, Boolean extended) {
+		MessagePrintConfiguration config = extended ? printExtendedConfig : printDefaultConfig;
+		return createAttachment(issue, config);
 	}
 
-	private Attachment createAttachment(Issue issue) {
+	private Attachment createAttachment(Issue issue, MessagePrintConfiguration printConfig) {
 		Attachment attachment = new Attachment();
 		attachment.setTitle(issue.getKey());
 
@@ -60,13 +52,13 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 		}
 
 		StringBuilder text = new StringBuilder(createSummaryLink(issue));
-		if (config.isPrintDescription()) {
+		if (printConfig.isPrintDescription()) {
 			text.append('\n');
 			text.append(issue.getDescription());
 		}
 		attachment.setText(text.toString());
 
-		attachment.setFields(createFields(issue));
+		attachment.setFields(createFields(issue, printConfig));
 
 		return attachment;
 	}
@@ -101,46 +93,46 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 		}
 	}
 
-	private List<Field> createFields(Issue issue) {
+	private List<Field> createFields(Issue issue, MessagePrintConfiguration printConfig) {
 		List<Field> fields = new ArrayList<>();
 
-		if (config.isPrintType()) {
+		if (printConfig.isPrintType()) {
 			fields.add(new Field("Type", issue.getIssueType().getName(), true));
 		}
 
-		if (config.isPrintAssignee()) {
+		if (printConfig.isPrintAssignee()) {
 			User assignee = issue.getAssignee();
 			String assigneeText = assignee == null ? "Unassigned" : assignee.getDisplayName();
 			fields.add(new Field("Assigned To", assigneeText, true));
 		}
 
-		if (config.isPrintStatus()) {
+		if (printConfig.isPrintStatus()) {
 			fields.add(new Field("Status", issue.getStatus().getName(), true));
 		}
 
-		if (config.isPrintResolution()) {
+		if (printConfig.isPrintResolution()) {
 			Resolution resolution = issue.getResolution();
 			String resolutionText = resolution == null ? "None" : resolution.getName();
 			fields.add(new Field("Resolution", resolutionText, true));
 		}
 
-		if (config.isPrintReporter()) {
+		if (printConfig.isPrintReporter()) {
 			User reporter = issue.getReporter();
 			String reporterText = reporter == null ? "No reporter" : reporter.getDisplayName();
 			fields.add(new Field("Reporter", reporterText, true));
 		}
 
-		if (config.isPrintPriority()) {
+		if (printConfig.isPrintPriority()) {
 			BasicPriority priority = issue.getPriority();
 			String priorityText = priority == null ? "Unprioritized" : priority.getName();
 			fields.add(new Field("Priority", priorityText, true));
 		}
 
-		if (config.isPrintCreated()) {
+		if (printConfig.isPrintCreated()) {
 			fields.add(new Field("Created", formatDateTime(issue.getCreationDate()), true));
 		}
 
-		if (config.isPrintUpdated()) {
+		if (printConfig.isPrintUpdated()) {
 			fields.add(new Field("Updated", formatDateTime(issue.getUpdateDate()), true));
 		}
 		return fields;
@@ -149,5 +141,4 @@ public class IssueToRocketChatMessageConverter implements Function<Collection<Is
 	private synchronized String formatDateTime(DateTime dateTime) {
 		return config.getDateFormat().format(dateTime.toDate());
 	}
-
 }

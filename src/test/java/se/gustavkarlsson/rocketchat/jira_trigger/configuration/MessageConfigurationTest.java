@@ -45,53 +45,7 @@ public class MessageConfigurationTest {
 	}
 
 	@Test
-	public void isPrintType() throws Exception {
-		new MessageConfiguration(minimal).isPrintType();
-	}
-
-	@Test
-	public void isPrintDescription() throws Exception {
-		new MessageConfiguration(minimal).isPrintDescription();
-	}
-
-	@Test
-	public void isPrintUpdated() throws Exception {
-		new MessageConfiguration(minimal).isPrintUpdated();
-	}
-
-	@Test
-	public void isPrintCreated() throws Exception {
-		new MessageConfiguration(minimal).isPrintCreated();
-	}
-
-	@Test
-	public void isPrintResolution() throws Exception {
-		new MessageConfiguration(minimal).isPrintResolution();
-	}
-
-	@Test
-	public void isPrintAssignee() throws Exception {
-		new MessageConfiguration(minimal).isPrintAssignee();
-	}
-
-	@Test
-	public void isPrintPriority() throws Exception {
-		new MessageConfiguration(minimal).isPrintPriority();
-	}
-
-	@Test
-	public void isPrintReporter() throws Exception {
-		new MessageConfiguration(minimal).isPrintReporter();
-	}
-
-	@Test
 	public void isPriorityColors() throws Exception {
 		new MessageConfiguration(minimal).isPriorityColors();
 	}
-
-	@Test
-	public void isPrintStatus() throws Exception {
-		new MessageConfiguration(minimal).isPrintStatus();
-	}
-
 }

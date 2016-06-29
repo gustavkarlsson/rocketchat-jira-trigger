@@ -8,16 +8,15 @@ import com.google.common.base.Optional;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.OutgoingMessage;
 import spark.Request;
 import spark.Response;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,16 +28,20 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class DetectIssueRoute extends RocketChatMessageRoute {
 	private static final Logger log = getLogger(DetectIssueRoute.class);
 
-	private static final Pattern JIRA_ISSUE = Pattern.compile("((?<!([A-Za-z]{1,10})-?)[A-Z]+-\\d+)");
+	private static final Pattern JIRA_ISSUE = Pattern.compile("((?<!([A-Za-z]{1,10})-?)[A-Z]+-\\d+\\+?)");
 
 	private final RocketChatConfiguration config;
 	private final IssueRestClient issueClient;
-	private final Function<Collection<Issue>, IncomingMessage> converter;
+	private final Supplier<IncomingMessage> messageCreator;
+	private final BiFunction<Issue, Boolean, Attachment> attachmentConverter;
 
-	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient, Function<Collection<Issue>, IncomingMessage> converter) {
+	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient,
+							Supplier<IncomingMessage> messageCreator,
+							BiFunction<Issue, Boolean, Attachment> attachmentConverter) {
 		this.config = notNull(config);
 		this.issueClient = notNull(issueClient);
-		this.converter = notNull(converter);
+		this.messageCreator = notNull(messageCreator);
+		this.attachmentConverter = notNull(attachmentConverter);
 	}
 
 	private static boolean isAllowed(Collection<String> blacklist, Collection<String> whitelist, String... values) {
@@ -73,29 +76,40 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 			return null;
 		}
 		log.debug("Parsing keys from text: \"{}\"", outgoing.getText());
-		List<String> jiraKeys = parseJiraKeys(outgoing.getText());
-		log.debug("Found keys: {}", jiraKeys);
+		Map<String, Boolean> jiraKeys = parseJiraKeys(outgoing.getText());
+		log.debug("Found keys: {}", jiraKeys.keySet());
 		log.debug("Fetching issues...");
-		List<Issue> issues = jiraKeys.parallelStream()
-				.map(this::getJiraIssue)
-				.filter(Objects::nonNull)
-				.collect(Collectors.toList());
+		Map<Issue, Boolean> issues = jiraKeys.entrySet().parallelStream()
+				.map(e -> new AbstractMap.SimpleEntry<>(getJiraIssue(e.getKey()), e.getValue()))
+				.filter(e -> e.getKey() != null)
+				.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 		if (issues.isEmpty()) {
 			log.debug("No matching issue found. Ignoring");
 			return null;
 		}
-		log.debug("Found issues: {}", issues.stream()
+		log.debug("Found issues: {}", issues.keySet().stream()
 				.map(Issue::getId)
 				.collect(Collectors.toList()));
-		log.debug("Converting issues");
-		return converter.apply(issues);
+		log.debug("Creating message");
+		IncomingMessage message = messageCreator.get();
+		log.debug("Creating attachments");
+		List<Attachment> attachments = issues.entrySet().stream()
+				.map(e -> attachmentConverter.apply(e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
+		message.setAttachments(attachments);
+		return message;
 	}
 
-	private List<String> parseJiraKeys(String messageText) {
+	private Map<String, Boolean> parseJiraKeys(String messageText) {
 		Matcher matcher = JIRA_ISSUE.matcher(messageText);
-		List<String> jiraKeys = new ArrayList<>();
+		Map<String, Boolean> jiraKeys = new HashMap<>();
 		while (matcher.find()) {
-			jiraKeys.add(matcher.group());
+			String key = matcher.group();
+			boolean extended = key.endsWith("+");
+			if (extended) {
+				key = key.substring(0, key.length() - 1);
+			}
+			jiraKeys.put(key, extended);
 		}
 		return jiraKeys;
 	}
