@@ -11,7 +11,7 @@ public class JiraConfigurationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		minimal = MinimalToml.get();
+		minimal = MinimalToml.get().getTable(Configuration.JIRA_KEY);
 	}
 
 	@Test(expected = NullPointerException.class)

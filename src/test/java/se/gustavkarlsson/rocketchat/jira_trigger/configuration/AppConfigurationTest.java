@@ -11,7 +11,7 @@ public class AppConfigurationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		minimal = MinimalToml.get();
+		minimal = MinimalToml.get().getTable(Configuration.APP_KEY);
 	}
 
 	@Test(expected = NullPointerException.class)

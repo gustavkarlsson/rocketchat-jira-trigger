@@ -9,7 +9,6 @@ import java.util.Locale;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class MessageConfiguration {
-	static final String KEY_PREFIX = "message.";
 	static final String PRINT_DEFAULT_TABLE_KEY = "print_default";
 	static final String PRINT_EXTENDED_TABLE_KEY = "print_extended";
 
@@ -31,14 +30,14 @@ public class MessageConfiguration {
 	MessageConfiguration(Toml toml) throws ValidationException {
 		notNull(toml);
 		try {
-			username = toml.getString(KEY_PREFIX + USERNAME_KEY);
-			iconUrl = toml.getString(KEY_PREFIX + ICON_URL_KEY);
-			dateFormat = new SimpleDateFormat(toml.getString(KEY_PREFIX + DATE_PATTERN_KEY),
-					Locale.forLanguageTag(toml.getString(KEY_PREFIX + DATE_LOCALE_KEY)));
-			priorityColors = toml.getBoolean(KEY_PREFIX + PRIORITY_COLORS_KEY);
-			defaultColor = toml.getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
-			printDefaultConfig = new MessagePrintConfiguration(toml.getTable(KEY_PREFIX + PRINT_DEFAULT_TABLE_KEY));
-			printExtendedConfig = new MessagePrintConfiguration(toml.getTable(KEY_PREFIX + PRINT_EXTENDED_TABLE_KEY));
+			username = toml.getString(USERNAME_KEY);
+			iconUrl = toml.getString(ICON_URL_KEY);
+			dateFormat = new SimpleDateFormat(toml.getString(DATE_PATTERN_KEY),
+					Locale.forLanguageTag(toml.getString(DATE_LOCALE_KEY)));
+			priorityColors = toml.getBoolean(PRIORITY_COLORS_KEY);
+			defaultColor = toml.getString(DEFAULT_COLOR_KEY);
+			printDefaultConfig = new MessagePrintConfiguration(toml.getTable(PRINT_DEFAULT_TABLE_KEY));
+			printExtendedConfig = new MessagePrintConfiguration(toml.getTable(PRINT_EXTENDED_TABLE_KEY));
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}

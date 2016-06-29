@@ -11,7 +11,7 @@ public class MessagePrintConfigurationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		minimal = MinimalToml.get().getTable(MessageConfiguration.KEY_PREFIX + MessageConfiguration.PRINT_DEFAULT_TABLE_KEY);
+		minimal = MinimalToml.get().getTable(Configuration.MESSAGE_KEY + "." + MessageConfiguration.PRINT_DEFAULT_TABLE_KEY);
 	}
 
 	@Test(expected = NullPointerException.class)

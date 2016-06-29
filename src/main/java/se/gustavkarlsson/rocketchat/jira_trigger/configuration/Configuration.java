@@ -7,8 +7,11 @@ import java.io.File;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class Configuration {
+	static final String APP_KEY = "app";
+	static final String JIRA_KEY = "jira";
+	static final String MESSAGE_KEY = "message";
+	static final String ROCKETCHAT_KEY = "rocketchat";
 	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
-
 	private final AppConfiguration app;
 	private final JiraConfiguration jira;
 	private final MessageConfiguration message;
@@ -17,10 +20,10 @@ public class Configuration {
 	public Configuration(File configFile) throws ValidationException {
 		notNull(configFile);
 		Toml toml = parseToml(configFile);
-		app = new AppConfiguration(toml);
-		jira = new JiraConfiguration(toml);
-		message = new MessageConfiguration(toml);
-		rocketchat = new RocketChatConfiguration(toml);
+		app = new AppConfiguration(toml.getTable(APP_KEY));
+		jira = new JiraConfiguration(toml.getTable(JIRA_KEY));
+		message = new MessageConfiguration(toml.getTable(MESSAGE_KEY));
+		rocketchat = new RocketChatConfiguration(toml.getTable(ROCKETCHAT_KEY));
 	}
 
 	private static Toml parseToml(File configFile) {

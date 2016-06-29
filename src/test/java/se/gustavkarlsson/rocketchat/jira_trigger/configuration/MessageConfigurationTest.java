@@ -11,7 +11,7 @@ public class MessageConfigurationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		minimal = MinimalToml.get();
+		minimal = MinimalToml.get().getTable(Configuration.MESSAGE_KEY);
 	}
 
 	@Test(expected = NullPointerException.class)

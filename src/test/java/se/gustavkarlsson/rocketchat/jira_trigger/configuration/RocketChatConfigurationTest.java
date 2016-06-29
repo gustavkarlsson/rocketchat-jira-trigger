@@ -11,7 +11,7 @@ public class RocketChatConfigurationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		minimal = MinimalToml.get();
+		minimal = MinimalToml.get().getTable(Configuration.ROCKETCHAT_KEY);
 	}
 
 	@Test(expected = NullPointerException.class)
