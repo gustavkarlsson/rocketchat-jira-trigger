@@ -7,6 +7,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
+import com.moandjiezana.toml.Toml;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
@@ -27,6 +28,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class App {
 	public static final String APPLICATION_JSON = "application/json";
 	private static final Logger log = getLogger(App.class);
+	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
 
 	public static void main(String[] args) {
 		if (args.length < 1) {
@@ -34,12 +36,21 @@ public class App {
 			System.exit(1);
 		}
 		try {
-			Configuration config = new Configuration(new File(args[0]));
+			Toml toml = parseToml(new File(args[0]));
+			Configuration config = new Configuration(toml);
 			setupServer(config);
 		} catch (Exception e) {
 			log.error("Fatal error", e);
 			System.exit(1);
 		}
+	}
+
+	private static Toml parseToml(File configFile) {
+		return new Toml(parseDefaults()).read(configFile);
+	}
+
+	private static Toml parseDefaults() {
+		return new Toml().read(Configuration.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
 	}
 
 	private static void setupServer(Configuration config) {
