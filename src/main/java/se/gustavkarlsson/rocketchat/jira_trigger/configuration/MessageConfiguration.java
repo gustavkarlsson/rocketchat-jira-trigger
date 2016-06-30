@@ -6,9 +6,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import static org.apache.commons.lang3.Validate.notNull;
+public class MessageConfiguration extends DefaultingConfiguration {
+	static final String KEY_PREFIX = "message.";
 
-public class MessageConfiguration {
 	static final String PRINT_DEFAULT_TABLE_KEY = "print_default";
 	static final String PRINT_EXTENDED_TABLE_KEY = "print_extended";
 
@@ -27,17 +27,17 @@ public class MessageConfiguration {
 	private final MessagePrintConfiguration printDefaultConfig;
 	private final MessagePrintConfiguration printExtendedConfig;
 
-	MessageConfiguration(Toml toml) throws ValidationException {
-		notNull(toml);
+	MessageConfiguration(Toml toml, Toml defaults) throws ValidationException {
+		super(toml, defaults);
 		try {
-			username = toml.getString(USERNAME_KEY);
-			iconUrl = toml.getString(ICON_URL_KEY);
-			dateFormat = new SimpleDateFormat(toml.getString(DATE_PATTERN_KEY),
-					Locale.forLanguageTag(toml.getString(DATE_LOCALE_KEY)));
-			priorityColors = toml.getBoolean(PRIORITY_COLORS_KEY);
-			defaultColor = toml.getString(DEFAULT_COLOR_KEY);
-			printDefaultConfig = new MessagePrintConfiguration(toml.getTable(PRINT_DEFAULT_TABLE_KEY));
-			printExtendedConfig = new MessagePrintConfiguration(toml.getTable(PRINT_EXTENDED_TABLE_KEY));
+			username = getString(KEY_PREFIX + USERNAME_KEY);
+			iconUrl = getString(KEY_PREFIX + ICON_URL_KEY);
+			dateFormat = new SimpleDateFormat(getString(KEY_PREFIX + DATE_PATTERN_KEY),
+					Locale.forLanguageTag(getString(KEY_PREFIX + DATE_LOCALE_KEY)));
+			priorityColors = getBoolean(KEY_PREFIX + PRIORITY_COLORS_KEY);
+			defaultColor = getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
+			printDefaultConfig = new MessagePrintConfiguration(toml, defaults, KEY_PREFIX + PRINT_DEFAULT_TABLE_KEY + ".");
+			printExtendedConfig = new MessagePrintConfiguration(toml, defaults, KEY_PREFIX + PRINT_EXTENDED_TABLE_KEY + ".");
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}

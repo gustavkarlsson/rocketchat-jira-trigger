@@ -2,9 +2,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
 import com.moandjiezana.toml.Toml;
 
-import static org.apache.commons.lang3.Validate.notNull;
-
-public class MessagePrintConfiguration {
+public class MessagePrintConfiguration extends DefaultingConfiguration {
 	private static final String PRINT_DESCRIPTION_KEY = "description";
 	private static final String PRINT_ASSIGNEE_KEY = "assignee";
 	private static final String PRINT_STATUS_KEY = "status";
@@ -25,18 +23,18 @@ public class MessagePrintConfiguration {
 	private final boolean printUpdated;
 	private final boolean printType;
 
-	MessagePrintConfiguration(Toml toml) throws ValidationException {
-		notNull(toml);
+	MessagePrintConfiguration(Toml toml, Toml defaults, String tableKey) throws ValidationException {
+		super(toml, defaults);
 		try {
-			printDescription = toml.getBoolean(PRINT_DESCRIPTION_KEY);
-			printAssignee = toml.getBoolean(PRINT_ASSIGNEE_KEY);
-			printStatus = toml.getBoolean(PRINT_STATUS_KEY);
-			printReporter = toml.getBoolean(PRINT_REPORTER_KEY);
-			printPriority = toml.getBoolean(PRINT_PRIORITY_KEY);
-			printResolution = toml.getBoolean(PRINT_RESOLUTION_KEY);
-			printCreated = toml.getBoolean(PRINT_CREATED_KEY);
-			printUpdated = toml.getBoolean(PRINT_UPDATED_KEY);
-			printType = toml.getBoolean(PRINT_TYPE_KEY);
+			printDescription = getBoolean(tableKey + PRINT_DESCRIPTION_KEY);
+			printAssignee = getBoolean(tableKey + PRINT_ASSIGNEE_KEY);
+			printStatus = getBoolean(tableKey + PRINT_STATUS_KEY);
+			printReporter = getBoolean(tableKey + PRINT_REPORTER_KEY);
+			printPriority = getBoolean(tableKey + PRINT_PRIORITY_KEY);
+			printResolution = getBoolean(tableKey + PRINT_RESOLUTION_KEY);
+			printCreated = getBoolean(tableKey + PRINT_CREATED_KEY);
+			printUpdated = getBoolean(tableKey + PRINT_UPDATED_KEY);
+			printType = getBoolean(tableKey + PRINT_TYPE_KEY);
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}

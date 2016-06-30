@@ -37,7 +37,8 @@ public class App {
 		}
 		try {
 			Toml toml = parseToml(new File(args[0]));
-			Configuration config = new Configuration(toml);
+			Toml defaults = parseDefaults();
+			Configuration config = new Configuration(toml, defaults);
 			setupServer(config);
 		} catch (Exception e) {
 			log.error("Fatal error", e);
@@ -46,7 +47,7 @@ public class App {
 	}
 
 	private static Toml parseToml(File configFile) {
-		return new Toml(parseDefaults()).read(configFile);
+		return new Toml().read(configFile);
 	}
 
 	private static Toml parseDefaults() {
