@@ -1,18 +1,18 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
+import com.moandjiezana.toml.Toml;
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
+import se.gustavkarlsson.rocketchat.jira_trigger.test.MinimalToml;
 
 public class ConfigurationTest {
 
-	private static File minimal;
+	private static Toml minimal;
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		minimal = new File(ConfigurationTest.class.getClassLoader().getResource("minimal.toml").toURI());
+		minimal = MinimalToml.get();
 	}
 
 	@Test(expected = NullPointerException.class)
