@@ -7,7 +7,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.test.TomlUtils;
 
 public class MessagePrintConfigurationTest {
 
-	private final String defaultKey = MessageConfiguration.KEY_PREFIX + MessageConfiguration.PRINT_DEFAULT_TABLE_KEY + ".";
+	private static final String defaultKey = MessageConfiguration.KEY_PREFIX + MessageConfiguration.PRINT_DEFAULT_TABLE_KEY + ".";
 	private Toml minimal;
 	private Toml defaults;
 
