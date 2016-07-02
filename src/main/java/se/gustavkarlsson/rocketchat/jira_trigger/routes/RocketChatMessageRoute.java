@@ -16,6 +16,9 @@ abstract class RocketChatMessageRoute implements Route {
 	public final Object handle(Request request, Response response) throws Exception {
 		OutgoingMessage outgoing = gson.fromJson(request.body(), OutgoingMessage.class);
 		IncomingMessage responseMessage = handle(request, response, outgoing);
+		if (responseMessage == null) {
+			return null;
+		}
 		return gson.toJson(responseMessage);
 	}
 
