@@ -3,7 +3,6 @@ package se.gustavkarlsson.rocketchat.jira_trigger;
 import com.atlassian.jira.rest.client.api.AuthenticationHandler;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
@@ -11,39 +10,45 @@ import com.moandjiezana.toml.Toml;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.ValidationException;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.MessageCreator;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import spark.Request;
 import spark.Spark;
 
+import java.io.Console;
 import java.io.File;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class App {
-	public static final String APPLICATION_JSON = "application/json";
 	private static final Logger log = getLogger(App.class);
+
+	private static final String APPLICATION_JSON = "application/json";
 	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
 
 	public static void main(String[] args) {
-		if (args.length < 1) {
-			log.error("No configuration file specified");
-			System.exit(1);
-		}
 		try {
-			Toml toml = parseToml(new File(args[0]));
-			Toml defaults = parseDefaults();
-			Configuration config = new Configuration(toml, defaults);
+			verifySyntax(args);
+			Configuration config = createConfiguration(args[0]);
 			setupServer(config);
 		} catch (Exception e) {
 			log.error("Fatal error", e);
 			System.exit(1);
 		}
+	}
+
+	private static void verifySyntax(String[] args) {
+		if (args.length < 1) {
+			throw new IllegalArgumentException("No configuration file specified");
+		}
+	}
+
+	private static Configuration createConfiguration(String arg) throws ValidationException {
+		Toml toml = parseToml(new File(arg));
+		Toml defaults = parseDefaults();
+		return new Configuration(toml, defaults);
 	}
 
 	private static Toml parseToml(File configFile) {
@@ -56,11 +61,13 @@ public class App {
 
 	private static void setupServer(Configuration config) {
 		IssueRestClient issueClient = createIssueRestClient(config.getJiraConfiguration());
+		MessageCreator messageCreator = new MessageCreator(config.getMessageConfiguration());
+		AttachmentConverter attachmentConverter = new AttachmentConverter(config.getMessageConfiguration());
+
 		Spark.port(config.getAppConfiguration().getPort());
 		Spark.before((request, response) -> log(request));
-		Supplier<IncomingMessage> messageCreator = new MessageCreator(config.getMessageConfiguration());
-		BiFunction<Issue, Boolean, Attachment> attachmentConverter = new AttachmentConverter(config.getMessageConfiguration());
 		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageCreator, attachmentConverter));
+		Spark.after((request, response) -> response.type(APPLICATION_JSON));
 		Spark.exception(Exception.class, new UuidGeneratingExceptionHandler());
 	}
 
@@ -73,19 +80,35 @@ public class App {
 
 	private static AuthenticationHandler getAuthHandler(JiraConfiguration jiraConfig) {
 		String username = jiraConfig.getUsername();
-		String password = jiraConfig.getPassword();
-		if (username != null && password != null) {
-			log.info("Using basic authentication");
-			return new BasicHttpAuthenticationHandler(username, password);
-		} else {
+		if (username == null) {
 			log.info("No credentials configured. Using anonymous authentication");
 			return new AnonymousAuthenticationHandler();
+		} else {
+			log.info("Using basic authentication");
+			String password = jiraConfig.getPassword();
+			if (password != null) {
+				log.info("Password provided through configuration");
+			} else {
+				log.info("No password configured. Reading from console");
+				password = readPassword(jiraConfig.getUsername());
+				log.info("Password provided through stdin");
+			}
+			return new BasicHttpAuthenticationHandler(username, password);
 		}
 	}
 
+	private static String readPassword(String username) {
+		Console console = System.console();
+		if (console == null) {
+			throw new IllegalStateException("No console available for password input");
+		}
+		char[] password = console.readPassword("Enter JIRA password for user %s: ", username);
+		return new String(password);
+	}
+
 	private static void log(Request request) {
-		log.info("Incoming request | IP: {} | Method: {} | Path: {} | Content-Length: {}",
-				request.raw().getRemoteAddr(), request.requestMethod(), request.pathInfo(), request.contentLength());
+		log.info("Incoming request: {} {} {}",
+				request.raw().getRemoteAddr(), request.requestMethod(), request.pathInfo());
 	}
 
 }

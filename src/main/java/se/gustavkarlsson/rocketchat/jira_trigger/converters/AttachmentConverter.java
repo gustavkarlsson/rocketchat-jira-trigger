@@ -31,8 +31,8 @@ public class AttachmentConverter implements BiFunction<Issue, Boolean, Attachmen
 
 	public AttachmentConverter(MessageConfiguration config) {
 		this.config = notNull(config);
-		this.printDefaultConfig = config.getPrintDefaultConfig();
-		this.printExtendedConfig = config.getPrintExtendedConfig();
+		this.printDefaultConfig = notNull(config.getPrintDefaultConfig());
+		this.printExtendedConfig = notNull(config.getPrintExtendedConfig());
 	}
 
 	@Override
@@ -44,22 +44,18 @@ public class AttachmentConverter implements BiFunction<Issue, Boolean, Attachmen
 	private Attachment createAttachment(Issue issue, MessagePrintConfiguration printConfig) {
 		Attachment attachment = new Attachment();
 		attachment.setTitle(issue.getKey());
-
 		if (config.isPriorityColors() && issue.getPriority() != null) {
 			attachment.setColor(getPriorityColor(issue.getPriority(), config.getDefaultColor()));
 		} else {
 			attachment.setColor(config.getDefaultColor());
 		}
-
 		StringBuilder text = new StringBuilder(createSummaryLink(issue));
 		if (printConfig.isPrintDescription()) {
 			text.append('\n');
 			text.append(issue.getDescription());
 		}
 		attachment.setText(text.toString());
-
 		attachment.setFields(createFields(issue, printConfig));
-
 		return attachment;
 	}
 

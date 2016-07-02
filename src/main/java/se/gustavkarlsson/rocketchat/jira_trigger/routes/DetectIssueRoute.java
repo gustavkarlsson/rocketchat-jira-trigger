@@ -8,6 +8,8 @@ import com.google.common.base.Optional;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.MessageCreator;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.OutgoingMessage;
@@ -15,8 +17,6 @@ import spark.Request;
 import spark.Response;
 
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -32,12 +32,12 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 
 	private final RocketChatConfiguration config;
 	private final IssueRestClient issueClient;
-	private final Supplier<IncomingMessage> messageCreator;
-	private final BiFunction<Issue, Boolean, Attachment> attachmentConverter;
+	private final MessageCreator messageCreator;
+	private final AttachmentConverter attachmentConverter;
 
 	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient,
-							Supplier<IncomingMessage> messageCreator,
-							BiFunction<Issue, Boolean, Attachment> attachmentConverter) {
+							MessageCreator messageCreator,
+							AttachmentConverter attachmentConverter) {
 		this.config = notNull(config);
 		this.issueClient = notNull(issueClient);
 		this.messageCreator = notNull(messageCreator);

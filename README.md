@@ -21,6 +21,7 @@ uri = "https://jira.mycompany.com"
 username = "someuser"
 password = "somepassword"
 ```
+If you don't want to save your password in plain text, then leave it out, and you will be prompted to enter it when running the app.
 For further configuration settings, check out the [defaults](https://github.com/gustavkarlsson/rocketchat-jira-trigger/blob/master/src/main/resources/defaults.toml).
 
 ## Running
