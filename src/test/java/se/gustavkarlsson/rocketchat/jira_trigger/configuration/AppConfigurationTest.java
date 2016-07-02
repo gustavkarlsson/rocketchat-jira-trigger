@@ -30,4 +30,9 @@ public class AppConfigurationTest {
 	public void getPort() throws Exception {
 		new AppConfiguration(minimal, defaults).getPort();
 	}
+
+	@Test
+	public void getMaxThreads() throws Exception {
+		new AppConfiguration(minimal, defaults).getMaxThreads();
+	}
 }

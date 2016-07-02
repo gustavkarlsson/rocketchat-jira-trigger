@@ -64,6 +64,7 @@ public class App {
 		MessageCreator messageCreator = new MessageCreator(config.getMessageConfiguration());
 		AttachmentConverter attachmentConverter = new AttachmentConverter(config.getMessageConfiguration());
 
+		Spark.threadPool(config.getAppConfiguration().getMaxThreads());
 		Spark.port(config.getAppConfiguration().getPort());
 		Spark.before((request, response) -> log(request));
 		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageCreator, attachmentConverter));
