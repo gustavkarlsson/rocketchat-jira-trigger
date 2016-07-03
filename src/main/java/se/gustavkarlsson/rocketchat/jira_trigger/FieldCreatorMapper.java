@@ -24,7 +24,7 @@ class FieldCreatorMapper {
 	static final String CREATED_KEY = "created";
 	static final String UPDATED_KEY = "updated";
 	private static final Logger log = getLogger(FieldCreatorMapper.class);
-	private final Map<String, Supplier<AbstractFieldCreator>> mapping = new HashMap<>();
+	private final Map<String, Supplier<FieldCreator>> mapping = new HashMap<>();
 
 	FieldCreatorMapper(MessageConfiguration config) {
 		mapping.put(DESCRIPTION_KEY, DescriptionFieldCreator::new);
@@ -39,9 +39,9 @@ class FieldCreatorMapper {
 	}
 
 
-	List<AbstractFieldCreator> getCreators(List<String> fields) {
+	List<FieldCreator> getCreators(List<String> fields) {
 		log.debug("Fields to find creators for: {}", fields);
-		List<AbstractFieldCreator> fieldCreators = fields.stream()
+		List<FieldCreator> fieldCreators = fields.stream()
 				.map(mapping::get)
 				.filter(Objects::nonNull)
 				.map(Supplier::get)

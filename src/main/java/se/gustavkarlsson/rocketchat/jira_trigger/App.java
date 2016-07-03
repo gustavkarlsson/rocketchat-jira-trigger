@@ -13,7 +13,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.ValidationException;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.MessageCreator;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.AbstractFieldCreator;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldCreator;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import spark.Request;
 import spark.Response;
@@ -68,9 +68,9 @@ public class App {
 		MessageCreator messageCreator = new MessageCreator(config.getMessageConfiguration());
 		FieldCreatorMapper fieldCreatorMapper = new FieldCreatorMapper(config.getMessageConfiguration());
 		log.debug("Finding default field creators");
-		List<AbstractFieldCreator> defaultFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getDefaultFields());
+		List<FieldCreator> defaultFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getDefaultFields());
 		log.debug("Finding extended field creators");
-		List<AbstractFieldCreator> extendedFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getExtendedFields());
+		List<FieldCreator> extendedFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getExtendedFields());
 		AttachmentConverter attachmentConverter = new AttachmentConverter(config.getMessageConfiguration(), defaultFieldCreators, extendedFieldCreators);
 
 		log.info("Setting up server");

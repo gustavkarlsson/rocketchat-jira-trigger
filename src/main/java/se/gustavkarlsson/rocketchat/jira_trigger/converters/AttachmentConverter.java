@@ -3,7 +3,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.converters;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.AbstractFieldCreator;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldCreator;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Field;
 
@@ -15,28 +15,28 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 public class AttachmentConverter {
 
-	private static final String BLOCKER_COLOR = "#FF4437";
-	private static final String CRITICAL_COLOR = "#D04437";
-	private static final String MAJOR_COLOR = "#E3833C";
-	private static final String MINOR_COLOR = "#F6C342";
-	private static final String TRIVIAL_COLOR = "#707070";
+	static final String BLOCKER_COLOR = "#FF4437";
+	static final String CRITICAL_COLOR = "#D04437";
+	static final String MAJOR_COLOR = "#E3833C";
+	static final String MINOR_COLOR = "#F6C342";
+	static final String TRIVIAL_COLOR = "#707070";
 
 	private final MessageConfiguration config;
-	private final List<AbstractFieldCreator> defaultFieldCreators;
-	private final List<AbstractFieldCreator> extendedFieldCreators;
+	private final List<FieldCreator> defaultFieldCreators;
+	private final List<FieldCreator> extendedFieldCreators;
 
-	public AttachmentConverter(MessageConfiguration config, List<AbstractFieldCreator> defaultFieldCreators, List<AbstractFieldCreator> extendedFieldCreators) {
+	public AttachmentConverter(MessageConfiguration config, List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators) {
 		this.config = notNull(config);
 		this.defaultFieldCreators = notNull(defaultFieldCreators);
 		this.extendedFieldCreators = notNull(extendedFieldCreators);
 	}
 
 	public Attachment convert(Issue issue, Boolean extended) {
-		List<AbstractFieldCreator> fieldCreators = extended ? defaultFieldCreators : extendedFieldCreators;
+		List<FieldCreator> fieldCreators = extended ? defaultFieldCreators : extendedFieldCreators;
 		return createAttachment(issue, fieldCreators);
 	}
 
-	private Attachment createAttachment(Issue issue, List<AbstractFieldCreator> fieldCreators) {
+	private Attachment createAttachment(Issue issue, List<FieldCreator> fieldCreators) {
 		Attachment attachment = new Attachment();
 		attachment.setTitle(issue.getKey());
 		if (config.isPriorityColors() && issue.getPriority() != null) {
