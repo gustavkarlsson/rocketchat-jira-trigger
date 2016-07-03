@@ -4,28 +4,28 @@ import com.moandjiezana.toml.Toml;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class MessageConfiguration extends DefaultingConfiguration {
 	static final String KEY_PREFIX = "message.";
 
-	static final String PRINT_DEFAULT_TABLE_KEY = "print_default";
-	static final String PRINT_EXTENDED_TABLE_KEY = "print_extended";
-
-	private static final String USERNAME_KEY = "username";
-	private static final String ICON_URL_KEY = "icon_url";
-	private static final String DATE_PATTERN_KEY = "date_pattern";
-	private static final String DATE_LOCALE_KEY = "date_locale";
-	private static final String PRIORITY_COLORS_KEY = "priority_colors";
-	private static final String DEFAULT_COLOR_KEY = "default_color";
+	static final String USERNAME_KEY = "username";
+	static final String ICON_URL_KEY = "icon_url";
+	static final String DATE_PATTERN_KEY = "date_pattern";
+	static final String DATE_LOCALE_KEY = "date_locale";
+	static final String PRIORITY_COLORS_KEY = "priority_colors";
+	static final String DEFAULT_COLOR_KEY = "default_color";
+	static final String DEFAULT_FIELDS_KEY = "default_fields";
+	static final String EXTENDED_FIELDS_KEY = "extended_fields";
 
 	private final String username;
 	private final String iconUrl;
 	private final DateFormat dateFormat;
 	private final boolean priorityColors;
 	private final String defaultColor;
-	private final MessagePrintConfiguration printDefaultConfig;
-	private final MessagePrintConfiguration printExtendedConfig;
+	private final List<String> defaultFields;
+	private final List<String> extendedFields;
 
 	MessageConfiguration(Toml toml, Toml defaults) throws ValidationException {
 		super(toml, defaults);
@@ -36,8 +36,8 @@ public class MessageConfiguration extends DefaultingConfiguration {
 					Locale.forLanguageTag(getString(KEY_PREFIX + DATE_LOCALE_KEY)));
 			priorityColors = getBoolean(KEY_PREFIX + PRIORITY_COLORS_KEY);
 			defaultColor = getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
-			printDefaultConfig = new MessagePrintConfiguration(toml, defaults, KEY_PREFIX + PRINT_DEFAULT_TABLE_KEY + ".");
-			printExtendedConfig = new MessagePrintConfiguration(toml, defaults, KEY_PREFIX + PRINT_EXTENDED_TABLE_KEY + ".");
+			defaultFields = getList(KEY_PREFIX + DEFAULT_FIELDS_KEY);
+			extendedFields = getList(KEY_PREFIX + EXTENDED_FIELDS_KEY);
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
@@ -63,11 +63,11 @@ public class MessageConfiguration extends DefaultingConfiguration {
 		return defaultColor;
 	}
 
-	public MessagePrintConfiguration getPrintDefaultConfig() {
-		return printDefaultConfig;
+	public List<String> getDefaultFields() {
+		return defaultFields;
 	}
 
-	public MessagePrintConfiguration getPrintExtendedConfig() {
-		return printExtendedConfig;
+	public List<String> getExtendedFields() {
+		return extendedFields;
 	}
 }

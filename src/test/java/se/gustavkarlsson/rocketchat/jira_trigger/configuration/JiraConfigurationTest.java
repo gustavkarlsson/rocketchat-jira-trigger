@@ -5,6 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.jira_trigger.test.TomlUtils;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration.KEY_PREFIX;
+import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration.URI_KEY;
+
 public class JiraConfigurationTest {
 
 	private Toml minimal;
@@ -24,6 +29,13 @@ public class JiraConfigurationTest {
 	@Test
 	public void createWithMinimalToml() throws Exception {
 		new JiraConfiguration(minimal, defaults);
+	}
+
+	@Test(expected = ValidationException.class)
+	public void createWithInvalidUriTomlThrowsValidationException() throws Exception {
+		Toml toml = mock(Toml.class);
+		when(toml.getString(KEY_PREFIX + URI_KEY)).thenReturn("not a URI\\few %E//%");
+		new JiraConfiguration(toml, defaults);
 	}
 
 	@Test

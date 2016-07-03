@@ -6,13 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class RocketChatConfiguration extends DefaultingConfiguration {
-	private static final String KEY_PREFIX = "rocketchat.";
+	static final String KEY_PREFIX = "rocketchat.";
 
-	private static final String TOKENS_KEY = "tokens";
-	private static final String WHITELISTED_USERS = "whitelisted_users";
-	private static final String BLACKLISTED_USERS = "blacklisted_users";
-	private static final String WHITELISTED_CHANNELS = "whitelisted_channels";
-	private static final String BLACKLISTED_CHANNELS = "blacklisted_channels";
+	static final String TOKENS_KEY = "tokens";
+	static final String WHITELISTED_USERS = "whitelisted_users";
+	static final String BLACKLISTED_USERS = "blacklisted_users";
+	static final String WHITELISTED_CHANNELS = "whitelisted_channels";
+	static final String BLACKLISTED_CHANNELS = "blacklisted_channels";
 
 	private final Set<String> tokens;
 	private final Set<String> whitelistedUsers;

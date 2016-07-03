@@ -5,6 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.jira_trigger.test.TomlUtils;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration.KEY_PREFIX;
+import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration.TOKENS_KEY;
+
 public class RocketChatConfigurationTest {
 
 	private Toml minimal;
@@ -49,6 +54,13 @@ public class RocketChatConfigurationTest {
 	@Test
 	public void getBlacklistedUsers() throws Exception {
 		new RocketChatConfiguration(minimal, defaults).getBlacklistedUsers();
+	}
+
+	@Test(expected = ValidationException.class)
+	public void createWithNullTokensTomlThrowsValidationException() throws Exception {
+		Toml defaultsToml = mock(Toml.class);
+		when(defaultsToml.getList(KEY_PREFIX + TOKENS_KEY)).thenReturn(null);
+		new RocketChatConfiguration(minimal, defaultsToml).getTokens();
 	}
 
 }

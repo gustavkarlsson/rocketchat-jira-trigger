@@ -91,10 +91,10 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.map(Issue::getId)
 				.collect(Collectors.toList()));
 		log.debug("Creating message");
-		IncomingMessage message = messageCreator.get();
+		IncomingMessage message = messageCreator.create();
 		log.debug("Creating attachments");
 		List<Attachment> attachments = issues.entrySet().stream()
-				.map(e -> attachmentConverter.apply(e.getKey(), e.getValue()))
+				.map(e -> attachmentConverter.convert(e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
 		message.setAttachments(attachments);
 		return message;

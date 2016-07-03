@@ -5,12 +5,12 @@ import com.moandjiezana.toml.Toml;
 import static org.apache.commons.lang3.Validate.inclusiveBetween;
 
 public class AppConfiguration extends DefaultingConfiguration {
-	private static final String KEY_PREFIX = "app.";
+	static final String KEY_PREFIX = "app.";
 
-	private static final long MAX_THREADS = 100;
+	static final long MAX_THREADS = 100;
 
-	private static final String PORT_KEY = "port";
-	private static final String THREADS_KEY = "max_threads";
+	static final String PORT_KEY = "port";
+	static final String MAX_THREADS_KEY = "max_threads";
 
 	private final int port;
 	private final int maxThreads;
@@ -20,7 +20,7 @@ public class AppConfiguration extends DefaultingConfiguration {
 		try {
 			port = getLong(KEY_PREFIX + PORT_KEY).intValue();
 			inclusiveBetween(1, Integer.MAX_VALUE, port);
-			maxThreads = getLong(KEY_PREFIX + THREADS_KEY).intValue();
+			maxThreads = getLong(KEY_PREFIX + MAX_THREADS_KEY).intValue();
 			inclusiveBetween(1, MAX_THREADS, maxThreads);
 		} catch (Exception e) {
 			throw new ValidationException(e);

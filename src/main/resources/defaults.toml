@@ -9,30 +9,8 @@ date_pattern = "EEE, d MMM, yyyy" # Format according to https://docs.oracle.com/
 date_locale = "en-US" # Defines how things like week days and month names will be represented. Expects a IETF language tag
 priority_colors = true # Color attachments according to issue priority
 default_color = "#205081" # Fallback color when priority is not recognized
-
-	# Message fields to print by default
-	[message.print_default]
-	description = false
-	assignee = true
-	status = true
-	reporter = true
-	priority = true
-	resolution = false
-	type = false
-	created = false
-	updated = false
-
-	# Message fields to print for extended messages
-	[message.print_extended]
-	description = true
-	assignee = true
-	status = true
-	reporter = true
-	priority = true
-	resolution = true
-	type = true
-	created = true
-	updated = true
+default_fields = ["assignee", "status", "reporter", "priority"] # Message fields to print by default
+extended_fields = ["description", "assignee", "status", "reporter", "priority", "resolution", "type", "created", "updated"] # Message fields to print for extended messages
 
 [rocketchat]
 tokens = [] # Allowed tokens. An empty array means ALL tokens are allowed.
