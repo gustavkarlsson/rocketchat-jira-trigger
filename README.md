@@ -5,7 +5,7 @@
 Outgoing webhook integration for Rocket.Chat that summarizes any JIRA issues mentioned
 
 ## Prerequisites
-- Java 8
+- JDK 8
 
 Yeah, that's it.
 
