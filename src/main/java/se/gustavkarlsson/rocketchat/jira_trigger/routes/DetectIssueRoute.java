@@ -35,8 +35,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 	private final MessageCreator messageCreator;
 	private final AttachmentConverter attachmentConverter;
 
-	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient,
-							MessageCreator messageCreator,
+	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient, MessageCreator messageCreator,
 							AttachmentConverter attachmentConverter) {
 		this.config = notNull(config);
 		this.issueClient = notNull(issueClient);
@@ -75,9 +74,11 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 			log.info("Forbidden channel encountered. ID: {}, Name: {}. Ignoring", channelId, channelName);
 			return null;
 		}
+		log.info("Message is being processed...");
 		log.debug("Parsing keys from text: \"{}\"", outgoing.getText());
 		Map<String, Boolean> jiraKeys = parseJiraKeys(outgoing.getText());
-		log.debug("Found keys: {}", jiraKeys.keySet());
+		log.info("Found {} keys", jiraKeys.size());
+		log.debug("Keys: {}", jiraKeys.keySet());
 		log.debug("Fetching issues...");
 		Map<Issue, Boolean> issues = jiraKeys.entrySet().parallelStream()
 				.map(e -> new AbstractMap.SimpleEntry<>(getJiraIssue(e.getKey()), e.getValue()))
@@ -87,7 +88,8 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 			log.debug("No matching issue found. Ignoring");
 			return null;
 		}
-		log.debug("Found issues: {}", issues.keySet().stream()
+		log.info("Found {} issues", issues.size());
+		log.debug("Issues: {}", issues.keySet().stream()
 				.map(Issue::getId)
 				.collect(Collectors.toList()));
 		log.debug("Creating message");

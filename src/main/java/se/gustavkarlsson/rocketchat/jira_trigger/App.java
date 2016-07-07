@@ -78,11 +78,7 @@ public class App {
 		Spark.port(config.getAppConfiguration().getPort());
 		Spark.before((request, response) -> log(request));
 		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageCreator, attachmentConverter));
-		Spark.after((request, response) -> {
-			if (response.body() == null) {
-				response.type(APPLICATION_JSON);
-			}
-		});
+		Spark.after((request, response) -> setApplicationJson(response));
 		Spark.after((request, response) -> log(response));
 		Spark.exception(Exception.class, new UuidGeneratingExceptionHandler());
 		log.info("Server setup completed");
@@ -134,6 +130,12 @@ public class App {
 	private static void log(Response response) {
 		String responseContent = response.body() == null ? "empty" : "Rocket.Chat message";
 		log.info("Outgoing response: {}", responseContent);
+	}
+
+	private static void setApplicationJson(Response response) {
+		if (response.body() == null) {
+			response.type(APPLICATION_JSON);
+		}
 	}
 
 }
