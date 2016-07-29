@@ -32,7 +32,7 @@ public class AttachmentConverter {
 	}
 
 	public Attachment convert(Issue issue, Boolean extended) {
-		List<FieldCreator> fieldCreators = extended ? defaultFieldCreators : extendedFieldCreators;
+		List<FieldCreator> fieldCreators = extended ? extendedFieldCreators : defaultFieldCreators;
 		return createAttachment(issue, fieldCreators);
 	}
 

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -24,18 +23,18 @@ class FieldCreatorMapper {
 	static final String CREATED_KEY = "created";
 	static final String UPDATED_KEY = "updated";
 	private static final Logger log = getLogger(FieldCreatorMapper.class);
-	private final Map<String, Supplier<FieldCreator>> mapping = new HashMap<>();
+	private final Map<String, FieldCreator> mapping = new HashMap<>();
 
 	FieldCreatorMapper(MessageConfiguration config) {
-		mapping.put(DESCRIPTION_KEY, DescriptionFieldCreator::new);
-		mapping.put(STATUS_KEY, StatusFieldCreator::new);
-		mapping.put(PRIORITY_KEY, PriorityFieldCreator::new);
-		mapping.put(TYPE_KEY, TypeFieldCreator::new);
-		mapping.put(RESOLUTION_KEY, ResolutionFieldCreator::new);
-		mapping.put(REPORTER_KEY, ReporterFieldCreator::new);
-		mapping.put(ASSIGNEE_KEY, AssigneeFieldCreator::new);
-		mapping.put(CREATED_KEY, () -> new CreatedFieldCreator(config.getDateFormat()));
-		mapping.put(UPDATED_KEY, () -> new UpdatedFieldCreator(config.getDateFormat()));
+		mapping.put(DESCRIPTION_KEY, new DescriptionFieldCreator());
+		mapping.put(STATUS_KEY, new StatusFieldCreator());
+		mapping.put(PRIORITY_KEY, new PriorityFieldCreator());
+		mapping.put(TYPE_KEY, new TypeFieldCreator());
+		mapping.put(RESOLUTION_KEY, new ResolutionFieldCreator());
+		mapping.put(REPORTER_KEY, new ReporterFieldCreator());
+		mapping.put(ASSIGNEE_KEY, new AssigneeFieldCreator());
+		mapping.put(CREATED_KEY, new CreatedFieldCreator(config.getDateFormat()));
+		mapping.put(UPDATED_KEY, new UpdatedFieldCreator(config.getDateFormat()));
 	}
 
 
@@ -44,7 +43,6 @@ class FieldCreatorMapper {
 		List<FieldCreator> fieldCreators = fields.stream()
 				.map(mapping::get)
 				.filter(Objects::nonNull)
-				.map(Supplier::get)
 				.collect(Collectors.toList());
 		log.debug("Found creators: {}", fieldCreators.stream().map(c -> c.getClass().getSimpleName()));
 		return fieldCreators;
