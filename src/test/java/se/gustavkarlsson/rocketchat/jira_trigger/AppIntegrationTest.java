@@ -10,23 +10,14 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import spark.Service;
 
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import static spark.Service.ignite;
 
 public class AppIntegrationTest {
 	private static final int JIRA_SERVER_PORT = 9999;
-	private static final String rocketChatMessage = "{" +
-			"\"token\": \"12345\"," +
-			"\"channel_id\": \"12356\"," +
-			"\"channel_name\": \"testing-channel\"," +
-			"\"timestamp\": \"2016-06-15T15:11:05.270Z\"," +
-			"\"user_id\": \"123567\"," +
-			"\"user_name\": \"tester\"," +
-			"\"text\": \"Let's have a look at ISS-123\"" +
-			"}";
+
+	private static String rocketChatMessage;
 	private static String jiraResponse;
 	private static String expectedAppResponse;
 
@@ -36,26 +27,9 @@ public class AppIntegrationTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		jiraResponse = readJiraResponse();
-		expectedAppResponse = readExpectedAppResponse();
-	}
-
-	private static String readJiraResponse() {
-		try {
-			URL resource = AppIntegrationTest.class.getClassLoader().getResource("jira_response.json");
-			return Resources.toString(resource, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private static String readExpectedAppResponse() {
-		try {
-			URL resource = AppIntegrationTest.class.getClassLoader().getResource("expected_app_response.json");
-			return Resources.toString(resource, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		rocketChatMessage = Resources.toString(Resources.getResource("rocketchat_message.json"), StandardCharsets.UTF_8);
+		jiraResponse = Resources.toString(Resources.getResource("jira_response.json"), StandardCharsets.UTF_8);
+		expectedAppResponse = Resources.toString(Resources.getResource("expected_app_response.json"), StandardCharsets.UTF_8);
 	}
 
 	@Before

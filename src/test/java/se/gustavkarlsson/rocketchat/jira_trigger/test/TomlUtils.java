@@ -1,9 +1,9 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.test;
 
+import com.google.common.io.Resources;
 import com.moandjiezana.toml.Toml;
-import se.gustavkarlsson.rocketchat.jira_trigger.configuration.ConfigurationTest;
 
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class TomlUtils {
 
@@ -12,16 +12,16 @@ public class TomlUtils {
 
 	public synchronized static Toml getMinimalToml() throws Exception {
 		if (minimal == null) {
-			InputStream minimalFile = ConfigurationTest.class.getClassLoader().getResourceAsStream("minimal.toml");
-			minimal = new Toml().read(minimalFile);
+			String toml = Resources.toString(Resources.getResource("minimal.toml"), StandardCharsets.UTF_8);
+			minimal = new Toml().read(toml);
 		}
 		return minimal;
 	}
 
 	public synchronized static Toml getDefaultsToml() throws Exception {
 		if (defaults == null) {
-			InputStream defaultFile = ConfigurationTest.class.getClassLoader().getResourceAsStream("defaults.toml");
-			defaults = new Toml().read(defaultFile);
+			String toml = Resources.toString(Resources.getResource("defaults.toml"), StandardCharsets.UTF_8);
+			defaults = new Toml().read(toml);
 		}
 		return defaults;
 	}

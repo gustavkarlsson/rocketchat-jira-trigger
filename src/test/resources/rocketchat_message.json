@@ -1,0 +1,9 @@
+{
+  "token": "12345",
+  "channel_id": "12356",
+  "channel_name": "testing-channel",
+  "timestamp": "2016-06-15T15:11:05.270Z",
+  "user_id": "123567",
+  "user_name": "tester",
+  "text": "Let's have a look at ISS-123"
+}
