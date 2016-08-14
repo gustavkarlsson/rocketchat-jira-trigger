@@ -3,7 +3,6 @@ package se.gustavkarlsson.rocketchat.jira_trigger.test;
 import com.moandjiezana.toml.Toml;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.ConfigurationTest;
 
-import java.io.File;
 import java.io.InputStream;
 
 public class TomlUtils {
@@ -13,7 +12,7 @@ public class TomlUtils {
 
 	public synchronized static Toml getMinimalToml() throws Exception {
 		if (minimal == null) {
-			File minimalFile = new File(ConfigurationTest.class.getClassLoader().getResource("minimal.toml").toURI());
+			InputStream minimalFile = ConfigurationTest.class.getClassLoader().getResourceAsStream("minimal.toml");
 			minimal = new Toml().read(minimalFile);
 		}
 		return minimal;

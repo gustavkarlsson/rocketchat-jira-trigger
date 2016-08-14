@@ -35,7 +35,7 @@ public class App {
 		try {
 			verifySyntax(args);
 			Configuration config = createConfiguration(args[0]);
-			initialize(config);
+			start(config);
 		} catch (Exception e) {
 			log.error("Fatal error", e);
 			System.exit(1);
@@ -62,7 +62,7 @@ public class App {
 		return new Toml().read(Configuration.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
 	}
 
-	private static void initialize(Configuration config) {
+	static void start(Configuration config) {
 		log.info("Initializing");
 		IssueRestClient issueClient = createIssueRestClient(config.getJiraConfiguration());
 		MessageCreator messageCreator = new MessageCreator(config.getMessageConfiguration());
@@ -138,4 +138,7 @@ public class App {
 		}
 	}
 
+	static void stop() {
+		Spark.stop();
+	}
 }

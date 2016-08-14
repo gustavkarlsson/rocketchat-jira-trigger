@@ -1,0 +1,335 @@
+{
+  "expand": "renderedFields,names,schema,transitions,operations,editmeta,changelog",
+  "id": "146633",
+  "self": "https://jira.secondlife.com/rest/api/latest/issue/146633",
+  "key": "STORM-2095",
+  "names": {},
+  "schema": {},
+  "fields": {
+    "summary": "Unable to change Presets when the Preset list contains Preset names using special characters or Preset names that are sorted higher alphabetically then the word Default.",
+    "issuetype": {
+      "self": "https://jira.secondlife.com/rest/api/2/issuetype/18",
+      "id": "18",
+      "description": "A task that needs to be done.",
+      "iconUrl": "https://jira.secondlife.com/images/icons/issuetypes/task_agile.png",
+      "name": "Task",
+      "subtask": true
+    },
+    "timespent": null,
+    "reporter": {
+      "self": "https://jira.secondlife.com/rest/api/2/user?username=whirly.fizzle",
+      "name": "whirly.fizzle",
+      "emailAddress": "kirstiemc555@hotmail.co.uk",
+      "avatarUrls": {
+        "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=whirly.fizzle&avatarId=11753",
+        "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=whirly.fizzle&avatarId=11753"
+      },
+      "displayName": "Whirly Fizzle",
+      "active": true
+    },
+    "customfield_10042": "1_*:*_1_*:*_3414895884_*|*_6_*:*_1_*:*_0",
+    "customfield_10041": "2014-12-28 05:24:30.279",
+    "created": "2014-12-16T21:40:50.000-0800",
+    "customfield_10570": null,
+    "customfield_10572": "<h1>Assign to a QA Person</h1>",
+    "parent": {
+      "id": "144776",
+      "key": "STORM-2082",
+      "self": "https://jira.secondlife.com/rest/api/2/issue/144776",
+      "fields": {
+        "summary": "Allow saving and loading of graphic settings and ability to control view of \"blinged\" avatars",
+        "status": {
+          "self": "https://jira.secondlife.com/rest/api/2/status/6",
+          "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+          "iconUrl": "https://jira.secondlife.com/images/icons/statuses/closed.png",
+          "name": "Closed",
+          "id": "6"
+        },
+        "priority": {
+          "self": "https://jira.secondlife.com/rest/api/2/priority/3",
+          "iconUrl": "https://jira.secondlife.com/images/icons/priorities/major.png",
+          "name": "Major",
+          "id": "3"
+        },
+        "issuetype": {
+          "self": "https://jira.secondlife.com/rest/api/2/issuetype/12",
+          "id": "12",
+          "description": "A problem which impairs or prevents the functions of the product.",
+          "iconUrl": "https://jira.secondlife.com/images/icons/issuetypes/bug.png",
+          "name": "Defect",
+          "subtask": false
+        }
+      }
+    },
+    "customfield_10190": null,
+    "project": {
+      "self": "https://jira.secondlife.com/rest/api/2/project/STORM",
+      "id": "10244",
+      "key": "STORM",
+      "name": "Snowstorm",
+      "avatarUrls": {
+        "16x16": "https://jira.secondlife.com/secure/projectavatar?size=small&pid=10244&avatarId=10471",
+        "48x48": "https://jira.secondlife.com/secure/projectavatar?pid=10244&avatarId=10471"
+      }
+    },
+    "customfield_10194": null,
+    "customfield_10192": null,
+    "customfield_10053": null,
+    "customfield_10198": null,
+    "lastViewed": null,
+    "customfield_10196": null,
+    "customfield_10770": null,
+    "customfield_10195": null,
+    "components": [],
+    "comment": {
+      "startAt": 0,
+      "maxResults": 4,
+      "total": 4,
+      "comments": [
+        {
+          "self": "https://jira.secondlife.com/rest/api/2/issue/146633/comment/453990",
+          "id": "453990",
+          "author": {
+            "self": "https://jira.secondlife.com/rest/api/2/user?username=jonathan.yap",
+            "name": "jonathan.yap",
+            "emailAddress": "planworldss@gmail.com",
+            "avatarUrls": {
+              "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=jonathan.yap&avatarId=10110",
+              "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=jonathan.yap&avatarId=10110"
+            },
+            "displayName": "Jonathan Yap",
+            "active": true
+          },
+          "body": "Sorry Whirly, I could not reproduce any of these problems.",
+          "updateAuthor": {
+            "self": "https://jira.secondlife.com/rest/api/2/user?username=jonathan.yap",
+            "name": "jonathan.yap",
+            "emailAddress": "planworldss@gmail.com",
+            "avatarUrls": {
+              "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=jonathan.yap&avatarId=10110",
+              "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=jonathan.yap&avatarId=10110"
+            },
+            "displayName": "Jonathan Yap",
+            "active": true
+          },
+          "created": "2014-12-28T05:24:30.279-0800",
+          "updated": "2014-12-28T05:24:30.279-0800"
+        },
+        {
+          "self": "https://jira.secondlife.com/rest/api/2/issue/146633/comment/453991",
+          "id": "453991",
+          "author": {
+            "self": "https://jira.secondlife.com/rest/api/2/user?username=whirly.fizzle",
+            "name": "whirly.fizzle",
+            "emailAddress": "kirstiemc555@hotmail.co.uk",
+            "avatarUrls": {
+              "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=whirly.fizzle&avatarId=11753",
+              "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=whirly.fizzle&avatarId=11753"
+            },
+            "displayName": "Whirly Fizzle",
+            "active": true
+          },
+          "body": "Heya Jonathan,\r\n\r\nI went to test again but the latest build of the test viewer (http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/jonathan_storm-2082/rev/297515/index.html) doesn't have the benchmark crash fix (BUG-7783) in it yet. I am away from home at the moment and my only SL access is my laptop which suffers from the benchmark crash so I cannot run the test viewer currently.\r\n",
+          "updateAuthor": {
+            "self": "https://jira.secondlife.com/rest/api/2/user?username=whirly.fizzle",
+            "name": "whirly.fizzle",
+            "emailAddress": "kirstiemc555@hotmail.co.uk",
+            "avatarUrls": {
+              "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=whirly.fizzle&avatarId=11753",
+              "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=whirly.fizzle&avatarId=11753"
+            },
+            "displayName": "Whirly Fizzle",
+            "active": true
+          },
+          "created": "2014-12-28T06:16:25.870-0800",
+          "updated": "2014-12-28T06:19:03.764-0800"
+        },
+        {
+          "self": "https://jira.secondlife.com/rest/api/2/issue/146633/comment/453993",
+          "id": "453993",
+          "author": {
+            "self": "https://jira.secondlife.com/rest/api/2/user?username=whirly.fizzle",
+            "name": "whirly.fizzle",
+            "emailAddress": "kirstiemc555@hotmail.co.uk",
+            "avatarUrls": {
+              "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=whirly.fizzle&avatarId=11753",
+              "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=whirly.fizzle&avatarId=11753"
+            },
+            "displayName": "Whirly Fizzle",
+            "active": true
+          },
+          "body": "Managed to test on my Dads desktop.\nI can still reproduce this.\n{code}\nSecond Life 3.7.21 (297515) Dec 16 2014 10:11:21 (Second Life Test)\nRelease Notes\n\nYou are at 112.5, 93.3, 21.7 in Testylvania Sandbox located at sim10201.agni.lindenlab.com (216.82.49.67:13001)\nSLURL: http://maps.secondlife.com/secondlife/Testylvania%20Sandbox/112/93/22\n(global coordinates 332,656.0, 306,269.0, 21.7)\nSecond Life Server 14.12.05.297277\nRetrieving...\n\nCPU: Intel(R) Core(TM)2 Quad CPU    Q8300  @ 2.50GHz (2493.75 MHz)\nMemory: 3326 MB\nOS Version: Microsoft Windows Vista 32-bit Service Pack 2 (Build 6002)\nGraphics Card Vendor: NVIDIA Corporation\nGraphics Card: GeForce GT 230/PCIe/SSE2\n\nWindows Graphics Driver Version: 9.18.0013.1106\nOpenGL Version: 3.3.0\n\nlibcurl Version: libcurl/7.38.0 OpenSSL/1.0.1h zlib/1.2.8\nJ2C Decoder Version: KDU v7.0\nAudio Driver Version: FMOD Ex 4.44.31\nQt Webkit Version: 4.7.1 (version number hard-coded)\nVoice Server Version: Vivox 4.6.0009.20030\n\nBuilt with MSVC version 1600\nPackets Lost: 0/7,260 (0.0%)\n{code}\n\nAdditionally, if I am set to Preset A and change to Preset B (where Preset A & Preset B have names which do not trigger this bug) and then close the preferences floater with \"OK\" then reopen the preferences floater, the active preset name shows as Preset A, where expected behaviour should be the name shows as Preset B.\n\nI can make a video of this when I'm back home if you still cannot repro it.\n",
+          "updateAuthor": {
+            "self": "https://jira.secondlife.com/rest/api/2/user?username=whirly.fizzle",
+            "name": "whirly.fizzle",
+            "emailAddress": "kirstiemc555@hotmail.co.uk",
+            "avatarUrls": {
+              "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=whirly.fizzle&avatarId=11753",
+              "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=whirly.fizzle&avatarId=11753"
+            },
+            "displayName": "Whirly Fizzle",
+            "active": true
+          },
+          "created": "2014-12-28T08:44:27.965-0800",
+          "updated": "2014-12-28T08:44:27.965-0800"
+        },
+        {
+          "self": "https://jira.secondlife.com/rest/api/2/issue/146633/comment/456840",
+          "id": "456840",
+          "author": {
+            "self": "https://jira.secondlife.com/rest/api/2/user?username=whirly.fizzle",
+            "name": "whirly.fizzle",
+            "emailAddress": "kirstiemc555@hotmail.co.uk",
+            "avatarUrls": {
+              "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=whirly.fizzle&avatarId=11753",
+              "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=whirly.fizzle&avatarId=11753"
+            },
+            "displayName": "Whirly Fizzle",
+            "active": true
+          },
+          "body": "Good news!\nBug no longer reproduces on the latest build: Second Life 3.7.21 (298530) Jan 24 2015 04:59:04 (Second Life Test)\nThis issue can be closed  :)\n\nTesting system:\n{code}\nSecond Life 3.7.21 (298530) Jan 24 2015 04:59:04 (Second Life Test)\nRelease Notes\n\nYou are at 36.2, 205.2, 3,182.6 in Phoenix Firestorm Support located at sim10776.agni.lindenlab.com (216.82.56.66:13004)\nSLURL: http://maps.secondlife.com/secondlife/Phoenix%20Firestorm%20Support/36/205/3183\n(global coordinates 167,460.0, 285,133.0, 3,182.6)\nSecond Life Server 14.12.05.297277\nRetrieving...\n\nCPU: Intel(R) Core(TM) i7-4770K CPU @ 3.50GHz (3491.93 MHz)\nMemory: 16268 MB\nOS Version: Microsoft Windows 7 64-bit Service Pack 1 (Build 7601)\nGraphics Card Vendor: NVIDIA Corporation\nGraphics Card: GeForce GTX 750/PCIe/SSE2\n\nWindows Graphics Driver Version: 9.18.0013.4725\nOpenGL Version: 4.5.0 NVIDIA 347.25\n\nlibcurl Version: libcurl/7.38.0 OpenSSL/1.0.1h zlib/1.2.8\nJ2C Decoder Version: KDU v7.0\nAudio Driver Version: FMOD Ex 4.44.31\nQt Webkit Version: 4.7.1 (version number hard-coded)\nVoice Server Version: Vivox 4.6.0009.20030\n\nBuilt with MSVC version 1600\nPackets Lost: 163/25,032 (0.7%)\n{code}",
+          "updateAuthor": {
+            "self": "https://jira.secondlife.com/rest/api/2/user?username=whirly.fizzle",
+            "name": "whirly.fizzle",
+            "emailAddress": "kirstiemc555@hotmail.co.uk",
+            "avatarUrls": {
+              "16x16": "https://jira.secondlife.com/secure/useravatar?size=small&ownerId=whirly.fizzle&avatarId=11753",
+              "48x48": "https://jira.secondlife.com/secure/useravatar?ownerId=whirly.fizzle&avatarId=11753"
+            },
+            "displayName": "Whirly Fizzle",
+            "active": true
+          },
+          "created": "2015-01-24T12:18:18.358-0800",
+          "updated": "2015-01-24T12:18:18.358-0800"
+        }
+      ]
+    },
+    "customfield_10772": null,
+    "customfield_10771": null,
+    "timeoriginalestimate": null,
+    "customfield_10774": null,
+    "customfield_10773": null,
+    "customfield_11089": null,
+    "customfield_10302": {
+      "self": "https://jira.secondlife.com/rest/api/2/customFieldOption/10660",
+      "value": "viewer-development",
+      "id": "10660"
+    },
+    "customfield_10110": null,
+    "votes": {
+      "self": "https://jira.secondlife.com/rest/api/2/issue/STORM-2095/votes",
+      "votes": 1,
+      "hasVoted": false
+    },
+    "resolutiondate": "2015-01-25T10:15:45.783-0800",
+    "customfield_10878": {
+      "self": "https://jira.secondlife.com/rest/api/2/customFieldOption/11501",
+      "value": "Unset",
+      "id": "11501"
+    },
+    "customfield_10161": null,
+    "customfield_10160": null,
+    "customfield_10970": null,
+    "customfield_10971": null,
+    "duedate": null,
+    "customfield_10109": null,
+    "customfield_10310": null,
+    "customfield_10163": null,
+    "watches": {
+      "self": "https://jira.secondlife.com/rest/api/2/issue/STORM-2095/watchers",
+      "watchCount": 2,
+      "isWatching": false
+    },
+    "worklog": {
+      "startAt": 0,
+      "maxResults": 0,
+      "total": 0,
+      "worklogs": []
+    },
+    "customfield_11272": null,
+    "customfield_10370": "96999",
+    "customfield_10500": null,
+    "customfield_10170": null,
+    "timeestimate": null,
+    "progress": {
+      "progress": 0,
+      "total": 0
+    },
+    "timetracking": {},
+    "customfield_11472": null,
+    "customfield_11471": null,
+    "customfield_11473": null,
+    "customfield_10140": null,
+    "customfield_10141": [
+      {
+        "self": "https://jira.secondlife.com/rest/api/2/customFieldOption/10432",
+        "value": "Platform",
+        "id": "10432"
+      }
+    ],
+    "customfield_10142": null,
+    "customfield_10143": null,
+    "customfield_10145": null,
+    "updated": "2015-01-25T10:15:45.875-0800",
+    "customfield_10146": null,
+    "description": "*Affected build:* Second Life 3.7.21 (297515) Dec 16 2014 10:11:21 (Second Life Test)\r\n\r\nh2. Steps To Reproduce - Part 1\r\n\r\n* Login on clean settings.\r\n* Go to Preferences -> Graphics -> Advanced\r\n* Make an obvious change to graphics settings, for example disable basic shaders\r\n* Go to \"Save as\" in the Presets section.\r\n* Save Preset with the name *Übercool* (note the Ü has an umlaut)\r\n* Observe that Übercool is now showing as your selected preset and that basic shaders are disabled.\r\n\r\n* Change back to the Default preset.\r\n\r\nh2. Observed Behaviour\r\n\r\n* After choosing the Default preset in the drop down menu, Übercool preset still shows as the active preset.\r\n* Graphics settings have changed to the Default preset.\r\n\r\n* Delete the Übercool preset and create a new preset named *Ubercool* (no umlaut) and observe that you can toggle between the Ubercool and Default preset and everything works as expected.\r\n\r\nh2. Steps To Reproduce - Part 2\r\n\r\n* Delete the Übercool preset.\r\n* Make a change to graphics settings (disable basic shaders) and save this change with preset name *123*\r\n* Observe that 123 is now showing as your selected preset and that basic shaders are disabled.\r\n* Change back to the Default preset.\r\n\r\nh2. Observed Behaviour\r\n\r\n* After choosing the Default preset in the drop down menu, 123 preset still shows as the active preset.\r\n* Graphics settings have changed to the Default preset.\r\n\r\n\r\nh2. Steps To Reproduce - Part 3\r\n\r\n* Delete all custom presets.\r\n* Go to Preferences -> Graphics -> Advanced\r\n* Make a change to graphics settings (disable basic shaders) and save this change with preset name *Dffault* (note it is dFfault, not dEfault)\r\n* Observe that Dffault is now showing as your selected preset and that basic shaders are disabled.\r\n* Observe that you can toggle between the Dffault and Default preset and everything works as expected.\r\n\r\n* Delete the preset named Dffault\r\n* Make a change to graphics settings (disable basic shaders) and save this change with preset name *Dafault* (note it is dAfault, not dEfault)\r\n* Observe that Dafault is now showing as your selected preset and that basic shaders are disabled.\r\n\r\n* Change back to the Default preset.\r\n\r\n\r\nh2. Observed Behaviour\r\n\r\n* Any preset name which is sorted higher alphabetically then the word \"Default\" will reproduce this bug.\r\n* After choosing the Default preset in the drop down menu, Dafault preset still shows as the active preset.\r\n* Graphics settings have changed to the Default preset.\r\n----\r\n\r\n\r\n\r\n* Preset names containing * or @ or ! etc all reproduce\r\n\r\n\r\n",
+    "priority": {
+      "self": "https://jira.secondlife.com/rest/api/2/priority/6",
+      "iconUrl": "https://jira.secondlife.com/images/icons/ico_help.png",
+      "name": "Unset",
+      "id": "6"
+    },
+    "customfield_10147": null,
+    "customfield_10001": null,
+    "customfield_10002": null,
+    "customfield_10497": null,
+    "issuelinks": [],
+    "customfield_10471": null,
+    "customfield_10493": null,
+    "customfield_10000": null,
+    "customfield_10472": null,
+    "subtasks": [],
+    "customfield_11093": null,
+    "status": {
+      "self": "https://jira.secondlife.com/rest/api/2/status/6",
+      "description": "The issue is considered finished, the resolution is correct. Issues which are closed can be reopened.",
+      "iconUrl": "https://jira.secondlife.com/images/icons/statuses/closed.png",
+      "name": "Closed",
+      "id": "6"
+    },
+    "customfield_10090": null,
+    "customfield_10671": null,
+    "labels": [],
+    "customfield_10670": "109380",
+    "workratio": -1,
+    "customfield_10871": null,
+    "environment": null,
+    "customfield_10157": null,
+    "customfield_10321": null,
+    "customfield_10156": null,
+    "aggregateprogress": {
+      "progress": 0,
+      "total": 0
+    },
+    "customfield_10010": null,
+    "resolution": {
+      "self": "https://jira.secondlife.com/rest/api/2/resolution/1",
+      "id": "1",
+      "description": "A fix for this issue is checked into the tree and tested.",
+      "name": "Fixed"
+    },
+    "fixVersions": [],
+    "aggregatetimeoriginalestimate": null,
+    "customfield_10120": null,
+    "customfield_10020": null,
+    "assignee": null,
+    "attachment": [],
+    "aggregatetimeestimate": null,
+    "versions": [],
+    "customfield_11171": null,
+    "customfield_11170": null,
+    "customfield_11173": null,
+    "customfield_10030": null,
+    "aggregatetimespent": null
+  }
+}

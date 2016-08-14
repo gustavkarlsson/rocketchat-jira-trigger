@@ -1,0 +1,33 @@
+{
+  "username": "JIRA",
+  "icon_url": "https:\/\/confluence.atlassian.com\/alldoc\/files\/169118009\/169050326\/4\/1260504581635\/jira_logo.png",
+  "attachments": [
+    {
+      "color": "#205081",
+      "title": "STORM-2095",
+      "text": "<https:\/\/jira.secondlife.com\/browse\/STORM-2095|Unable to change Presets when the Preset list contains Preset names using special characters or Preset names that are sorted higher alphabetically then the word Default.>",
+      "fields": [
+        {
+          "title": "Assigned To",
+          "value": "Unassigned",
+          "short": true
+        },
+        {
+          "title": "Status",
+          "value": "Closed",
+          "short": true
+        },
+        {
+          "title": "Reporter",
+          "value": "whirly.fizzle",
+          "short": true
+        },
+        {
+          "title": "Priority",
+          "value": "Unset",
+          "short": true
+        }
+      ]
+    }
+  ]
+}
