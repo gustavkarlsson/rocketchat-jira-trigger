@@ -1,2 +1,4 @@
+[app]
+port = 8888
 [jira]
 uri = "http://localhost:9999"

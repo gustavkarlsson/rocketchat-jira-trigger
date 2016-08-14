@@ -17,13 +17,14 @@ import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldCreator;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import spark.Request;
 import spark.Response;
-import spark.Spark;
+import spark.Service;
 
 import java.io.Console;
 import java.io.File;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
+import static spark.Service.ignite;
 
 public class App {
 	private static final Logger log = getLogger(App.class);
@@ -31,21 +32,28 @@ public class App {
 	private static final String APPLICATION_JSON = "application/json";
 	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
 
+	private Service server;
+
+	App(String[] args) throws Exception {
+		String configFilePath = verifySyntax(args);
+		Configuration config = createConfiguration(configFilePath);
+		server = start(config);
+	}
+
 	public static void main(String[] args) {
 		try {
-			verifySyntax(args);
-			Configuration config = createConfiguration(args[0]);
-			start(config);
+			new App(args);
 		} catch (Exception e) {
 			log.error("Fatal error", e);
 			System.exit(1);
 		}
 	}
 
-	private static void verifySyntax(String[] args) {
-		if (args.length < 1) {
-			throw new IllegalArgumentException("No configuration file specified");
+	private static String verifySyntax(String[] args) {
+		if (args.length != 1) {
+			throw new IllegalArgumentException("Exactly one configuration file must be specified");
 		}
+		return args[0];
 	}
 
 	private static Configuration createConfiguration(String arg) throws ValidationException {
@@ -60,28 +68,6 @@ public class App {
 
 	private static Toml parseDefaults() {
 		return new Toml().read(Configuration.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
-	}
-
-	static void start(Configuration config) {
-		log.info("Initializing");
-		IssueRestClient issueClient = createIssueRestClient(config.getJiraConfiguration());
-		MessageCreator messageCreator = new MessageCreator(config.getMessageConfiguration());
-		FieldCreatorMapper fieldCreatorMapper = new FieldCreatorMapper(config.getMessageConfiguration());
-		log.debug("Finding default field creators");
-		List<FieldCreator> defaultFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getDefaultFields());
-		log.debug("Finding extended field creators");
-		List<FieldCreator> extendedFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getExtendedFields());
-		AttachmentConverter attachmentConverter = new AttachmentConverter(config.getMessageConfiguration(), defaultFieldCreators, extendedFieldCreators);
-
-		log.info("Setting up server");
-		Spark.threadPool(config.getAppConfiguration().getMaxThreads());
-		Spark.port(config.getAppConfiguration().getPort());
-		Spark.before((request, response) -> log(request));
-		Spark.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageCreator, attachmentConverter));
-		Spark.after((request, response) -> setApplicationJson(response));
-		Spark.after((request, response) -> log(response));
-		Spark.exception(Exception.class, new UuidGeneratingExceptionHandler());
-		log.info("Server setup completed");
 	}
 
 	private static IssueRestClient createIssueRestClient(JiraConfiguration jiraConfig) {
@@ -138,7 +124,35 @@ public class App {
 		}
 	}
 
-	static void stop() {
-		Spark.stop();
+	void stop() {
+		if (server == null) {
+			throw new IllegalStateException("Already stopped");
+		}
+		server.stop();
+		server = null;
+	}
+
+	private Service start(Configuration config) {
+		log.info("Initializing");
+		IssueRestClient issueClient = createIssueRestClient(config.getJiraConfiguration());
+		MessageCreator messageCreator = new MessageCreator(config.getMessageConfiguration());
+		FieldCreatorMapper fieldCreatorMapper = new FieldCreatorMapper(config.getMessageConfiguration());
+		log.debug("Finding default field creators");
+		List<FieldCreator> defaultFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getDefaultFields());
+		log.debug("Finding extended field creators");
+		List<FieldCreator> extendedFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getExtendedFields());
+		AttachmentConverter attachmentConverter = new AttachmentConverter(config.getMessageConfiguration(), defaultFieldCreators, extendedFieldCreators);
+
+		log.info("Setting up server");
+		Service server = ignite();
+		server.threadPool(config.getAppConfiguration().getMaxThreads());
+		server.port(config.getAppConfiguration().getPort());
+		server.before((request, response) -> log(request));
+		server.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageCreator, attachmentConverter));
+		server.after((request, response) -> setApplicationJson(response));
+		server.after((request, response) -> log(response));
+		server.exception(Exception.class, new UuidGeneratingExceptionHandler());
+		log.info("Server setup completed");
+		return server;
 	}
 }

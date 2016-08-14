@@ -1,15 +1,12 @@
 package se.gustavkarlsson.rocketchat.jira_trigger;
 
 import com.google.common.io.Resources;
-import com.moandjiezana.toml.Toml;
 import com.sun.jersey.api.client.Client;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
-import se.gustavkarlsson.rocketchat.jira_trigger.test.TomlUtils;
 import spark.Service;
 
 import javax.ws.rs.core.MediaType;
@@ -33,9 +30,8 @@ public class AppIntegrationTest {
 	private static String jiraResponse;
 	private static String expectedAppResponse;
 
-	private Configuration config;
 	private Service jiraServer;
-	private Thread appServer;
+	private App app;
 	private Client client;
 
 	@BeforeClass
@@ -64,19 +60,16 @@ public class AppIntegrationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Toml minimal = TomlUtils.getMinimalToml();
-		Toml defaults = TomlUtils.getDefaultsToml();
-		config = new Configuration(minimal, defaults);
 		jiraServer = startJiraServer(JIRA_SERVER_PORT, jiraResponse);
-		appServer = startAppServer(config);
+		app = new App(new String[]{"src/test/resources/minimal.toml"});
 		client = Client.create();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		client.destroy();
+		app.stop();
 		jiraServer.stop();
-		App.stop();
-		appServer.join();
 	}
 
 	private Service startJiraServer(int port, String response) {
@@ -85,14 +78,8 @@ public class AppIntegrationTest {
 		return server;
 	}
 
-	private Thread startAppServer(Configuration config) {
-		Thread thread = new Thread(() -> App.start(config));
-		thread.start();
-		return thread;
-	}
-
 	private String postMessage(String entity) {
-		return client.resource("http://localhost:" + config.getAppConfiguration().getPort())
+		return client.resource("http://localhost:8888")
 				.path("")
 				.accept(MediaType.APPLICATION_JSON_TYPE)
 				.type(MediaType.APPLICATION_JSON_TYPE)
