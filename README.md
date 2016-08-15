@@ -24,7 +24,7 @@ As an alternative to building the app using Gradle, you can use Docker build an 
 docker build -t <image_name> https://github.com/gustavkarlsson/rocketchat-jira-trigger.git
 ```
 
-## Configurating
+## Configuring
 To get started you only need to configure the URI of your JIRA server and some user credentials (unless anonymous access is allowed).
 Create a configuration file with the `.toml` extension and set it up like this:
 ```
