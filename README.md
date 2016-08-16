@@ -55,7 +55,7 @@ The app will listen on port `4567`.
 ### With Docker
 Use the `docker` cli and mount a config file as volume `/app/config.toml` and set up port mapping for port `4567`:
 ```
-docker run -v $(pwd)/config.toml:/app/config.toml -p 4567:4567 <image_name>
+docker run --rm -v $(pwd)/config.toml:/app/config.toml -p 4567:4567 <image_name>
 ```
 
 ## Trying it out
