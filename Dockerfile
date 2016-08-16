@@ -3,7 +3,7 @@ MAINTAINER Gustav Karlsson <gustav.karlsson@gmail.com>
 COPY . /src
 WORKDIR /src
 RUN mkdir /app && \
-    ./gradlew installApp && \
+    ./gradlew installDist && \
     cp -R build/install/rocketchat-jira-trigger/* /app && \
     cd / && \
     rm -rf /src
