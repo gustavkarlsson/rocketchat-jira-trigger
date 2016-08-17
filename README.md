@@ -46,7 +46,7 @@ bin\rocketchat-jira-trigger.bat config.toml
 ### With docker-compose
 Make sure a configuration file named `config.toml` exists in your working directory and run:
 ```
-docker-compose up
+docker-compose run app
 ```
 The app will listen on port `4567`.
 
