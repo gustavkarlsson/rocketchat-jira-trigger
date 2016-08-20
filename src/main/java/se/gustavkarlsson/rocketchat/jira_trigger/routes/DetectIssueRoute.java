@@ -4,7 +4,6 @@ import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.util.concurrent.Promise;
-import com.google.common.base.Optional;
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
@@ -51,28 +50,28 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		return !blacklist.contains(value) && (whitelist.isEmpty() || whitelist.contains(value));
 	}
 
-	private static boolean isNotFound(Optional<Integer> statusCode) {
+	private static boolean isNotFound(com.google.common.base.Optional<Integer> statusCode) {
 		return statusCode.isPresent() && statusCode.get() == HttpStatus.NOT_FOUND_404;
 	}
 
 	@Override
-	protected IncomingMessage handle(Request request, Response response, OutgoingMessage outgoing) throws Exception {
+	protected Optional<IncomingMessage> handle(Request request, Response response, OutgoingMessage outgoing) throws Exception {
 		String token = outgoing.getToken();
 		if (!config.getTokens().isEmpty() && !config.getTokens().contains(token)) {
 			log.info("Forbidden token encountered: {}. Ignoring", token);
-			return null;
+			return Optional.empty();
 		}
 		String userId = outgoing.getUserId();
 		String userName = outgoing.getUserName();
 		if (!isAllowed(config.getBlacklistedUsers(), config.getWhitelistedUsers(), userId, userName)) {
 			log.info("Forbidden user encountered. ID: {}, Name: {}. Ignoring", userId, userName);
-			return null;
+			return Optional.empty();
 		}
 		String channelId = outgoing.getChannelId();
 		String channelName = outgoing.getChannelName();
 		if (!isAllowed(config.getBlacklistedChannels(), config.getWhitelistedChannels(), channelId, channelName)) {
 			log.info("Forbidden channel encountered. ID: {}, Name: {}. Ignoring", channelId, channelName);
-			return null;
+			return Optional.empty();
 		}
 		log.info("Message is being processed...");
 		log.debug("Parsing keys from text: \"{}\"", outgoing.getText());
@@ -86,7 +85,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 		if (issues.isEmpty()) {
 			log.debug("No matching issue found. Ignoring");
-			return null;
+			return Optional.empty();
 		}
 		log.info("Found {} issues", issues.size());
 		log.debug("Issues: {}", issues.keySet().stream()
@@ -99,7 +98,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.map(e -> attachmentConverter.convert(e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
 		message.setAttachments(attachments);
-		return message;
+		return Optional.of(message);
 	}
 
 	private Map<String, Boolean> parseJiraKeys(String messageText) {

@@ -124,14 +124,6 @@ public class App {
 		}
 	}
 
-	void stop() {
-		if (server == null) {
-			throw new IllegalStateException("Already stopped");
-		}
-		server.stop();
-		server = null;
-	}
-
 	private Service start(Configuration config) {
 		log.info("Initializing");
 		IssueRestClient issueClient = createIssueRestClient(config.getJiraConfiguration());
@@ -154,5 +146,13 @@ public class App {
 		server.exception(Exception.class, new UuidGeneratingExceptionHandler());
 		log.info("Server setup completed");
 		return server;
+	}
+
+	void stop() {
+		if (server == null) {
+			throw new IllegalStateException("Already stopped");
+		}
+		server.stop();
+		server = null;
 	}
 }
