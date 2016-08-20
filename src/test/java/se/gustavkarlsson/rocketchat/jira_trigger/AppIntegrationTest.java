@@ -2,6 +2,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger;
 
 import com.google.common.io.Resources;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -12,6 +13,7 @@ import spark.Service;
 import javax.ws.rs.core.MediaType;
 import java.nio.charset.StandardCharsets;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static spark.Service.ignite;
 
 public class AppIntegrationTest {
@@ -52,18 +54,21 @@ public class AppIntegrationTest {
 		return server;
 	}
 
-	private String postMessage(String entity) {
+	private ClientResponse postMessage(String entity) {
 		return client.resource("http://localhost:8888")
 				.path("")
 				.accept(MediaType.APPLICATION_JSON_TYPE)
 				.type(MediaType.APPLICATION_JSON_TYPE)
-				.post(String.class, entity);
+				.post(ClientResponse.class, entity);
 	}
 
 	@Test
 	public void fullStack() throws Exception {
-		String response = postMessage(rocketChatMessage);
+		ClientResponse response = postMessage(rocketChatMessage);
+		String body = response.getEntity(String.class);
 
-		JSONAssert.assertEquals(expectedAppResponse, response, false);
+		assertThat(response.getStatus() == 200);
+		assertThat(response.getType()).isEqualTo(MediaType.APPLICATION_JSON_TYPE);
+		JSONAssert.assertEquals(expectedAppResponse, body, false);
 	}
 }

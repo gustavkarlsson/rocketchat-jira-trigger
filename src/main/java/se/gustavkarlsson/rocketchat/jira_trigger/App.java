@@ -119,7 +119,7 @@ public class App {
 	}
 
 	private static void setApplicationJson(Response response) {
-		if (response.body() == null) {
+		if (response.body() != null) {
 			response.type(APPLICATION_JSON);
 		}
 	}
