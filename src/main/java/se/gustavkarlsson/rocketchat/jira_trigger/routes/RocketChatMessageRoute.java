@@ -27,8 +27,8 @@ abstract class RocketChatMessageRoute implements Route {
 		try {
 			outgoing = gson.fromJson(requestBody, OutgoingMessage.class);
 		} catch (JsonSyntaxException e) {
-			log.warn("Invalid JSON in request: " + e.getCause().getMessage() + "\n"
-					+ "JSON: " + requestBody);
+			log.warn("Invalid JSON in request body: {}\n"
+					+ "Body: {}", e.getCause().getMessage(), requestBody);
 			return EMPTY_RESPONSE;
 		}
 		Optional<IncomingMessage> responseMessage = handle(request, response, outgoing);
