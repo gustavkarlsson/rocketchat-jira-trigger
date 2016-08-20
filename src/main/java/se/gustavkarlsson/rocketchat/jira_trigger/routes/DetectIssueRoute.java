@@ -93,6 +93,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.collect(Collectors.toList()));
 		log.debug("Creating message");
 		IncomingMessage message = messageCreator.create();
+		message.setText(issues.size() == 1 ? "Found 1 issue" : "Found " + issues.size() + " issues");
 		log.debug("Creating attachments");
 		List<Attachment> attachments = issues.entrySet().stream()
 				.map(e -> attachmentConverter.convert(e.getKey(), e.getValue()))
