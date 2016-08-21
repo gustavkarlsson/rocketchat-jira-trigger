@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/gustavkarlsson/rocketchat-jira-trigger.svg?branch=master)](https://travis-ci.org/gustavkarlsson/rocketchat-jira-trigger)
 [![codecov](https://codecov.io/gh/gustavkarlsson/rocketchat-jira-trigger/branch/master/graph/badge.svg)](https://codecov.io/gh/gustavkarlsson/rocketchat-jira-trigger)
+[![Docker Automated build](https://img.shields.io/docker/automated/gustavkarlsson/rocketchat-jira-trigger.svg)](https://hub.docker.com/r/gustavkarlsson/rocketchat-jira-trigger)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gustavkarlsson/rocketchat-jira-trigger/blob/master/LICENSE)
 
 # rocketchat-jira-trigger
 Outgoing webhook integration for Rocket.Chat that summarizes any JIRA issues mentioned
@@ -54,6 +56,8 @@ In Rocket.Chat, set up an outgoing webhook pointing at the server on port 4567. 
 and write a message containing a known JIRA issue to try it out. Example: `Let's check out SUP-1234`
 
 Rocket.Chat should reply with details about the JIRA issue.
+
+*Tip: If you want more details, append a + like this: `Let's check out SUP-1234+`*
 
 ## Troubleshooting
 If your messages aren't getting any replies, first check the log.
