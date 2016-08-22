@@ -2,6 +2,7 @@
 [![codecov](https://codecov.io/gh/gustavkarlsson/rocketchat-jira-trigger/branch/master/graph/badge.svg)](https://codecov.io/gh/gustavkarlsson/rocketchat-jira-trigger)
 [![Docker Automated build](https://img.shields.io/docker/automated/gustavkarlsson/rocketchat-jira-trigger.svg)](https://hub.docker.com/r/gustavkarlsson/rocketchat-jira-trigger)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gustavkarlsson/rocketchat-jira-trigger/blob/master/LICENSE)
+[![Image Layers](https://images.microbadger.com/badges/image/gustavkarlsson/rocketchat-jira-trigger.svg)](https://microbadger.com/images/gustavkarlsson/rocketchat-jira-trigger)
 
 # rocketchat-jira-trigger
 Outgoing webhook integration for Rocket.Chat that summarizes any JIRA issues mentioned
