@@ -6,6 +6,7 @@ RUN mkdir /app && \
     ./gradlew installDist && \
     cp -R build/install/rocketchat-jira-trigger/* /app && \
     cd / && \
+    rm -rf /root/.gradle && \
     rm -rf /src
 WORKDIR /app
 VOLUME /app/config.toml
