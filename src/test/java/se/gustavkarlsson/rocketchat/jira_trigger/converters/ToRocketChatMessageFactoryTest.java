@@ -3,13 +3,13 @@ package se.gustavkarlsson.rocketchat.jira_trigger.converters;
 import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class MessageCreatorTest {
+public class ToRocketChatMessageFactoryTest {
 
 	private MessageConfiguration mockMessageConfig;
 
@@ -20,23 +20,23 @@ public class MessageCreatorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void constructWithNullThrowsNPE() throws Exception {
-		new MessageCreator(null);
+		new ToRocketChatMessageFactory(null);
 	}
 
 	@Test
 	public void constructWithConfigSucceeds() throws Exception {
-		new MessageCreator(mockMessageConfig);
+		new ToRocketChatMessageFactory(mockMessageConfig);
 	}
 
 	@Test
 	public void create() throws Exception {
 		String username = "user";
 		String url = "http://someurl.com/image.png";
-		MessageCreator creator = new MessageCreator(mockMessageConfig);
+		ToRocketChatMessageFactory factory = new ToRocketChatMessageFactory(mockMessageConfig);
 		when(mockMessageConfig.getUsername()).thenReturn(username);
 		when(mockMessageConfig.getIconUrl()).thenReturn(url);
 
-		IncomingMessage message = creator.create();
+		ToRocketChatMessage message = factory.create();
 
 		assertThat(message.getUsername()).isEqualTo(username);
 		assertThat(message.getIconUrl()).isEqualTo(url);

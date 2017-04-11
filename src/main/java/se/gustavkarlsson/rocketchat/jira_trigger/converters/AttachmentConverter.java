@@ -4,8 +4,8 @@ import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldCreator;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Field;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatAttachment;
 
 import javax.ws.rs.core.UriBuilder;
 import java.util.List;
@@ -31,13 +31,13 @@ public class AttachmentConverter {
 		this.extendedFieldCreators = notNull(extendedFieldCreators);
 	}
 
-	public Attachment convert(Issue issue, Boolean extended) {
+	public ToRocketChatAttachment convert(Issue issue, Boolean extended) {
 		List<FieldCreator> fieldCreators = extended ? extendedFieldCreators : defaultFieldCreators;
 		return createAttachment(issue, fieldCreators);
 	}
 
-	private Attachment createAttachment(Issue issue, List<FieldCreator> fieldCreators) {
-		Attachment attachment = new Attachment();
+	private ToRocketChatAttachment createAttachment(Issue issue, List<FieldCreator> fieldCreators) {
+		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
 		attachment.setTitle(issue.getKey());
 		if (config.isPriorityColors() && issue.getPriority() != null) {
 			attachment.setColor(getPriorityColor(issue.getPriority(), config.getDefaultColor()));

@@ -9,23 +9,23 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class IncomingMessageTest {
+public class ToRocketChatMessageTest {
 
-	private IncomingMessage message;
+	private ToRocketChatMessage message;
 
 	@Before
 	public void setUp() throws Exception {
-		message = new IncomingMessage();
+		message = new ToRocketChatMessage();
 	}
 
 	@Test
 	public void equals() throws Exception {
-		EqualsVerifier.forClass(IncomingMessage.class).suppress(Warning.NONFINAL_FIELDS).verify();
+		EqualsVerifier.forClass(ToRocketChatMessage.class).suppress(Warning.NONFINAL_FIELDS).verify();
 	}
 
 	@Test
 	public void addAttachmentToNullList() throws Exception {
-		Attachment attachment = new Attachment();
+		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
 
 		message.addAttachment(attachment);
 
@@ -34,8 +34,8 @@ public class IncomingMessageTest {
 
 	@Test
 	public void addAttachmentToNonEmptyList() throws Exception {
-		Attachment attachment = new Attachment("someone", null, null, null, null, null, null, null, null, null, null, null);
-		message.setAttachments(Collections.singletonList(new Attachment("someone-else", null, null, null, null, null, null, null, null, null, null, null)));
+		ToRocketChatAttachment attachment = new ToRocketChatAttachment("someone", null, null, null, null, null, null, null, null, null, null, null);
+		message.setAttachments(Collections.singletonList(new ToRocketChatAttachment("someone-else", null, null, null, null, null, null, null, null, null, null, null)));
 
 		message.addAttachment(attachment);
 

@@ -1,9 +1,80 @@
 {
   "token": "12345",
-  "channel_id": "12356",
+  "bot": false,
+  "channel_id": "abc123",
   "channel_name": "testing-channel",
+  "message_id": "nFob68cmAr2MP57vL",
   "timestamp": "2016-06-15T15:11:05.270Z",
   "user_id": "123567",
   "user_name": "tester",
-  "text": "Let's have a look at ISS-123"
+  "text": "Let's have a look at ISS-123",
+  "user": {
+    "_id": "9xACgGTaa4aRtMZNh",
+    "createdAt": "2017-03-26T10:35:09.599Z",
+    "emails": [
+      {
+        "address": "gustav.karlsson@gmail.com",
+        "verified": false
+      }
+    ],
+    "type": "user",
+    "status": "online",
+    "active": true,
+    "name": "Gustav Karlsson",
+    "_updatedAt": "2017-04-11T16:23:14.500Z",
+    "roles": [
+      "admin"
+    ],
+    "lastLogin": "2017-04-11T16:23:14.468Z",
+    "statusConnection": "online",
+    "utcOffset": 2,
+    "username": "gkarlsson",
+    "avatarOrigin": "gravatar"
+  },
+  "room": {
+    "_id": "GENERAL",
+    "ts": "2017-03-26T10:33:11.800Z",
+    "t": "c",
+    "name": "general",
+    "ro": false,
+    "sysMes": false,
+    "customFields": {
+      "field1": "value1",
+      "field2": "value2"
+    },
+    "msgs": 23,
+    "default": true,
+    "_updatedAt": "2017-03-28T19:29:58.985Z",
+    "lm": "2017-03-28T19:29:58.982Z",
+    "username": "gkarlsson",
+    "usernames": [
+      "name1",
+      "name2"
+    ]
+  },
+  "message": {
+    "_id": "nFob68cmAr2MP57vL",
+    "rid": "GENERAL",
+    "ts": "2017-04-11T16:42:16.840Z",
+    "msg": "",
+    "file": {
+      "_id": "7cBZXPZF7ARe4cE8y",
+      "name": "missfont.log"
+    },
+    "groupable": false,
+    "attachments": [
+      {
+        "title": "File Uploaded: test.log",
+        "description": "a file",
+        "title_link": "/file-upload/7cBZXPZF7ARe4cE8y/test.log",
+        "title_link_download": true
+      }
+    ],
+    "u": {
+      "_id": "9xACgGTaa4aRtMZNh",
+      "username": "gkarlsson"
+    },
+    "_updatedAt": "2017-04-11T16:42:16.841Z"
+  },
+  "id": 1
 }

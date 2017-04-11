@@ -8,10 +8,10 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.MessageCreator;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.OutgoingMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.ToRocketChatMessageFactory;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.FromRocketChatMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatAttachment;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatMessage;
 import spark.Request;
 import spark.Response;
 
@@ -31,14 +31,14 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 
 	private final RocketChatConfiguration config;
 	private final IssueRestClient issueClient;
-	private final MessageCreator messageCreator;
+	private final ToRocketChatMessageFactory messageFactory;
 	private final AttachmentConverter attachmentConverter;
 
-	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient, MessageCreator messageCreator,
+	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient, ToRocketChatMessageFactory messageFactory,
 							AttachmentConverter attachmentConverter) {
 		this.config = notNull(config);
 		this.issueClient = notNull(issueClient);
-		this.messageCreator = notNull(messageCreator);
+		this.messageFactory = notNull(messageFactory);
 		this.attachmentConverter = notNull(attachmentConverter);
 	}
 
@@ -55,27 +55,27 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 	}
 
 	@Override
-	protected Optional<IncomingMessage> handle(Request request, Response response, OutgoingMessage outgoing) throws Exception {
-		String token = outgoing.getToken();
+	protected Optional<ToRocketChatMessage> handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
+		String token = fromRocketChatMessage.getToken();
 		if (!config.getTokens().isEmpty() && !config.getTokens().contains(token)) {
 			log.info("Forbidden token encountered: {}. Ignoring", token);
 			return Optional.empty();
 		}
-		String userId = outgoing.getUserId();
-		String userName = outgoing.getUserName();
+		String userId = fromRocketChatMessage.getUserId();
+		String userName = fromRocketChatMessage.getUserName();
 		if (!isAllowed(config.getBlacklistedUsers(), config.getWhitelistedUsers(), userId, userName)) {
 			log.info("Forbidden user encountered. ID: {}, Name: {}. Ignoring", userId, userName);
 			return Optional.empty();
 		}
-		String channelId = outgoing.getChannelId();
-		String channelName = outgoing.getChannelName();
+		String channelId = fromRocketChatMessage.getChannelId();
+		String channelName = fromRocketChatMessage.getChannelName();
 		if (!isAllowed(config.getBlacklistedChannels(), config.getWhitelistedChannels(), channelId, channelName)) {
 			log.info("Forbidden channel encountered. ID: {}, Name: {}. Ignoring", channelId, channelName);
 			return Optional.empty();
 		}
 		log.info("Message is being processed...");
-		log.debug("Parsing keys from text: \"{}\"", outgoing.getText());
-		Map<String, Boolean> jiraKeys = parseJiraKeys(outgoing.getText());
+		log.debug("Parsing keys from text: \"{}\"", fromRocketChatMessage.getText());
+		Map<String, Boolean> jiraKeys = parseJiraKeys(fromRocketChatMessage.getText());
 		log.info("Found {} keys", jiraKeys.size());
 		log.debug("Keys: {}", jiraKeys.keySet());
 		log.debug("Fetching issues...");
@@ -92,10 +92,10 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.map(Issue::getId)
 				.collect(Collectors.toList()));
 		log.debug("Creating message");
-		IncomingMessage message = messageCreator.create();
+		ToRocketChatMessage message = messageFactory.create();
 		message.setText(issues.size() == 1 ? "Found 1 issue" : "Found " + issues.size() + " issues");
 		log.debug("Creating attachments");
-		List<Attachment> attachments = issues.entrySet().stream()
+		List<ToRocketChatAttachment> attachments = issues.entrySet().stream()
 				.map(e -> attachmentConverter.convert(e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
 		message.setAttachments(attachments);

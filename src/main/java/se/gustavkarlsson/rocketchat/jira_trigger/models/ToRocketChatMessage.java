@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class IncomingMessage {
+public final class ToRocketChatMessage {
 
 	@SerializedName("username")
 	private String username;
@@ -18,12 +18,12 @@ public final class IncomingMessage {
 	private String text;
 
 	@SerializedName("attachments")
-	private List<Attachment> attachments;
+	private List<ToRocketChatAttachment> attachments;
 
-	public IncomingMessage() {
+	public ToRocketChatMessage() {
 	}
 
-	public IncomingMessage(String username, String iconUrl, String text, List<Attachment> attachments) {
+	public ToRocketChatMessage(String username, String iconUrl, String text, List<ToRocketChatAttachment> attachments) {
 		this.username = username;
 		this.iconUrl = iconUrl;
 		this.text = text;
@@ -54,15 +54,15 @@ public final class IncomingMessage {
 		this.text = text;
 	}
 
-	public List<Attachment> getAttachments() {
+	public List<ToRocketChatAttachment> getAttachments() {
 		return new ArrayList<>(attachments);
 	}
 
-	public void setAttachments(List<Attachment> attachments) {
+	public void setAttachments(List<ToRocketChatAttachment> attachments) {
 		this.attachments = attachments == null ? null : new ArrayList<>(attachments);
 	}
 
-	public void addAttachment(Attachment attachment) {
+	public void addAttachment(ToRocketChatAttachment attachment) {
 		if (attachments == null) {
 			attachments = new ArrayList<>();
 		}
@@ -73,7 +73,7 @@ public final class IncomingMessage {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		IncomingMessage that = (IncomingMessage) o;
+		ToRocketChatMessage that = (ToRocketChatMessage) o;
 		return Objects.equals(username, that.username) &&
 				Objects.equals(iconUrl, that.iconUrl) &&
 				Objects.equals(text, that.text) &&
@@ -87,7 +87,7 @@ public final class IncomingMessage {
 
 	@Override
 	public String toString() {
-		return "IncomingMessage{" +
+		return "ToRocketChatMessage{" +
 				"username='" + username + '\'' +
 				", iconUrl='" + iconUrl + '\'' +
 				", text='" + text + '\'' +

@@ -9,18 +9,18 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AttachmentTest {
+public class ToRocketChatAttachmentTest {
 
-	private Attachment attachment;
+	private ToRocketChatAttachment attachment;
 
 	@Before
 	public void setUp() throws Exception {
-		attachment = new Attachment();
+		attachment = new ToRocketChatAttachment();
 	}
 
 	@Test
 	public void equals() throws Exception {
-		EqualsVerifier.forClass(Attachment.class).suppress(Warning.NONFINAL_FIELDS).verify();
+		EqualsVerifier.forClass(ToRocketChatAttachment.class).suppress(Warning.NONFINAL_FIELDS).verify();
 	}
 
 	@Test

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class Attachment {
+public final class ToRocketChatAttachment {
 
 	@SerializedName("author_name")
 	private String authorName;
@@ -44,12 +44,12 @@ public final class Attachment {
 	@SerializedName("fields")
 	private List<Field> fields;
 
-	public Attachment() {
+	public ToRocketChatAttachment() {
 	}
 
-	public Attachment(String authorName, String authorLink, String authorIcon, String color, String title,
-					  String titleLink, String pretext, String text, String imageUrl, String thumbUrl, Long timestamp,
-					  List<Field> fields) {
+	public ToRocketChatAttachment(String authorName, String authorLink, String authorIcon, String color, String title,
+								  String titleLink, String pretext, String text, String imageUrl, String thumbUrl, Long timestamp,
+								  List<Field> fields) {
 		this.authorName = authorName;
 		this.authorLink = authorLink;
 		this.authorIcon = authorIcon;
@@ -171,7 +171,7 @@ public final class Attachment {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Attachment that = (Attachment) o;
+		ToRocketChatAttachment that = (ToRocketChatAttachment) o;
 		return Objects.equals(authorName, that.authorName) &&
 				Objects.equals(authorLink, that.authorLink) &&
 				Objects.equals(authorIcon, that.authorIcon) &&
@@ -194,7 +194,7 @@ public final class Attachment {
 
 	@Override
 	public String toString() {
-		return "Attachment{" +
+		return "ToRocketChatAttachment{" +
 				"authorName='" + authorName + '\'' +
 				", authorLink='" + authorLink + '\'' +
 				", authorIcon='" + authorIcon + '\'' +

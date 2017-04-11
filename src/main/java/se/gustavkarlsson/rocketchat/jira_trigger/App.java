@@ -4,7 +4,7 @@ import com.atlassian.jira.rest.client.api.IssueRestClient;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.MessageCreator;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.ToRocketChatMessageFactory;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldCreator;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import spark.Request;
@@ -67,7 +67,7 @@ public class App {
 	private Service start(Configuration config) {
 		log.info("Initializing");
 		IssueRestClient issueClient = restClientProvider.get(config.getJiraConfiguration());
-		MessageCreator messageCreator = new MessageCreator(config.getMessageConfiguration());
+		ToRocketChatMessageFactory messageFactory = new ToRocketChatMessageFactory(config.getMessageConfiguration());
 		FieldCreatorMapper fieldCreatorMapper = new FieldCreatorMapper(config.getMessageConfiguration());
 		log.debug("Finding default field creators");
 		List<FieldCreator> defaultFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getDefaultFields());
@@ -80,7 +80,7 @@ public class App {
 		server.threadPool(config.getAppConfiguration().getMaxThreads());
 		server.port(config.getAppConfiguration().getPort());
 		server.before((request, response) -> log(request));
-		server.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageCreator, attachmentConverter));
+		server.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageFactory, attachmentConverter));
 		server.after((request, response) -> setApplicationJson(response));
 		server.after((request, response) -> log(response));
 		server.exception(Exception.class, new UuidGeneratingExceptionHandler());

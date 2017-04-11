@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import org.slf4j.Logger;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.OutgoingMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.FromRocketChatMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatMessage;
 import spark.Request;
 import spark.Response;
 import spark.Route;
@@ -23,17 +23,17 @@ abstract class RocketChatMessageRoute implements Route {
 	@Override
 	public final Object handle(Request request, Response response) throws Exception {
 		String requestBody = request.body();
-		OutgoingMessage outgoing;
+		FromRocketChatMessage fromRocketChatMessage;
 		try {
-			outgoing = gson.fromJson(requestBody, OutgoingMessage.class);
+			fromRocketChatMessage = gson.fromJson(requestBody, FromRocketChatMessage.class);
 		} catch (JsonSyntaxException e) {
 			log.warn("Invalid JSON in request body: {}\n"
 					+ "Body: {}", e.getCause().getMessage(), requestBody);
 			return EMPTY_RESPONSE;
 		}
-		Optional<IncomingMessage> responseMessage = handle(request, response, outgoing);
+		Optional<ToRocketChatMessage> responseMessage = handle(request, response, fromRocketChatMessage);
 		return responseMessage.map(gson::toJson).orElse(EMPTY_RESPONSE);
 	}
 
-	protected abstract Optional<IncomingMessage> handle(Request request, Response response, OutgoingMessage outgoing) throws Exception;
+	protected abstract Optional<ToRocketChatMessage> handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception;
 }

@@ -2,8 +2,8 @@ package se.gustavkarlsson.rocketchat.jira_trigger.routes;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.OutgoingMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.FromRocketChatMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatMessage;
 import spark.Request;
 import spark.Response;
 
@@ -29,7 +29,7 @@ public class RocketChatMessageRouteTest {
 	public void invalidJsonReturnsEmptyString() throws Exception {
 		RocketChatMessageRoute route = new RocketChatMessageRoute() {
 			@Override
-			protected Optional<IncomingMessage> handle(Request request, Response response, OutgoingMessage outgoing) throws Exception {
+			protected Optional<ToRocketChatMessage> handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
 				fail("Should not reach this method");
 				return Optional.empty();
 			}

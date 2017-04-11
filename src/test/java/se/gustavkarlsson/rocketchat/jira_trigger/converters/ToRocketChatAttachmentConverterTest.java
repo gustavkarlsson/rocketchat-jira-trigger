@@ -5,8 +5,8 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.Attachment;
 import se.gustavkarlsson.rocketchat.jira_trigger.models.Field;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatAttachment;
 
 import java.net.URI;
 
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AttachmentConverterTest {
+public class ToRocketChatAttachmentConverterTest {
 
 	private MessageConfiguration mockConfig;
 	private Issue mockIssue;
@@ -50,7 +50,7 @@ public class AttachmentConverterTest {
 		when(mockConfig.isPriorityColors()).thenReturn(true);
 		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList());
 
-		Attachment attachment = converter.convert(mockIssue, false);
+		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
 		assertThat(attachment.getColor()).isEqualTo(AttachmentConverter.BLOCKER_COLOR);
 	}
@@ -63,7 +63,7 @@ public class AttachmentConverterTest {
 		when(mockIssue.getPriority()).thenReturn(new BasicPriority(null, 0L, "Blocker"));
 		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList());
 
-		Attachment attachment = converter.convert(mockIssue, false);
+		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
 		assertThat(attachment.getColor()).isEqualTo(defaultColor);
 	}
@@ -76,7 +76,7 @@ public class AttachmentConverterTest {
 		when(mockIssue.getPriority()).thenReturn(new BasicPriority(null, 0L, "Unknown"));
 		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList());
 
-		Attachment attachment = converter.convert(mockIssue, false);
+		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
 		assertThat(attachment.getColor()).isEqualTo(defaultColor);
 	}
@@ -86,7 +86,7 @@ public class AttachmentConverterTest {
 		Field field = new Field("title", "value", true);
 		AttachmentConverter converter = new AttachmentConverter(mockConfig, singletonList(issue -> field), emptyList());
 
-		Attachment attachment = converter.convert(mockIssue, false);
+		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
 		assertThat(attachment.getFields()).containsExactly(field);
 	}
@@ -96,7 +96,7 @@ public class AttachmentConverterTest {
 		Field field = new Field("title", "value", true);
 		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), singletonList(issue -> field));
 
-		Attachment attachment = converter.convert(mockIssue, true);
+		ToRocketChatAttachment attachment = converter.convert(mockIssue, true);
 
 		assertThat(attachment.getFields()).containsExactly(field);
 	}

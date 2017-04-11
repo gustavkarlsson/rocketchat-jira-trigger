@@ -1,20 +1,20 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.converters;
 
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.IncomingMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatMessage;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class MessageCreator {
+public class ToRocketChatMessageFactory {
 
 	private final MessageConfiguration config;
 
-	public MessageCreator(MessageConfiguration config) {
+	public ToRocketChatMessageFactory(MessageConfiguration config) {
 		this.config = notNull(config);
 	}
 
-	public IncomingMessage create() {
-		IncomingMessage message = new IncomingMessage();
+	public ToRocketChatMessage create() {
+		ToRocketChatMessage message = new ToRocketChatMessage();
 		message.setUsername(config.getUsername());
 		message.setIconUrl(config.getIconUrl());
 		return message;
