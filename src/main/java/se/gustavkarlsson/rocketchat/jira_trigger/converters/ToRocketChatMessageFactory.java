@@ -1,7 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.converters;
 
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatMessage;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.ToRocketChatMessage;
 
 import static org.apache.commons.lang3.Validate.notNull;
 

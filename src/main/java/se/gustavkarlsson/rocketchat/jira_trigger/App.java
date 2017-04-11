@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.ToRocketChatMessageFactory;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldCreator;
+import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldExtractor;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import spark.Request;
 import spark.Response;
@@ -68,12 +68,12 @@ public class App {
 		log.info("Initializing");
 		IssueRestClient issueClient = restClientProvider.get(config.getJiraConfiguration());
 		ToRocketChatMessageFactory messageFactory = new ToRocketChatMessageFactory(config.getMessageConfiguration());
-		FieldCreatorMapper fieldCreatorMapper = new FieldCreatorMapper(config.getMessageConfiguration());
+		FieldExtractorMapper fieldExtractorMapper = new FieldExtractorMapper(config.getMessageConfiguration());
 		log.debug("Finding default field creators");
-		List<FieldCreator> defaultFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getDefaultFields());
+		List<FieldExtractor> defaultFieldExtractors = fieldExtractorMapper.getCreators(config.getMessageConfiguration().getDefaultFields());
 		log.debug("Finding extended field creators");
-		List<FieldCreator> extendedFieldCreators = fieldCreatorMapper.getCreators(config.getMessageConfiguration().getExtendedFields());
-		AttachmentConverter attachmentConverter = new AttachmentConverter(config.getMessageConfiguration(), defaultFieldCreators, extendedFieldCreators);
+		List<FieldExtractor> extendedFieldExtractors = fieldExtractorMapper.getCreators(config.getMessageConfiguration().getExtendedFields());
+		AttachmentConverter attachmentConverter = new AttachmentConverter(config.getMessageConfiguration(), defaultFieldExtractors, extendedFieldExtractors);
 
 		log.info("Setting up server");
 		Service server = ignite();

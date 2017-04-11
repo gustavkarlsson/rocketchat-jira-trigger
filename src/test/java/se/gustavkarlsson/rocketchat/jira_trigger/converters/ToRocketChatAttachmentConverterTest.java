@@ -5,8 +5,8 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.Field;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.ToRocketChatAttachment;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.Field;
+import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.ToRocketChatAttachment;
 
 import java.net.URI;
 
