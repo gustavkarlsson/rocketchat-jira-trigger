@@ -2,7 +2,6 @@ package se.gustavkarlsson.rocketchat.jira_trigger.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,7 +60,7 @@ public final class ToRocketChatAttachment {
 		this.imageUrl = imageUrl;
 		this.thumbUrl = thumbUrl;
 		this.timestamp = timestamp;
-		setFields(fields);
+		this.fields = fields;
 	}
 
 	public String getAuthorName() {
@@ -153,18 +152,11 @@ public final class ToRocketChatAttachment {
 	}
 
 	public List<Field> getFields() {
-		return new ArrayList<>(fields);
+		return fields;
 	}
 
 	public void setFields(List<Field> fields) {
-		this.fields = fields == null ? null : new ArrayList<>(fields);
-	}
-
-	public void addField(Field field) {
-		if (fields == null) {
-			fields = new ArrayList<>();
-		}
-		fields.add(field);
+		this.fields = fields;
 	}
 
 	@Override

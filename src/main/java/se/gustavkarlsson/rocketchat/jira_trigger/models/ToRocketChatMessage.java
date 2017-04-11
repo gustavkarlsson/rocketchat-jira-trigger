@@ -2,7 +2,6 @@ package se.gustavkarlsson.rocketchat.jira_trigger.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,18 +54,11 @@ public final class ToRocketChatMessage {
 	}
 
 	public List<ToRocketChatAttachment> getAttachments() {
-		return new ArrayList<>(attachments);
+		return attachments;
 	}
 
 	public void setAttachments(List<ToRocketChatAttachment> attachments) {
-		this.attachments = attachments == null ? null : new ArrayList<>(attachments);
-	}
-
-	public void addAttachment(ToRocketChatAttachment attachment) {
-		if (attachments == null) {
-			attachments = new ArrayList<>();
-		}
-		attachments.add(attachment);
+		this.attachments = attachments;
 	}
 
 	@Override
