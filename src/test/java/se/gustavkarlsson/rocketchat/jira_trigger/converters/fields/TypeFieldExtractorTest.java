@@ -4,7 +4,7 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 import org.junit.Before;
 import org.junit.Test;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.Field;
+import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

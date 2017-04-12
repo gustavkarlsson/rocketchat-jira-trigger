@@ -3,7 +3,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.converters;
 import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.ToRocketChatMessage;
+import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatMessage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

@@ -13,12 +13,12 @@ mainClassName = 'se.gustavkarlsson.rocketchat.jira_trigger.App'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://maven.atlassian.com/repository/public'
-    }
+    maven { url 'https://maven.atlassian.com/repository/public' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
+    compile 'com.github.gustavkarlsson:rocketchat-gson-models:-SNAPSHOT'
     compile 'com.sparkjava:spark-core:2.5.5'
     compile 'com.atlassian.jira:jira-rest-java-client-core:4.0.0'
     compile 'com.atlassian.fugue:fugue:2.6.1'

@@ -2,8 +2,8 @@ package se.gustavkarlsson.rocketchat.jira_trigger.routes;
 
 import org.junit.Before;
 import org.junit.Test;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.from_rocket_chat.FromRocketChatMessage;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.ToRocketChatMessage;
+import se.gustavkarlsson.rocketchat.models.from_rocket_chat.FromRocketChatMessage;
+import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatMessage;
 import spark.Request;
 import spark.Response;
 

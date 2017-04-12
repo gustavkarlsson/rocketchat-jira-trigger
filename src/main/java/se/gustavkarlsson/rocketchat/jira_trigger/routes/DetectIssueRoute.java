@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.ToRocketChatMessageFactory;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.from_rocket_chat.FromRocketChatMessage;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.ToRocketChatAttachment;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.ToRocketChatMessage;
+import se.gustavkarlsson.rocketchat.models.from_rocket_chat.FromRocketChatMessage;
+import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
+import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatMessage;
 import spark.Request;
 import spark.Response;
 

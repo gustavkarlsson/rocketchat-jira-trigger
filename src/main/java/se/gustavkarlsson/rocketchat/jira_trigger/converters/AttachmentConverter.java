@@ -4,8 +4,8 @@ import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldExtractor;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.Field;
-import se.gustavkarlsson.rocketchat.jira_trigger.models.to_rocket_chat.ToRocketChatAttachment;
+import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
+import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
 
 import javax.ws.rs.core.UriBuilder;
 import java.util.List;
