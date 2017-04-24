@@ -4,10 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.models.from_rocket_chat.FromRocketChatMessage;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatMessage;
+import se.gustavkarlsson.rocketchat.spark.routes.RocketChatMessageRoute;
 import spark.Request;
 import spark.Response;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -26,16 +25,16 @@ public class RocketChatMessageRouteTest {
 	}
 
 	@Test
-	public void invalidJsonReturnsEmptyString() throws Exception {
+	public void invalidJsonReturnsNull() throws Exception {
 		RocketChatMessageRoute route = new RocketChatMessageRoute() {
 			@Override
-			protected Optional<ToRocketChatMessage> handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
+			protected ToRocketChatMessage handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
 				fail("Should not reach this method");
-				return Optional.empty();
+				return null;
 			}
 		};
 		when(request.body()).thenReturn("invalid json");
 
-		assertThat(route.handle(request, response)).isEqualTo("");
+		assertThat(route.handle(request, response)).isNull();
 	}
 }

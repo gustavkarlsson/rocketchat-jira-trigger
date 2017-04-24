@@ -12,6 +12,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.converters.ToRocketChatMessageF
 import se.gustavkarlsson.rocketchat.models.from_rocket_chat.FromRocketChatMessage;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatMessage;
+import se.gustavkarlsson.rocketchat.spark.routes.RocketChatMessageRoute;
 import spark.Request;
 import spark.Response;
 
@@ -55,23 +56,23 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 	}
 
 	@Override
-	protected Optional<ToRocketChatMessage> handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
+	protected ToRocketChatMessage handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
 		String token = fromRocketChatMessage.getToken();
 		if (!config.getTokens().isEmpty() && !config.getTokens().contains(token)) {
 			log.info("Forbidden token encountered: {}. Ignoring", token);
-			return Optional.empty();
+			return null;
 		}
 		String userId = fromRocketChatMessage.getUserId();
 		String userName = fromRocketChatMessage.getUserName();
 		if (!isAllowed(config.getBlacklistedUsers(), config.getWhitelistedUsers(), userId, userName)) {
 			log.info("Forbidden user encountered. ID: {}, Name: {}. Ignoring", userId, userName);
-			return Optional.empty();
+			return null;
 		}
 		String channelId = fromRocketChatMessage.getChannelId();
 		String channelName = fromRocketChatMessage.getChannelName();
 		if (!isAllowed(config.getBlacklistedChannels(), config.getWhitelistedChannels(), channelId, channelName)) {
 			log.info("Forbidden channel encountered. ID: {}, Name: {}. Ignoring", channelId, channelName);
-			return Optional.empty();
+			return null;
 		}
 		log.info("Message is being processed...");
 		log.debug("Parsing keys from text: \"{}\"", fromRocketChatMessage.getText());
@@ -85,7 +86,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
 		if (issues.isEmpty()) {
 			log.debug("No matching issue found. Ignoring");
-			return Optional.empty();
+			return null;
 		}
 		log.info("Found {} issues", issues.size());
 		log.debug("Issues: {}", issues.keySet().stream()
@@ -99,7 +100,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.map(e -> attachmentConverter.convert(e.getKey(), e.getValue()))
 				.collect(Collectors.toList());
 		message.setAttachments(attachments);
-		return Optional.of(message);
+		return message;
 	}
 
 	private Map<String, Boolean> parseJiraKeys(String messageText) {
