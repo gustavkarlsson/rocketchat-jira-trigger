@@ -6,7 +6,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.configuration.ValidationExcepti
 
 import java.io.File;
 
-class ConfigurationProvider {
+class ConfigFactory {
 	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
 
 	private static Toml parseToml(File configFile) {

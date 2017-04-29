@@ -1,0 +1,13 @@
+{
+  "baseUrl": "https://jira.somecompany.com",
+  "version": "5.2.11",
+  "versionNumbers": [
+    5,
+    2,
+    11
+  ],
+  "buildNumber": 854,
+  "buildDate": "2013-04-15T00:00:00.000-0700",
+  "scmInfo": "ef00d61167c699f0d87337863e0e6af1bc04b04e",
+  "serverTitle": "Some company JIRA"
+}

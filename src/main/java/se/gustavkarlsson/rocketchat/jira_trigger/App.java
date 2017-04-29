@@ -1,40 +1,29 @@
 package se.gustavkarlsson.rocketchat.jira_trigger;
 
-import com.atlassian.jira.rest.client.api.IssueRestClient;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.ToRocketChatMessageFactory;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldExtractor;
-import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
-import spark.Request;
-import spark.Response;
-import spark.Service;
 
 import java.io.File;
-import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static spark.Service.ignite;
 
 public class App {
 	private static final Logger log = getLogger(App.class);
 
-	private static final String APPLICATION_JSON = "application/json";
+	private final Server server;
 
-	private final ConfigurationProvider configReader = new ConfigurationProvider();
-	private final RestClientProvider restClientProvider = new RestClientProvider();
-	private Service server;
-
-	App(String[] args) throws Exception {
+	App(String... args) throws Exception {
 		String configFilePath = verifySyntax(args);
-		Configuration config = configReader.get(new File(configFilePath));
-		server = start(config);
+		ConfigFactory configFactory = new ConfigFactory();
+		Configuration config = configFactory.get(new File(configFilePath));
+		Server server = new Server(config);
+		server.logJiraServerInfo();
+		this.server = server;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String... args) {
 		try {
-			new App(args);
+			new App(args).server.start();
 		} catch (Exception e) {
 			log.error("Fatal error", e);
 			System.exit(1);
@@ -48,51 +37,7 @@ public class App {
 		return args[0];
 	}
 
-	private static void log(Request request) {
-		log.info("Incoming request: {} {} {} {}",
-				request.raw().getRemoteAddr(), request.requestMethod(), request.contentType(), request.pathInfo());
-	}
-
-	private static void log(Response response) {
-		String responseContent = response.body() == null ? "empty" : "Rocket.Chat message";
-		log.info("Outgoing response: {}", responseContent);
-	}
-
-	private static void setApplicationJson(Response response) {
-		if (response.body() != null) {
-			response.type(APPLICATION_JSON);
-		}
-	}
-
-	private Service start(Configuration config) {
-		log.info("Initializing");
-		IssueRestClient issueClient = restClientProvider.get(config.getJiraConfiguration());
-		ToRocketChatMessageFactory messageFactory = new ToRocketChatMessageFactory(config.getMessageConfiguration());
-		FieldExtractorMapper fieldExtractorMapper = new FieldExtractorMapper(config.getMessageConfiguration());
-		log.debug("Finding default field creators");
-		List<FieldExtractor> defaultFieldExtractors = fieldExtractorMapper.getCreators(config.getMessageConfiguration().getDefaultFields());
-		log.debug("Finding extended field creators");
-		List<FieldExtractor> extendedFieldExtractors = fieldExtractorMapper.getCreators(config.getMessageConfiguration().getExtendedFields());
-		AttachmentConverter attachmentConverter = new AttachmentConverter(config.getMessageConfiguration(), defaultFieldExtractors, extendedFieldExtractors);
-
-		log.info("Setting up server");
-		Service server = ignite();
-		server.threadPool(config.getAppConfiguration().getMaxThreads());
-		server.port(config.getAppConfiguration().getPort());
-		server.before((request, response) -> log(request));
-		server.post("/", APPLICATION_JSON, new DetectIssueRoute(config.getRocketChatConfiguration(), issueClient, messageFactory, attachmentConverter));
-		server.after((request, response) -> setApplicationJson(response));
-		server.after((request, response) -> log(response));
-		server.exception(Exception.class, new UuidGeneratingExceptionHandler());
-		log.info("Server setup completed");
+	Server getServer() {
 		return server;
-	}
-
-	void stop() {
-		if (server == null) {
-			throw new IllegalStateException("Already stopped");
-		}
-		server.stop();
-		server = null;
 	}
 }
