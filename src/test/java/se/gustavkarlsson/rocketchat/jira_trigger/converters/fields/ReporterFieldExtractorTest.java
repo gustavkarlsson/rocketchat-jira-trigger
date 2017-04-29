@@ -14,36 +14,56 @@ public class ReporterFieldExtractorTest {
 
 	private Issue mockIssue;
 	private User mockUser;
-	private ReporterFieldExtractor creator;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		mockUser = mock(User.class);
-		creator = new ReporterFieldExtractor();
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void applyNullThrowsNPE() throws Exception {
-		creator.create(null);
+	public void createNullThrowsNPE() throws Exception {
+		new ReporterFieldExtractor(false).create(null);
 	}
 
 	@Test
-	public void applyReturnsCorrectField() throws Exception {
+	public void createWithUsernameNameReturnsUsername() throws Exception {
 		String name = "Someone";
 		when(mockIssue.getReporter()).thenReturn(mockUser);
 		when(mockUser.getName()).thenReturn(name);
 
-		Field field = creator.create(mockIssue);
+		Field field = new ReporterFieldExtractor(false).create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(name);
 	}
 
 	@Test
-	public void applyWithNullReporterSetsNonEmptyValue() throws Exception {
+	public void createWithRealNameNameReturnsRealName() throws Exception {
+		String name = "Someone";
+		when(mockIssue.getReporter()).thenReturn(mockUser);
+		when(mockUser.getDisplayName()).thenReturn(name);
+
+		Field field = new ReporterFieldExtractor(true).create(mockIssue);
+
+		assertThat(field.getValue()).isEqualTo(name);
+	}
+
+	@Test
+	public void createWithRealNameReturnsRealName() throws Exception {
+		String name = "Someone";
+		when(mockIssue.getReporter()).thenReturn(mockUser);
+		when(mockUser.getName()).thenReturn(name);
+
+		Field field = new ReporterFieldExtractor(false).create(mockIssue);
+
+		assertThat(field.getValue()).isEqualTo(name);
+	}
+
+	@Test
+	public void createWithNullReporterSetsNonEmptyValue() throws Exception {
 		when(mockIssue.getReporter()).thenReturn(null);
 
-		Field field = creator.create(mockIssue);
+		Field field = new ReporterFieldExtractor(false).create(mockIssue);
 
 		assertThat(field.getValue()).isNotEmpty();
 	}

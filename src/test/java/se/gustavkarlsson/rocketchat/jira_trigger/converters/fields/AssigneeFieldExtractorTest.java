@@ -14,36 +14,45 @@ public class AssigneeFieldExtractorTest {
 
 	private Issue mockIssue;
 	private User mockUser;
-	private AssigneeFieldExtractor creator;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		mockUser = mock(User.class);
-		creator = new AssigneeFieldExtractor();
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void applyNullThrowsNPE() throws Exception {
-		creator.create(null);
+	public void createNullThrowsNPE() throws Exception {
+		new AssigneeFieldExtractor(false).create(null);
 	}
 
 	@Test
-	public void applyReturnsCorrectField() throws Exception {
+	public void createWithUsernameReturnsUsername() throws Exception {
 		String name = "Someone";
 		when(mockIssue.getAssignee()).thenReturn(mockUser);
 		when(mockUser.getName()).thenReturn(name);
 
-		Field field = creator.create(mockIssue);
+		Field field = new AssigneeFieldExtractor(false).create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(name);
 	}
 
 	@Test
-	public void applyWithNullAssigneeSetsNonEmptyValue() throws Exception {
+	public void createWithRealNameReturnsRealName() throws Exception {
+		String name = "Someone";
+		when(mockIssue.getAssignee()).thenReturn(mockUser);
+		when(mockUser.getDisplayName()).thenReturn(name);
+
+		Field field = new AssigneeFieldExtractor(true).create(mockIssue);
+
+		assertThat(field.getValue()).isEqualTo(name);
+	}
+
+	@Test
+	public void createWithNullAssigneeSetsNonEmptyValue() throws Exception {
 		when(mockIssue.getAssignee()).thenReturn(null);
 
-		Field field = creator.create(mockIssue);
+		Field field = new AssigneeFieldExtractor(false).create(mockIssue);
 
 		assertThat(field.getValue()).isNotEmpty();
 	}

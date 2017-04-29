@@ -11,6 +11,7 @@ public class MessageConfiguration extends DefaultingConfiguration {
 	static final String KEY_PREFIX = "message.";
 
 	static final String USERNAME_KEY = "username";
+	static final String USE_REAL_NAMES_KEY = "use_real_names";
 	static final String ICON_URL_KEY = "icon_url";
 	static final String DATE_PATTERN_KEY = "date_pattern";
 	static final String DATE_LOCALE_KEY = "date_locale";
@@ -20,6 +21,7 @@ public class MessageConfiguration extends DefaultingConfiguration {
 	static final String EXTENDED_FIELDS_KEY = "extended_fields";
 
 	private final String username;
+	private final boolean useRealNames;
 	private final String iconUrl;
 	private final DateFormat dateFormat;
 	private final boolean priorityColors;
@@ -31,6 +33,7 @@ public class MessageConfiguration extends DefaultingConfiguration {
 		super(toml, defaults);
 		try {
 			username = getString(KEY_PREFIX + USERNAME_KEY);
+			useRealNames = getBoolean(KEY_PREFIX + USE_REAL_NAMES_KEY);
 			iconUrl = getString(KEY_PREFIX + ICON_URL_KEY);
 			dateFormat = new SimpleDateFormat(getString(KEY_PREFIX + DATE_PATTERN_KEY),
 					Locale.forLanguageTag(getString(KEY_PREFIX + DATE_LOCALE_KEY)));
@@ -45,6 +48,10 @@ public class MessageConfiguration extends DefaultingConfiguration {
 
 	public String getUsername() {
 		return username;
+	}
+
+	public boolean isUseRealNames() {
+		return useRealNames;
 	}
 
 	public String getIconUrl() {

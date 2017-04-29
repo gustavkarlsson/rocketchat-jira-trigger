@@ -14,36 +14,36 @@ public class PriorityFieldExtractorTest {
 
 	private Issue mockIssue;
 	private Priority mockPrio;
-	private PriorityFieldExtractor creator;
+	private PriorityFieldExtractor extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		mockPrio = mock(Priority.class);
-		creator = new PriorityFieldExtractor();
+		extractor = new PriorityFieldExtractor();
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void applyNullThrowsNPE() throws Exception {
-		creator.create(null);
+	public void createNullThrowsNPE() throws Exception {
+		extractor.create(null);
 	}
 
 	@Test
-	public void applyReturnsCorrectField() throws Exception {
+	public void createReturnsCorrectField() throws Exception {
 		String prio = "Blocker";
 		when(mockIssue.getPriority()).thenReturn(mockPrio);
 		when(mockPrio.getName()).thenReturn(prio);
 
-		Field field = creator.create(mockIssue);
+		Field field = extractor.create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(prio);
 	}
 
 	@Test
-	public void applyWithNullPrioritySetsNonEmptyValue() throws Exception {
+	public void createWithNullPrioritySetsNonEmptyValue() throws Exception {
 		when(mockIssue.getPriority()).thenReturn(null);
 
-		Field field = creator.create(mockIssue);
+		Field field = extractor.create(mockIssue);
 
 		assertThat(field.getValue()).isNotNull();
 	}

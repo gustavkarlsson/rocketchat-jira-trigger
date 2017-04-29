@@ -14,36 +14,36 @@ public class ResolutionFieldExtractorTest {
 
 	private Issue mockIssue;
 	private Resolution resolution;
-	private ResolutionFieldExtractor creator;
+	private ResolutionFieldExtractor extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		resolution = mock(Resolution.class);
-		creator = new ResolutionFieldExtractor();
+		extractor = new ResolutionFieldExtractor();
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void applyNullThrowsNPE() throws Exception {
-		creator.create(null);
+	public void createNullThrowsNPE() throws Exception {
+		extractor.create(null);
 	}
 
 	@Test
-	public void applyReturnsCorrectField() throws Exception {
+	public void createReturnsCorrectField() throws Exception {
 		String type = "Bug";
 		when(mockIssue.getResolution()).thenReturn(this.resolution);
 		when(this.resolution.getName()).thenReturn(type);
 
-		Field field = creator.create(mockIssue);
+		Field field = extractor.create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(type);
 	}
 
 	@Test
-	public void applyWithNullResolutionSetsNonEmptyValue() throws Exception {
+	public void createWithNullResolutionSetsNonEmptyValue() throws Exception {
 		when(mockIssue.getResolution()).thenReturn(null);
 
-		Field field = creator.create(mockIssue);
+		Field field = extractor.create(mockIssue);
 
 		assertThat(field.getValue()).isNotNull();
 	}

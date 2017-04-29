@@ -4,6 +4,12 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.User;
 
 public class ReporterFieldExtractor extends AbstractFieldExtractor {
+
+	private final boolean useRealName;
+
+	public ReporterFieldExtractor(boolean useRealName) {
+		this.useRealName = useRealName;
+	}
 	@Override
 	protected String getTitle() {
 		return "Reporter";
@@ -12,7 +18,10 @@ public class ReporterFieldExtractor extends AbstractFieldExtractor {
 	@Override
 	protected String getValue(Issue issue) {
 		User reporter = issue.getReporter();
-		return reporter == null ? "No reporter" : reporter.getName();
+		if (reporter == null) {
+			return "Unassigned";
+		}
+		return useRealName ? reporter.getDisplayName() : reporter.getName();
 	}
 
 	@Override

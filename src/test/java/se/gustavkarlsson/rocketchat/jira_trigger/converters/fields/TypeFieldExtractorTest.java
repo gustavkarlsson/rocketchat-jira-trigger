@@ -14,27 +14,27 @@ public class TypeFieldExtractorTest {
 
 	private Issue mockIssue;
 	private IssueType type;
-	private TypeFieldExtractor creator;
+	private TypeFieldExtractor extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		type = mock(IssueType.class);
-		creator = new TypeFieldExtractor();
+		extractor = new TypeFieldExtractor();
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void applyNullThrowsNPE() throws Exception {
-		creator.create(null);
+	public void createNullThrowsNPE() throws Exception {
+		extractor.create(null);
 	}
 
 	@Test
-	public void applyReturnsCorrectField() throws Exception {
+	public void createReturnsCorrectField() throws Exception {
 		String type = "Bug";
 		when(mockIssue.getIssueType()).thenReturn(this.type);
 		when(this.type.getName()).thenReturn(type);
 
-		Field field = creator.create(mockIssue);
+		Field field = extractor.create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(type);
 	}

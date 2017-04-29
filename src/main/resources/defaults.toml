@@ -4,16 +4,17 @@ max_threads = 10 # Number of concurrent threads to handle requests from Rocket.C
 
 [message]
 username = "JIRA" # Override username
+use_real_names = true # Use peoples real names instead of jira usernames
 icon_url = "https://confluence.atlassian.com/alldoc/files/169118009/169050326/4/1260504581635/jira_logo.png" # Override icon
-date_pattern = "EEE, d MMM, yyyy" # Format according to https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
+date_pattern = "EEE, d MMM, yyyy" # Format dates according to https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
 date_locale = "en-US" # Defines how things like week days and month names will be represented. Expects a IETF language tag
 priority_colors = true # Color attachments according to issue priority
-default_color = "#205081" # Fallback color when priority is not recognized
+default_color = "#205081" # Fallback color when priority_colors is false or priority not recognized
 default_fields = ["assignee", "status", "reporter", "priority"] # Message fields to print by default
 extended_fields = ["description", "assignee", "status", "reporter", "priority", "resolution", "type", "created", "updated"] # Message fields to print for extended messages
 
 [rocketchat]
-tokens = [] # Allowed tokens. An empty array means ALL tokens are allowed.
+tokens = [] # Allowed Rocket.Chat tokens. An empty array means ALL tokens are allowed.
 whitelisted_users = [] # Only messages from these users are considered. An empty array accepts messages from all users (unless blacklisted).
 blacklisted_users = [ "rocket.cat", "hubot" ] # No messages from these users will be considered.
 whitelisted_channels = [] # Only messages from these channels are considered. An empty array accepts messages from all channels (unless blacklisted).

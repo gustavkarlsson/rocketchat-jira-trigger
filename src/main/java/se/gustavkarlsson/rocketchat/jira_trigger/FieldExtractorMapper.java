@@ -31,8 +31,8 @@ class FieldExtractorMapper {
 		fieldExtractorsByName.put(PRIORITY_KEY, new PriorityFieldExtractor());
 		fieldExtractorsByName.put(TYPE_KEY, new TypeFieldExtractor());
 		fieldExtractorsByName.put(RESOLUTION_KEY, new ResolutionFieldExtractor());
-		fieldExtractorsByName.put(REPORTER_KEY, new ReporterFieldExtractor());
-		fieldExtractorsByName.put(ASSIGNEE_KEY, new AssigneeFieldExtractor());
+		fieldExtractorsByName.put(REPORTER_KEY, new ReporterFieldExtractor(config.isUseRealNames()));
+		fieldExtractorsByName.put(ASSIGNEE_KEY, new AssigneeFieldExtractor(config.isUseRealNames()));
 		fieldExtractorsByName.put(CREATED_KEY, new CreatedFieldExtractor(config.getDateFormat()));
 		fieldExtractorsByName.put(UPDATED_KEY, new UpdatedFieldExtractor(config.getDateFormat()));
 	}

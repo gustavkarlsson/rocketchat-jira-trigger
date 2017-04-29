@@ -4,6 +4,13 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.User;
 
 public class AssigneeFieldExtractor extends AbstractFieldExtractor {
+
+	private final boolean useRealName;
+
+	public AssigneeFieldExtractor(boolean useRealName) {
+		this.useRealName = useRealName;
+	}
+
 	@Override
 	protected String getTitle() {
 		return "Assigned To";
@@ -12,7 +19,10 @@ public class AssigneeFieldExtractor extends AbstractFieldExtractor {
 	@Override
 	protected String getValue(Issue issue) {
 		User assignee = issue.getAssignee();
-		return assignee == null ? "Unassigned" : assignee.getName();
+		if (assignee == null) {
+			return "Unassigned";
+		}
+		return useRealName ? assignee.getDisplayName() : assignee.getName();
 	}
 
 	@Override

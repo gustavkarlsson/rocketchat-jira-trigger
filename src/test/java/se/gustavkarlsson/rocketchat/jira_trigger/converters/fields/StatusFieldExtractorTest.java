@@ -14,27 +14,27 @@ public class StatusFieldExtractorTest {
 
 	private Issue mockIssue;
 	private Status mockStatus;
-	private StatusFieldExtractor creator;
+	private StatusFieldExtractor extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		mockStatus = mock(Status.class);
-		creator = new StatusFieldExtractor();
+		extractor = new StatusFieldExtractor();
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void applyNullThrowsNPE() throws Exception {
-		creator.create(null);
+	public void createNullThrowsNPE() throws Exception {
+		extractor.create(null);
 	}
 
 	@Test
-	public void applyReturnsCorrectField() throws Exception {
+	public void createReturnsCorrectField() throws Exception {
 		String status = "Open";
 		when(mockIssue.getStatus()).thenReturn(mockStatus);
 		when(mockStatus.getName()).thenReturn(status);
 
-		Field field = creator.create(mockIssue);
+		Field field = extractor.create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(status);
 	}

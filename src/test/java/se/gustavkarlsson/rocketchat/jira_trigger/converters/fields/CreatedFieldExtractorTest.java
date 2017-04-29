@@ -18,14 +18,14 @@ public class CreatedFieldExtractorTest {
 	private Issue mockIssue;
 	private DateTime dateTime;
 	private DateFormat defaultDateFormat;
-	private CreatedFieldExtractor creator;
+	private CreatedFieldExtractor extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		dateTime = new DateTime();
 		defaultDateFormat = SimpleDateFormat.getDateInstance();
-		creator = new CreatedFieldExtractor(defaultDateFormat);
+		extractor = new CreatedFieldExtractor(defaultDateFormat);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -34,15 +34,15 @@ public class CreatedFieldExtractorTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void applyNullThrowsNPE() throws Exception {
-		creator.create(null);
+	public void createNullThrowsNPE() throws Exception {
+		extractor.create(null);
 	}
 
 	@Test
-	public void applyReturnsCorrectField() throws Exception {
+	public void createReturnsCorrectField() throws Exception {
 		when(mockIssue.getCreationDate()).thenReturn(dateTime);
 
-		Field field = creator.create(mockIssue);
+		Field field = extractor.create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(defaultDateFormat.format(dateTime.toDate()));
 	}
