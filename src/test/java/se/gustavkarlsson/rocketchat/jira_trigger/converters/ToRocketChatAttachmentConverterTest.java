@@ -102,6 +102,16 @@ public class ToRocketChatAttachmentConverterTest {
 	}
 
 	@Test
+	public void htmlEndodedSummaryIsCleaned() throws Exception {
+		when(mockIssue.getSummary()).thenReturn("&lt;Fran&ccedil;ais&gt;");
+		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList());
+
+		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
+
+		assertThat(attachment.getText()).isEqualTo("<http://somejira/browse/ISS-1234|Français>");
+	}
+
+	@Test
 	public void create() throws Exception {
 		new AttachmentConverter(mockConfig, emptyList(), emptyList());
 	}

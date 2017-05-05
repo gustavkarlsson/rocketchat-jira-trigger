@@ -9,8 +9,10 @@ import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment
 
 import javax.ws.rs.core.UriBuilder;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class AttachmentConverter {
@@ -51,7 +53,14 @@ public class AttachmentConverter {
 	}
 
 	private String createSummaryLink(Issue issue) {
-		return String.format("<%s|%s>", parseTitleLink(issue), issue.getSummary());
+		String summary = Optional.ofNullable(issue.getSummary()).orElse("");
+		String unescaped = unescapeHtml(summary);
+		String stripped = stripReservedLinkCharacters(unescaped);
+		return String.format("<%s|%s>", parseTitleLink(issue), stripped);
+	}
+
+	private static String stripReservedLinkCharacters(String text) {
+		return text.replaceAll("[<>]", "");
 	}
 
 	private String parseTitleLink(Issue issue) {
