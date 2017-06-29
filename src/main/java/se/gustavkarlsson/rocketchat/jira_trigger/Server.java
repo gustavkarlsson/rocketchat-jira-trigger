@@ -10,6 +10,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.ToRocketChatMessageFactory;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldExtractor;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
+import se.gustavkarlsson.rocketchat.jira_trigger.routes.JiraKeyParser;
 import spark.Request;
 import spark.Response;
 import spark.Service;
@@ -42,11 +43,12 @@ class Server {
 		List<FieldExtractor> defaultFieldExtractors = fieldExtractorMapper.getCreators(messageConfig.getDefaultFields());
 		List<FieldExtractor> extendedFieldExtractors = fieldExtractorMapper.getCreators(messageConfig.getExtendedFields());
 		AttachmentConverter attachmentConverter = new AttachmentConverter(messageConfig, defaultFieldExtractors, extendedFieldExtractors);
+		JiraKeyParser issueParser = new JiraKeyParser(messageConfig.getWhitelistedJiraKeyPrefixes(), messageConfig.getWhitelistedJiraKeySuffixes());
 
 		jiraClient = restClientProvider.get(jiraConfig);
 		maxThreads = appConfig.getMaxThreads();
 		port = appConfig.getPort();
-		detectIssueRoute = new DetectIssueRoute(rocketChatConfig, jiraClient.getIssueClient(), toRocketChatMessageFactory, attachmentConverter);
+		detectIssueRoute = new DetectIssueRoute(rocketChatConfig, jiraClient.getIssueClient(), toRocketChatMessageFactory, attachmentConverter, issueParser);
 	}
 
 	private static void logRequest(Request request) {

@@ -16,9 +16,10 @@ import se.gustavkarlsson.rocketchat.spark.routes.RocketChatMessageRoute;
 import spark.Request;
 import spark.Response;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.AbstractMap;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -28,19 +29,19 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class DetectIssueRoute extends RocketChatMessageRoute {
 	private static final Logger log = getLogger(DetectIssueRoute.class);
 
-	private static final Pattern JIRA_ISSUE = Pattern.compile("((?<!([A-Za-z]{1,10})-?)[A-Z]+-\\d+\\+?)");
-
 	private final RocketChatConfiguration config;
 	private final IssueRestClient issueClient;
 	private final ToRocketChatMessageFactory messageFactory;
 	private final AttachmentConverter attachmentConverter;
+	private final JiraKeyParser jiraKeyParser;
 
 	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient, ToRocketChatMessageFactory messageFactory,
-							AttachmentConverter attachmentConverter) {
+							AttachmentConverter attachmentConverter, JiraKeyParser jiraKeyParser) {
 		this.config = notNull(config);
 		this.issueClient = notNull(issueClient);
 		this.messageFactory = notNull(messageFactory);
 		this.attachmentConverter = notNull(attachmentConverter);
+		this.jiraKeyParser = notNull(jiraKeyParser);
 	}
 
 	private static boolean isAllowed(Collection<String> blacklist, Collection<String> whitelist, String... values) {
@@ -76,7 +77,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		}
 		log.info("Message is being processed...");
 		log.debug("Parsing keys from text: \"{}\"", fromRocketChatMessage.getText());
-		Map<String, Boolean> jiraKeys = parseJiraKeys(fromRocketChatMessage.getText());
+		Map<String, Boolean> jiraKeys = jiraKeyParser.parse(fromRocketChatMessage.getText());
 		log.info("Found {} keys", jiraKeys.size());
 		log.debug("Keys: {}", jiraKeys.keySet());
 		log.debug("Fetching issues...");
@@ -101,20 +102,6 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.collect(Collectors.toList());
 		message.setAttachments(attachments);
 		return message;
-	}
-
-	private Map<String, Boolean> parseJiraKeys(String messageText) {
-		Matcher matcher = JIRA_ISSUE.matcher(messageText);
-		Map<String, Boolean> jiraKeys = new HashMap<>();
-		while (matcher.find()) {
-			String key = matcher.group();
-			boolean extended = key.endsWith("+");
-			if (extended) {
-				key = key.substring(0, key.length() - 1);
-			}
-			jiraKeys.put(key, extended);
-		}
-		return jiraKeys;
 	}
 
 	private Issue getJiraIssue(String jiraKey) {

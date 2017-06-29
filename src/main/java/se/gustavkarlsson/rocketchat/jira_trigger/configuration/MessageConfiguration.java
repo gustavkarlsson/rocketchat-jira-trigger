@@ -6,6 +6,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 public class MessageConfiguration extends DefaultingConfiguration {
 	static final String KEY_PREFIX = "message.";
@@ -19,6 +22,8 @@ public class MessageConfiguration extends DefaultingConfiguration {
 	static final String DEFAULT_COLOR_KEY = "default_color";
 	static final String DEFAULT_FIELDS_KEY = "default_fields";
 	static final String EXTENDED_FIELDS_KEY = "extended_fields";
+	static final String WHITELISTED_KEY_PREFIXES_KEY = "whitelisted_jira_key_prefixes";
+	static final String WHITELISTED_KEY_SUFFIXES_KEY = "whitelisted_jira_key_suffixes";
 
 	private final String username;
 	private final boolean useRealNames;
@@ -28,6 +33,8 @@ public class MessageConfiguration extends DefaultingConfiguration {
 	private final String defaultColor;
 	private final List<String> defaultFields;
 	private final List<String> extendedFields;
+	private final Set<Character> whitelistedJiraKeyPrefixes;
+	private final Set<Character> whitelistedJiraKeySuffixes;
 
 	MessageConfiguration(Toml toml, Toml defaults) throws ValidationException {
 		super(toml, defaults);
@@ -41,9 +48,15 @@ public class MessageConfiguration extends DefaultingConfiguration {
 			defaultColor = getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
 			defaultFields = getList(KEY_PREFIX + DEFAULT_FIELDS_KEY);
 			extendedFields = getList(KEY_PREFIX + EXTENDED_FIELDS_KEY);
+			whitelistedJiraKeyPrefixes = charSet(getString(KEY_PREFIX + WHITELISTED_KEY_PREFIXES_KEY));
+			whitelistedJiraKeySuffixes = charSet(getString(KEY_PREFIX + WHITELISTED_KEY_SUFFIXES_KEY));
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
+	}
+
+	private static Set<Character> charSet(String string) {
+		return string.chars().mapToObj(c -> ((char) c)).collect(toSet());
 	}
 
 	public String getUsername() {
@@ -76,5 +89,13 @@ public class MessageConfiguration extends DefaultingConfiguration {
 
 	public List<String> getExtendedFields() {
 		return extendedFields;
+	}
+
+	public Set<Character> getWhitelistedJiraKeyPrefixes() {
+		return whitelistedJiraKeyPrefixes;
+	}
+
+	public Set<Character> getWhitelistedJiraKeySuffixes() {
+		return whitelistedJiraKeySuffixes;
 	}
 }

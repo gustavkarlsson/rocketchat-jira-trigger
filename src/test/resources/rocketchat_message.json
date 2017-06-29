@@ -7,7 +7,7 @@
   "timestamp": "2016-06-15T15:11:05.270Z",
   "user_id": "123567",
   "user_name": "tester",
-  "text": "Let's have a look at ISS-123",
+  "text": "Let's have a look at ISS-123 but not http://jira/rest/api/latest/issue/ABC-123",
   "user": {
     "_id": "9xACgGTaa4aRtMZNh",
     "createdAt": "2017-03-26T10:35:09.599Z",
