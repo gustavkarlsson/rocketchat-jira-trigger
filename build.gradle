@@ -3,7 +3,13 @@ plugins {
     id 'jacoco'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
-    id 'pl.allegro.tech.build.axion-release' version '1.6.0'
+    id 'pl.allegro.tech.build.axion-release' version '1.7.0'
+}
+
+scmVersion {
+    tag {
+        prefix = ''
+    }
 }
 
 sourceCompatibility = 1.8
@@ -11,12 +17,6 @@ targetCompatibility = 1.8
 group = 'se.gustavkarlsson.rocketchat'
 version = scmVersion.version
 mainClassName = 'se.gustavkarlsson.rocketchat.jira_trigger.App'
-
-scmVersion {
-    tag {
-        prefix = name
-    }
-}
 
 repositories {
     mavenCentral()
