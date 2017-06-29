@@ -1,17 +1,16 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.converters.fields;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
-
-import java.text.DateFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class CreatedFieldExtractor extends AbstractFieldExtractor {
 
-	private final DateFormat dateFormat;
+	private final DateTimeFormatter dateFormatter;
 
-	public CreatedFieldExtractor(DateFormat dateFormat) {
-		this.dateFormat = notNull(dateFormat);
+	public CreatedFieldExtractor(DateTimeFormatter dateTimeFormatter) {
+		this.dateFormatter = notNull(dateTimeFormatter);
 	}
 
 	@Override
@@ -21,7 +20,7 @@ public class CreatedFieldExtractor extends AbstractFieldExtractor {
 
 	@Override
 	protected String getValue(Issue issue) {
-		return dateFormat.format(issue.getCreationDate().toDate());
+		return dateFormatter.print(issue.getCreationDate());
 	}
 
 	@Override

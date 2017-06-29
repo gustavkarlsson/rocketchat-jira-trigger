@@ -1,9 +1,9 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
 import com.moandjiezana.toml.Toml;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class MessageConfiguration extends DefaultingConfiguration {
 	private final String username;
 	private final boolean useRealNames;
 	private final String iconUrl;
-	private final DateFormat dateFormat;
+	private final DateTimeFormatter dateFormatter;
 	private final boolean priorityColors;
 	private final String defaultColor;
 	private final List<String> defaultFields;
@@ -42,8 +42,9 @@ public class MessageConfiguration extends DefaultingConfiguration {
 			username = getString(KEY_PREFIX + USERNAME_KEY);
 			useRealNames = getBoolean(KEY_PREFIX + USE_REAL_NAMES_KEY);
 			iconUrl = getString(KEY_PREFIX + ICON_URL_KEY);
-			dateFormat = new SimpleDateFormat(getString(KEY_PREFIX + DATE_PATTERN_KEY),
-					Locale.forLanguageTag(getString(KEY_PREFIX + DATE_LOCALE_KEY)));
+			dateFormatter = DateTimeFormat
+					.forPattern(getString(KEY_PREFIX + DATE_PATTERN_KEY))
+					.withLocale(Locale.forLanguageTag(getString(KEY_PREFIX + DATE_LOCALE_KEY)));
 			priorityColors = getBoolean(KEY_PREFIX + PRIORITY_COLORS_KEY);
 			defaultColor = getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
 			defaultFields = getList(KEY_PREFIX + DEFAULT_FIELDS_KEY);
@@ -71,8 +72,8 @@ public class MessageConfiguration extends DefaultingConfiguration {
 		return iconUrl;
 	}
 
-	public DateFormat getDateFormat() {
-		return dateFormat;
+	public DateTimeFormatter getDateFormatter() {
+		return dateFormatter;
 	}
 
 	public boolean isPriorityColors() {

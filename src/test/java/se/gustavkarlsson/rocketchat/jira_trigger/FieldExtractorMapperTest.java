@@ -6,12 +6,12 @@ import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfigurat
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldExtractor;
 import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.StatusFieldExtractor;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.joda.time.format.DateTimeFormat.mediumDate;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static se.gustavkarlsson.rocketchat.jira_trigger.FieldExtractorMapper.STATUS_KEY;
@@ -22,7 +22,7 @@ public class FieldExtractorMapperTest {
 	@Before
 	public void setUp() throws Exception {
 		mockConfig = mock(MessageConfiguration.class);
-		when(mockConfig.getDateFormat()).thenReturn(SimpleDateFormat.getDateInstance());
+		when(mockConfig.getDateFormatter()).thenReturn(mediumDate());
 	}
 
 	@Test
@@ -37,7 +37,7 @@ public class FieldExtractorMapperTest {
 
 	@Test
 	public void getSingleCreator() throws Exception {
-		when(mockConfig.getDateFormat()).thenReturn(SimpleDateFormat.getDateInstance());
+		when(mockConfig.getDateFormatter()).thenReturn(mediumDate());
 		FieldExtractorMapper mapper = new FieldExtractorMapper(mockConfig);
 
 		List<FieldExtractor> creators = mapper.getCreators(singletonList(STATUS_KEY));
@@ -48,7 +48,7 @@ public class FieldExtractorMapperTest {
 
 	@Test
 	public void getNoCreator() throws Exception {
-		when(mockConfig.getDateFormat()).thenReturn(SimpleDateFormat.getDateInstance());
+		when(mockConfig.getDateFormatter()).thenReturn(mediumDate());
 		FieldExtractorMapper mapper = new FieldExtractorMapper(mockConfig);
 
 		List<FieldExtractor> creators = mapper.getCreators(emptyList());
