@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.gustavkarlsson:rocketchat-outgoing-webhook-server:rocketchat-outgoing-webhook-server-1.0.0'
+    compile 'com.github.gustavkarlsson:rocketchat-outgoing-webhook-server:2.0.0'
     compile 'com.atlassian.jira:jira-rest-java-client-core:4.0.0'
     compile 'com.atlassian.fugue:fugue:2.6.1'
     compile 'ch.qos.logback:logback-classic:1.2.2'
