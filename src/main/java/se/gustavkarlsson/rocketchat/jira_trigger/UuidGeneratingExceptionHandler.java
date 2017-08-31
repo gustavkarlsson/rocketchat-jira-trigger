@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-class UuidGeneratingExceptionHandler implements ExceptionHandler {
+class UuidGeneratingExceptionHandler implements ExceptionHandler<Exception> {
 	static final String ERROR_MESSAGE_PREFIX = "Unexpected server error: ";
 	private static final Logger log = getLogger(UuidGeneratingExceptionHandler.class);
 
