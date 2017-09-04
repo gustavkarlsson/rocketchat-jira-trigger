@@ -3,7 +3,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.modules.ConfigurationModule;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.ConfigurationModule;
 
 import static org.slf4j.LoggerFactory.getLogger;
 

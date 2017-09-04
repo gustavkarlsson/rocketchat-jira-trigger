@@ -1,106 +1,90 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import com.moandjiezana.toml.Toml;
 import org.junit.Before;
 import org.junit.Test;
-import se.gustavkarlsson.rocketchat.jira_trigger.test.TomlUtils;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AppConfigurationTest {
+	private static final int PORT = 2000;
+	private static final int MAX_THREADS = 10;
 
-	private Toml minimal;
-	private Toml defaults;
+	@Mock
+	private ConfigMap mockConfigMap;
+
+	private AppConfiguration appConfig;
 
 	@Before
 	public void setUp() throws Exception {
-		minimal = TomlUtils.getMinimalToml();
-		defaults = TomlUtils.getDefaultsToml();
+		when(mockConfigMap.getLong(KEY_PREFIX + PORT_KEY)).thenReturn((long) PORT);
+		when(mockConfigMap.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn((long) MAX_THREADS);
+		this.appConfig = new AppConfiguration(mockConfigMap);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void createWithNullTomlThrowsNPE() throws Exception {
-		new AppConfiguration(null, defaults);
-	}
-
-	@Test
-	public void createWithMinimalToml() throws Exception {
-		new AppConfiguration(minimal, defaults);
+	public void createWithNullConfigMapThrowsNPE() throws Exception {
+		new AppConfiguration(null);
 	}
 
 	@Test(expected = ValidationException.class)
 	public void createWithTooHighPortThrowsValidationException() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getLong(KEY_PREFIX + PORT_KEY)).thenReturn((long) Integer.MAX_VALUE + 1);
-		when(toml.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(10L);
-		new AppConfiguration(toml, defaults);
+		when(mockConfigMap.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(MAX_PORT_NUMBER + 1);
+
+		new AppConfiguration(mockConfigMap);
 	}
 
 	@Test(expected = ValidationException.class)
 	public void createWithTooLowPortThrowsValidationException() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(0L);
-		when(toml.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(10L);
-		new AppConfiguration(toml, defaults);
+		when(mockConfigMap.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(0L);
+
+		new AppConfiguration(mockConfigMap);
 	}
 
 	@Test
 	public void createWithLowestPortSucceeds() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(1L);
-		when(toml.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(10L);
-		new AppConfiguration(toml, defaults);
+		when(mockConfigMap.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(1L);
+
+		new AppConfiguration(mockConfigMap);
 	}
 
 	@Test
 	public void createWithHighestPortSucceeds() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getLong(KEY_PREFIX + PORT_KEY)).thenReturn((long) Integer.MAX_VALUE);
-		when(toml.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(10L);
-		new AppConfiguration(toml, defaults);
-	}
+		when(mockConfigMap.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(MAX_PORT_NUMBER);
 
-	@Test(expected = ValidationException.class)
-	public void createWithTooHighMaxThreadsThrowsValidationException() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(MAX_THREADS + 1);
-		when(toml.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(10L);
-		new AppConfiguration(toml, defaults);
+		new AppConfiguration(mockConfigMap);
 	}
 
 	@Test(expected = ValidationException.class)
 	public void createWithTooLowMaxThreadsThrowsValidationException() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(0L);
-		when(toml.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(10L);
-		new AppConfiguration(toml, defaults);
+		when(mockConfigMap.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(0L);
+
+		new AppConfiguration(mockConfigMap);
 	}
 
 	@Test
 	public void createWithLowestMaxThreadsSucceeds() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(1L);
-		when(toml.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(10L);
-		new AppConfiguration(toml, defaults);
-	}
+		when(mockConfigMap.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(1L);
 
-	@Test
-	public void createWithHighestMaxThreadsSucceeds() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getLong(KEY_PREFIX + MAX_THREADS_KEY)).thenReturn(MAX_THREADS);
-		when(toml.getLong(KEY_PREFIX + PORT_KEY)).thenReturn(10L);
-		new AppConfiguration(toml, defaults);
+		new AppConfiguration(mockConfigMap);
 	}
 
 	@Test
 	public void getPort() throws Exception {
-		new AppConfiguration(minimal, defaults).getPort();
+		int port = appConfig.getPort();
+
+		assertThat(port).isEqualTo(PORT);
 	}
 
 	@Test
 	public void getMaxThreads() throws Exception {
-		new AppConfiguration(minimal, defaults).getMaxThreads();
+		int maxThreads = appConfig.getMaxThreads();
+
+		assertThat(maxThreads).isEqualTo(MAX_THREADS);
 	}
 }
