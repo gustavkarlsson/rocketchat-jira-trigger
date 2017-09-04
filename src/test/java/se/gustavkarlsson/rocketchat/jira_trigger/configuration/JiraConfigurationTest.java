@@ -1,56 +1,72 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import com.moandjiezana.toml.Toml;
 import org.junit.Before;
 import org.junit.Test;
-import se.gustavkarlsson.rocketchat.jira_trigger.test.TomlUtils;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration.KEY_PREFIX;
-import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration.URI_KEY;
+import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class JiraConfigurationTest {
+	private static final String URI = "https://restapp.com/api";
+	private static final String USERNAME = "johndoe";
+	private static final String PASSWORD = "monkey";
 
-	private Toml minimal;
-	private Toml defaults;
+	@Mock
+	private ConfigMap mockConfigMap;
+
+	private JiraConfiguration jiraConfig;
 
 	@Before
 	public void setUp() throws Exception {
-		minimal = TomlUtils.getMinimalToml();
-		defaults = TomlUtils.getDefaultsToml();
+		when(mockConfigMap.getString(KEY_PREFIX + URI_KEY)).thenReturn(URI);
+		when(mockConfigMap.getString(KEY_PREFIX + USER_KEY)).thenReturn(USERNAME);
+		when(mockConfigMap.getString(KEY_PREFIX + PASSWORD_KEY)).thenReturn(PASSWORD);
+		this.jiraConfig = new JiraConfiguration(mockConfigMap);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void createWithNullTomlThrowsNPE() throws Exception {
-		new JiraConfiguration(null, defaults);
-	}
-
-	@Test
-	public void createWithMinimalToml() throws Exception {
-		new JiraConfiguration(minimal, defaults);
+	public void createWithNullConfigMapThrowsNPE() throws Exception {
+		new JiraConfiguration(null);
 	}
 
 	@Test(expected = ValidationException.class)
-	public void createWithInvalidUriTomlThrowsValidationException() throws Exception {
-		Toml toml = mock(Toml.class);
-		when(toml.getString(KEY_PREFIX + URI_KEY)).thenReturn("not a URI\\few %E//%");
-		new JiraConfiguration(toml, defaults);
+	public void createWithInvalidUriConfigThrowsValidationException() throws Exception {
+		when(mockConfigMap.getString(KEY_PREFIX + URI_KEY)).thenReturn("not a URI\\few %E//%");
+
+		new JiraConfiguration(mockConfigMap);
+	}
+
+	@Test(expected = ValidationException.class)
+	public void createWithNullUriConfigThrowsValidationException() throws Exception {
+		when(mockConfigMap.getString(KEY_PREFIX + URI_KEY)).thenReturn(null);
+
+		new JiraConfiguration(mockConfigMap);
 	}
 
 	@Test
 	public void getUri() throws Exception {
-		new JiraConfiguration(minimal, defaults).getUri();
+		java.net.URI uri = jiraConfig.getUri();
+
+		assertThat(uri.toString()).isEqualTo(URI);
 	}
 
 	@Test
 	public void getUsername() throws Exception {
-		new JiraConfiguration(minimal, defaults).getUsername();
+		String username = jiraConfig.getUsername();
+
+		assertThat(username).isEqualTo(USERNAME);
 	}
 
 	@Test
 	public void getPassword() throws Exception {
-		new JiraConfiguration(minimal, defaults).getPassword();
+		String password = jiraConfig.getPassword();
+
+		assertThat(password).isEqualTo(PASSWORD);
 	}
 
 }

@@ -1,12 +1,11 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import com.moandjiezana.toml.Toml;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
-
 import javax.inject.Inject;
 import java.net.URI;
 
-public class JiraConfiguration extends DefaultingConfiguration {
+import static org.apache.commons.lang3.Validate.notNull;
+
+public class JiraConfiguration {
 	static final String KEY_PREFIX = "jira.";
 
 	static final String URI_KEY = "uri";
@@ -18,12 +17,12 @@ public class JiraConfiguration extends DefaultingConfiguration {
 	private final String password;
 
 	@Inject
-	JiraConfiguration(Toml toml, @Default Toml defaults) throws ValidationException {
-		super(toml, defaults);
+	JiraConfiguration(ConfigMap configMap) throws ValidationException {
+		notNull(configMap);
 		try {
-			uri = URI.create(getString(KEY_PREFIX + URI_KEY));
-			username = getString(KEY_PREFIX + USER_KEY);
-			password = getString(KEY_PREFIX + PASSWORD_KEY);
+			uri = URI.create(configMap.getString(KEY_PREFIX + URI_KEY));
+			username = configMap.getString(KEY_PREFIX + USER_KEY);
+			password = configMap.getString(KEY_PREFIX + PASSWORD_KEY);
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
