@@ -3,7 +3,6 @@ package se.gustavkarlsson.rocketchat.jira_trigger;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
-import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
 import se.gustavkarlsson.rocketchat.jira_trigger.di.modules.ConfigurationModule;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -24,10 +23,7 @@ public class App {
 
 	App(String... args) throws Exception {
 		Injector injector = Guice.createInjector(new ConfigurationModule(args));
-		Configuration config = injector.getInstance(Configuration.class);
-		Server server = new Server(config);
-		server.logJiraServerInfo();
-		this.server = server;
+		this.server = injector.getInstance(Server.class);
 	}
 
 	Server getServer() {

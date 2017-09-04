@@ -15,6 +15,7 @@ import spark.Request;
 import spark.Response;
 import spark.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -31,6 +32,7 @@ class Server {
 	private final int port;
 	private Service server;
 
+	@Inject
 	Server(Configuration config) {
 		JiraConfiguration jiraConfig = config.getJiraConfiguration();
 		MessageConfiguration messageConfig = config.getMessageConfiguration();
@@ -61,7 +63,7 @@ class Server {
 		log.info("Outgoing response: {}", responseContent);
 	}
 
-	void logJiraServerInfo() {
+	private void logJiraServerInfo() {
 		MetadataRestClient metadataClient = jiraClient.getMetadataClient();
 		Promise<ServerInfo> serverInfoPromise = metadataClient.getServerInfo();
 		try {
@@ -76,6 +78,7 @@ class Server {
 	}
 
 	synchronized void start() {
+		logJiraServerInfo();
 		log.info("Starting server...");
 		if (server != null) {
 			throw new IllegalStateException("Already started");
