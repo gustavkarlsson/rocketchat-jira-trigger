@@ -2,13 +2,15 @@ package se.gustavkarlsson.rocketchat.jira_trigger.di.modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import se.gustavkarlsson.rocketchat.jira_trigger.ConfigFactory;
+import com.moandjiezana.toml.Toml;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.Configuration;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.ConfigFile;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 
 import java.io.File;
 
 public class ConfigurationModule extends AbstractModule {
+	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
+
 	private final File configFile;
 
 	public ConfigurationModule(String... args) {
@@ -20,11 +22,16 @@ public class ConfigurationModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(File.class).annotatedWith(ConfigFile.class).toInstance(configFile);
 	}
 
 	@Provides
-	Configuration provideConfiguration(ConfigFactory configFactory) throws Exception {
-		return configFactory.get();
+	@Default
+	Toml provideDefaultToml() throws Exception {
+		return new Toml().read(Configuration.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
+	}
+
+	@Provides
+	Toml provideTomlFromFile() throws Exception {
+		return new Toml().read(configFile);
 	}
 }

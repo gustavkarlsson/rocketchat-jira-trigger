@@ -2,13 +2,14 @@ package se.gustavkarlsson.rocketchat.jira_trigger.di.annotations;
 
 import com.google.inject.BindingAnnotation;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER})
+import static java.lang.annotation.ElementType.*;
+
 @BindingAnnotation
-public @interface ConfigFile {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({FIELD, PARAMETER, METHOD})
+public @interface Default {
 }

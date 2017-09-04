@@ -1,6 +1,9 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
 import com.moandjiezana.toml.Toml;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
+
+import javax.inject.Inject;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -10,7 +13,8 @@ public class Configuration {
 	private final MessageConfiguration message;
 	private final RocketChatConfiguration rocketchat;
 
-	public Configuration(Toml toml, Toml defaults) throws ValidationException {
+	@Inject
+	public Configuration(Toml toml, @Default Toml defaults) throws ValidationException {
 		notNull(toml);
 		notNull(defaults);
 		app = new AppConfiguration(toml, defaults);
