@@ -1,9 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import com.moandjiezana.toml.Toml;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -11,8 +9,9 @@ import java.util.Locale;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.Validate.notNull;
 
-public class MessageConfiguration extends DefaultingConfiguration {
+public class MessageConfiguration {
 	static final String KEY_PREFIX = "message.";
 
 	static final String USERNAME_KEY = "username";
@@ -39,28 +38,30 @@ public class MessageConfiguration extends DefaultingConfiguration {
 	private final Set<Character> whitelistedJiraKeySuffixes;
 
 	@Inject
-	MessageConfiguration(Toml toml, @Default Toml defaults) throws ValidationException {
-		super(toml, defaults);
+	MessageConfiguration(ConfigMap configMap) throws ValidationException {
+		notNull(configMap);
 		try {
-			username = getString(KEY_PREFIX + USERNAME_KEY);
-			useRealNames = getBoolean(KEY_PREFIX + USE_REAL_NAMES_KEY);
-			iconUrl = getString(KEY_PREFIX + ICON_URL_KEY);
+			username = configMap.getString(KEY_PREFIX + USERNAME_KEY);
+			useRealNames = configMap.getBoolean(KEY_PREFIX + USE_REAL_NAMES_KEY);
+			iconUrl = configMap.getString(KEY_PREFIX + ICON_URL_KEY);
 			dateFormatter = DateTimeFormat
-					.forPattern(getString(KEY_PREFIX + DATE_PATTERN_KEY))
-					.withLocale(Locale.forLanguageTag(getString(KEY_PREFIX + DATE_LOCALE_KEY)));
-			priorityColors = getBoolean(KEY_PREFIX + PRIORITY_COLORS_KEY);
-			defaultColor = getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
-			defaultFields = getList(KEY_PREFIX + DEFAULT_FIELDS_KEY);
-			extendedFields = getList(KEY_PREFIX + EXTENDED_FIELDS_KEY);
-			whitelistedJiraKeyPrefixes = charSet(getString(KEY_PREFIX + WHITELISTED_KEY_PREFIXES_KEY));
-			whitelistedJiraKeySuffixes = charSet(getString(KEY_PREFIX + WHITELISTED_KEY_SUFFIXES_KEY));
+					.forPattern(configMap.getString(KEY_PREFIX + DATE_PATTERN_KEY))
+					.withLocale(Locale.forLanguageTag(configMap.getString(KEY_PREFIX + DATE_LOCALE_KEY)));
+			priorityColors = configMap.getBoolean(KEY_PREFIX + PRIORITY_COLORS_KEY);
+			defaultColor = configMap.getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
+			defaultFields = configMap.getStringList(KEY_PREFIX + DEFAULT_FIELDS_KEY);
+			extendedFields = configMap.getStringList(KEY_PREFIX + EXTENDED_FIELDS_KEY);
+			whitelistedJiraKeyPrefixes = charSet(configMap.getString(KEY_PREFIX + WHITELISTED_KEY_PREFIXES_KEY));
+			whitelistedJiraKeySuffixes = charSet(configMap.getString(KEY_PREFIX + WHITELISTED_KEY_SUFFIXES_KEY));
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
 	}
 
 	private static Set<Character> charSet(String string) {
-		return string.chars().mapToObj(c -> ((char) c)).collect(toSet());
+		return string.chars()
+				.mapToObj(c -> ((char) c))
+				.collect(toSet());
 	}
 
 	public String getUsername() {

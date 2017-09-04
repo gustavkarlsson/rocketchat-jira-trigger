@@ -10,6 +10,7 @@ public class Configuration {
 	private final MessageConfiguration messageConfig;
 	private final RocketChatConfiguration rocketChatConfig;
 
+	// TODO Consider not validating configurations
 	@Inject
 	public Configuration(AppConfiguration appConfig, JiraConfiguration jiraConfig, MessageConfiguration messageConfig, RocketChatConfiguration rocketChatConfig) {
 		this.appConfig = notNull(appConfig);
