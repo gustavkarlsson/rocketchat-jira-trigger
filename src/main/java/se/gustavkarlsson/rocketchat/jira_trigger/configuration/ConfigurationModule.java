@@ -26,17 +26,17 @@ public class ConfigurationModule extends AbstractModule {
 
 	@Provides
 	@Default
-	Toml provideDefaultToml() throws Exception {
+	Toml provideDefaultToml() {
 		return new Toml().read(Configuration.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
 	}
 
 	@Provides
-	Toml provideTomlFromFile() throws Exception {
+	Toml provideTomlFromFile() {
 		return new Toml().read(configFile);
 	}
 
 	@Provides
-	ConfigMap provideConfigMap(@Default Toml defaultToml, Toml configFileToml) throws Exception {
+	ConfigMap provideConfigMap(@Default Toml defaultToml, Toml configFileToml) {
 		ConfigMap defaultConfig = new TomlConfigMap(defaultToml);
 		ConfigMap configFileConfig = new TomlConfigMap(configFileToml);
 		return new CascadingConfigMap(Arrays.asList(defaultConfig, configFileConfig));

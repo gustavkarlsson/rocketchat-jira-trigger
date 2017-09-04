@@ -5,9 +5,12 @@ import com.atlassian.jira.rest.client.api.MetadataRestClient;
 import com.atlassian.jira.rest.client.api.domain.ServerInfo;
 import com.atlassian.util.concurrent.Promise;
 import org.slf4j.Logger;
-import se.gustavkarlsson.rocketchat.jira_trigger.configuration.*;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.AttachmentConverter;
-import se.gustavkarlsson.rocketchat.jira_trigger.messages.FieldExtractorMapper;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.ToRocketChatMessageFactory;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
@@ -34,9 +37,7 @@ class Server {
 	private Service server;
 
 	@Inject
-	Server(FieldExtractorMapper fieldExtractorMapper, ToRocketChatMessageFactory toRocketChatMessageFactory, JiraConfiguration jiraConfig, RestClientProvider restClientProvider, RocketChatConfiguration rocketChatConfig, AppConfiguration appConfig, MessageConfiguration messageConfig, Configuration config) {
-		List<FieldExtractor> defaultFieldExtractors = fieldExtractorMapper.getCreators(messageConfig.getDefaultFields());
-		List<FieldExtractor> extendedFieldExtractors = fieldExtractorMapper.getCreators(messageConfig.getExtendedFields());
+	Server(@Default List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors, ToRocketChatMessageFactory toRocketChatMessageFactory, JiraConfiguration jiraConfig, RestClientProvider restClientProvider, RocketChatConfiguration rocketChatConfig, AppConfiguration appConfig, MessageConfiguration messageConfig) {
 		AttachmentConverter attachmentConverter = new AttachmentConverter(messageConfig, defaultFieldExtractors, extendedFieldExtractors);
 		JiraKeyParser issueParser = new JiraKeyParser(messageConfig.getWhitelistedJiraKeyPrefixes(), messageConfig.getWhitelistedJiraKeySuffixes());
 

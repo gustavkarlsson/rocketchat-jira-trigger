@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class FieldExtractorMapper {
+class FieldExtractorMapper {
 	private static final Logger log = getLogger(FieldExtractorMapper.class);
 
 	static final String DESCRIPTION_KEY = "description";
@@ -40,7 +40,7 @@ public class FieldExtractorMapper {
 	}
 
 
-	public List<FieldExtractor> getCreators(List<String> fields) {
+	List<FieldExtractor> getCreators(List<String> fields) {
 		log.debug("Fields to find creators for: {}", fields);
 		List<FieldExtractor> fieldExtractors = fields.stream()
 				.map(fieldExtractorsByName::get)
