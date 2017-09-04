@@ -1,7 +1,9 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
 import com.moandjiezana.toml.Toml;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 
+import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +22,8 @@ public class RocketChatConfiguration extends DefaultingConfiguration {
 	private final Set<String> whitelistedChannels;
 	private final Set<String> blacklistedChannels;
 
-	RocketChatConfiguration(Toml toml, Toml defaults) throws ValidationException {
+	@Inject
+	RocketChatConfiguration(Toml toml, @Default Toml defaults) throws ValidationException {
 		super(toml, defaults);
 		try {
 			tokens = new HashSet<>(getList(KEY_PREFIX + TOKENS_KEY));

@@ -1,53 +1,76 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import com.moandjiezana.toml.Toml;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import se.gustavkarlsson.rocketchat.jira_trigger.test.TomlUtils;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+@RunWith(MockitoJUnitRunner.class)
 public class ConfigurationTest {
 
-	private Toml minimal;
-	private Toml defaults;
+	@Mock
+	private AppConfiguration mockAppConfig;
+
+	@Mock
+	private JiraConfiguration mockJiraConfig;
+
+	@Mock
+	private MessageConfiguration mockMessageConfig;
+
+	@Mock
+	private RocketChatConfiguration mockRocketChatConfig;
+
+	private Configuration config;
 
 	@Before
 	public void setUp() throws Exception {
-		minimal = TomlUtils.getMinimalToml();
-		defaults = TomlUtils.getDefaultsToml();
+		this.config = new Configuration(mockAppConfig, mockJiraConfig, mockMessageConfig, mockRocketChatConfig);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void createWithNullFileThrowsNPE() throws Exception {
-		new Configuration(null, defaults);
+	public void createWithNullAppConfigFileThrowsNPE() throws Exception {
+		new Configuration(null, mockJiraConfig, mockMessageConfig, mockRocketChatConfig);
 	}
 
-	@Test
-	public void createWithMinimalFile() throws Exception {
-		new Configuration(minimal, defaults);
+	@Test(expected = NullPointerException.class)
+	public void createWithNullJiraConfigFileThrowsNPE() throws Exception {
+		new Configuration(mockAppConfig, null, mockMessageConfig, mockRocketChatConfig);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void createWithNullMessageConfigFileThrowsNPE() throws Exception {
+		new Configuration(mockAppConfig, mockJiraConfig, null, mockRocketChatConfig);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void createWithNullRocketChatConfigFileThrowsNPE() throws Exception {
+		new Configuration(mockAppConfig, mockJiraConfig, mockMessageConfig, null);
 	}
 
 	@Test
 	public void getAppConfig() throws Exception {
-		AppConfiguration config = new Configuration(minimal, defaults).getAppConfiguration();
-		Assertions.assertThat(config).isNotNull();
+		AppConfiguration appConfig = config.getAppConfiguration();
+		assertThat(appConfig).isNotNull();
 	}
 
 	@Test
 	public void getRocketChatConfig() throws Exception {
-		RocketChatConfiguration config = new Configuration(minimal, defaults).getRocketChatConfiguration();
-		Assertions.assertThat(config).isNotNull();
+		RocketChatConfiguration rocketChatConfig = config.getRocketChatConfiguration();
+		assertThat(rocketChatConfig).isNotNull();
 	}
 
 	@Test
 	public void getMessageConfig() throws Exception {
-		MessageConfiguration config = new Configuration(minimal, defaults).getMessageConfiguration();
-		Assertions.assertThat(config).isNotNull();
+		MessageConfiguration messageConfig = config.getMessageConfiguration();
+		assertThat(messageConfig).isNotNull();
 	}
 
 	@Test
 	public void getJiraConfig() throws Exception {
-		JiraConfiguration config = new Configuration(minimal, defaults).getJiraConfiguration();
-		Assertions.assertThat(config).isNotNull();
+		JiraConfiguration jiraConfig = config.getJiraConfiguration();
+		assertThat(jiraConfig).isNotNull();
 	}
 }

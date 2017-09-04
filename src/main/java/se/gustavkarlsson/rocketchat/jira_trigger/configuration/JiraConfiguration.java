@@ -1,7 +1,9 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
 import com.moandjiezana.toml.Toml;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 
+import javax.inject.Inject;
 import java.net.URI;
 
 public class JiraConfiguration extends DefaultingConfiguration {
@@ -15,7 +17,8 @@ public class JiraConfiguration extends DefaultingConfiguration {
 	private final String username;
 	private final String password;
 
-	JiraConfiguration(Toml toml, Toml defaults) throws ValidationException {
+	@Inject
+	JiraConfiguration(Toml toml, @Default Toml defaults) throws ValidationException {
 		super(toml, defaults);
 		try {
 			uri = URI.create(getString(KEY_PREFIX + URI_KEY));

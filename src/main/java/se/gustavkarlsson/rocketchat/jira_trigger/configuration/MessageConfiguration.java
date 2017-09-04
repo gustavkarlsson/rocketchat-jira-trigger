@@ -3,7 +3,9 @@ package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 import com.moandjiezana.toml.Toml;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -36,7 +38,8 @@ public class MessageConfiguration extends DefaultingConfiguration {
 	private final Set<Character> whitelistedJiraKeyPrefixes;
 	private final Set<Character> whitelistedJiraKeySuffixes;
 
-	MessageConfiguration(Toml toml, Toml defaults) throws ValidationException {
+	@Inject
+	MessageConfiguration(Toml toml, @Default Toml defaults) throws ValidationException {
 		super(toml, defaults);
 		try {
 			username = getString(KEY_PREFIX + USERNAME_KEY);

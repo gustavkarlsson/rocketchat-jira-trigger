@@ -1,41 +1,36 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import com.moandjiezana.toml.Toml;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
-
 import javax.inject.Inject;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class Configuration {
-	private final AppConfiguration app;
-	private final JiraConfiguration jira;
-	private final MessageConfiguration message;
-	private final RocketChatConfiguration rocketchat;
+	private final AppConfiguration appConfig;
+	private final JiraConfiguration jiraConfig;
+	private final MessageConfiguration messageConfig;
+	private final RocketChatConfiguration rocketChatConfig;
 
 	@Inject
-	public Configuration(Toml toml, @Default Toml defaults) throws ValidationException {
-		notNull(toml);
-		notNull(defaults);
-		app = new AppConfiguration(toml, defaults);
-		jira = new JiraConfiguration(toml, defaults);
-		message = new MessageConfiguration(toml, defaults);
-		rocketchat = new RocketChatConfiguration(toml, defaults);
+	public Configuration(AppConfiguration appConfig, JiraConfiguration jiraConfig, MessageConfiguration messageConfig, RocketChatConfiguration rocketChatConfig) {
+		this.appConfig = notNull(appConfig);
+		this.jiraConfig = notNull(jiraConfig);
+		this.messageConfig = notNull(messageConfig);
+		this.rocketChatConfig = notNull(rocketChatConfig);
 	}
 
 	public AppConfiguration getAppConfiguration() {
-		return app;
+		return appConfig;
 	}
 
 	public JiraConfiguration getJiraConfiguration() {
-		return jira;
+		return jiraConfig;
 	}
 
 	public MessageConfiguration getMessageConfiguration() {
-		return message;
+		return messageConfig;
 	}
 
 	public RocketChatConfiguration getRocketChatConfiguration() {
-		return rocketchat;
+		return rocketChatConfig;
 	}
 }

@@ -1,6 +1,9 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
 import com.moandjiezana.toml.Toml;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
+
+import javax.inject.Inject;
 
 import static org.apache.commons.lang3.Validate.inclusiveBetween;
 
@@ -15,7 +18,8 @@ public class AppConfiguration extends DefaultingConfiguration {
 	private final int port;
 	private final int maxThreads;
 
-	AppConfiguration(Toml toml, Toml defaults) throws ValidationException {
+	@Inject
+	AppConfiguration(Toml toml, @Default Toml defaults) throws ValidationException {
 		super(toml, defaults);
 		try {
 			port = getLong(KEY_PREFIX + PORT_KEY).intValue();
