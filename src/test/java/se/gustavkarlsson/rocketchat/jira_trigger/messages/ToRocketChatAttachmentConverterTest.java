@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.converters;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;

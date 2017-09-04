@@ -6,9 +6,10 @@ import com.atlassian.jira.rest.client.api.domain.ServerInfo;
 import com.atlassian.util.concurrent.Promise;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.*;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.AttachmentConverter;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.ToRocketChatMessageFactory;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldExtractor;
+import se.gustavkarlsson.rocketchat.jira_trigger.messages.AttachmentConverter;
+import se.gustavkarlsson.rocketchat.jira_trigger.messages.FieldExtractorMapper;
+import se.gustavkarlsson.rocketchat.jira_trigger.messages.ToRocketChatMessageFactory;
+import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.JiraKeyParser;
 import spark.Request;
@@ -33,15 +34,7 @@ class Server {
 	private Service server;
 
 	@Inject
-	Server(Configuration config) {
-		JiraConfiguration jiraConfig = config.getJiraConfiguration();
-		MessageConfiguration messageConfig = config.getMessageConfiguration();
-		AppConfiguration appConfig = config.getAppConfiguration();
-		RocketChatConfiguration rocketChatConfig = config.getRocketChatConfiguration();
-
-		RestClientProvider restClientProvider = new RestClientProvider();
-		ToRocketChatMessageFactory toRocketChatMessageFactory = new ToRocketChatMessageFactory(messageConfig);
-		FieldExtractorMapper fieldExtractorMapper = new FieldExtractorMapper(messageConfig);
+	Server(FieldExtractorMapper fieldExtractorMapper, ToRocketChatMessageFactory toRocketChatMessageFactory, JiraConfiguration jiraConfig, RestClientProvider restClientProvider, RocketChatConfiguration rocketChatConfig, AppConfiguration appConfig, MessageConfiguration messageConfig, Configuration config) {
 		List<FieldExtractor> defaultFieldExtractors = fieldExtractorMapper.getCreators(messageConfig.getDefaultFields());
 		List<FieldExtractor> extendedFieldExtractors = fieldExtractorMapper.getCreators(messageConfig.getExtendedFields());
 		AttachmentConverter attachmentConverter = new AttachmentConverter(messageConfig, defaultFieldExtractors, extendedFieldExtractors);

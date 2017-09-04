@@ -8,6 +8,7 @@ import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientF
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 
+import javax.inject.Inject;
 import java.net.URI;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -17,6 +18,7 @@ class RestClientProvider {
 	private static final Logger log = getLogger(RestClientProvider.class);
 	private final PasswordReadingConsole passwordReadingConsole;
 
+	@Inject
 	RestClientProvider() {
 		this(prompt -> System.console().readPassword(prompt));
 	}

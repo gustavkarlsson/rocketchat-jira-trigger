@@ -1,9 +1,9 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.converters;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.converters.fields.FieldExtractor;
+import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
 

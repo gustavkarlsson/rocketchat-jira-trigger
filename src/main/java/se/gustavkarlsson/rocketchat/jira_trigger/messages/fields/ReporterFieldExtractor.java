@@ -1,28 +1,27 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.converters.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.User;
 
-public class AssigneeFieldExtractor extends AbstractFieldExtractor {
+public class ReporterFieldExtractor extends AbstractFieldExtractor {
 
 	private final boolean useRealName;
 
-	public AssigneeFieldExtractor(boolean useRealName) {
+	public ReporterFieldExtractor(boolean useRealName) {
 		this.useRealName = useRealName;
 	}
-
 	@Override
 	protected String getTitle() {
-		return "Assigned To";
+		return "Reporter";
 	}
 
 	@Override
 	protected String getValue(Issue issue) {
-		User assignee = issue.getAssignee();
-		if (assignee == null) {
+		User reporter = issue.getReporter();
+		if (reporter == null) {
 			return "Unassigned";
 		}
-		return useRealName ? assignee.getDisplayName() : assignee.getName();
+		return useRealName ? reporter.getDisplayName() : reporter.getName();
 	}
 
 	@Override

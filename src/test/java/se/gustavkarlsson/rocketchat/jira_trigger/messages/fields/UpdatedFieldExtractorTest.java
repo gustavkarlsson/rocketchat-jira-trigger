@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.converters.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import org.joda.time.DateTime;
