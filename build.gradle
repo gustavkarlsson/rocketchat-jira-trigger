@@ -31,6 +31,7 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'org.apache.commons:commons-lang3:3.6'
     compile 'com.moandjiezana.toml:toml4j:0.7.1'
+    compile 'com.google.inject:guice:4.1.0'
     testCompile 'junit:junit:4.12'
     testCompile 'org.assertj:assertj-core:3.8.0'
     testCompile 'org.mockito:mockito-core:2.9.0'

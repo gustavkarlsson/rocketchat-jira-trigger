@@ -6,7 +6,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.configuration.ValidationExcepti
 
 import java.io.File;
 
-class ConfigFactory {
+public class ConfigFactory {
 	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
 
 	private static Toml parseToml(File configFile) {
@@ -17,7 +17,7 @@ class ConfigFactory {
 		return new Toml().read(Configuration.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
 	}
 
-	Configuration get(File configFile) throws ValidationException {
+	public Configuration get(File configFile) throws ValidationException {
 		Toml toml = parseToml(configFile);
 		Toml defaults = parseDefaults();
 		return new Configuration(toml, defaults);
