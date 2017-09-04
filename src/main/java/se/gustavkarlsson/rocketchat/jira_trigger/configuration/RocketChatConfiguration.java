@@ -1,13 +1,12 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import com.moandjiezana.toml.Toml;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
-
 import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RocketChatConfiguration extends DefaultingConfiguration {
+import static org.apache.commons.lang3.Validate.notNull;
+
+public class RocketChatConfiguration {
 	static final String KEY_PREFIX = "rocketchat.";
 
 	static final String TOKENS_KEY = "tokens";
@@ -23,14 +22,14 @@ public class RocketChatConfiguration extends DefaultingConfiguration {
 	private final Set<String> blacklistedChannels;
 
 	@Inject
-	RocketChatConfiguration(Toml toml, @Default Toml defaults) throws ValidationException {
-		super(toml, defaults);
+	RocketChatConfiguration(ConfigMap configMap) throws ValidationException {
+		notNull(configMap);
 		try {
-			tokens = new HashSet<>(getList(KEY_PREFIX + TOKENS_KEY));
-			whitelistedUsers = new HashSet<>(getList(KEY_PREFIX + WHITELISTED_USERS));
-			blacklistedUsers = new HashSet<>(getList(KEY_PREFIX + BLACKLISTED_USERS));
-			whitelistedChannels = new HashSet<>(getList(KEY_PREFIX + WHITELISTED_CHANNELS));
-			blacklistedChannels = new HashSet<>(getList(KEY_PREFIX + BLACKLISTED_CHANNELS));
+			tokens = new HashSet<>(configMap.getStringList(KEY_PREFIX + TOKENS_KEY));
+			whitelistedUsers = new HashSet<>(configMap.getStringList(KEY_PREFIX + WHITELISTED_USERS));
+			blacklistedUsers = new HashSet<>(configMap.getStringList(KEY_PREFIX + BLACKLISTED_USERS));
+			whitelistedChannels = new HashSet<>(configMap.getStringList(KEY_PREFIX + WHITELISTED_CHANNELS));
+			blacklistedChannels = new HashSet<>(configMap.getStringList(KEY_PREFIX + BLACKLISTED_CHANNELS));
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
