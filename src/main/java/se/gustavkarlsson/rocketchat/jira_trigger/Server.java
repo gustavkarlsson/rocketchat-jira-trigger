@@ -6,7 +6,6 @@ import com.atlassian.jira.rest.client.api.domain.ServerInfo;
 import com.atlassian.util.concurrent.Promise;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.AttachmentConverter;
@@ -34,10 +33,10 @@ class Server {
 	private Service server;
 
 	@Inject
-	Server(AttachmentConverter attachmentConverter, ToRocketChatMessageFactory toRocketChatMessageFactory, JiraConfiguration jiraConfig, RestClientProvider restClientProvider, RocketChatConfiguration rocketChatConfig, AppConfiguration appConfig, MessageConfiguration messageConfig) {
+	Server(AttachmentConverter attachmentConverter, ToRocketChatMessageFactory toRocketChatMessageFactory, JiraRestClient jiraClient, RocketChatConfiguration rocketChatConfig, AppConfiguration appConfig, MessageConfiguration messageConfig) {
 		JiraKeyParser issueParser = new JiraKeyParser(messageConfig.getWhitelistedJiraKeyPrefixes(), messageConfig.getWhitelistedJiraKeySuffixes());
 
-		jiraClient = restClientProvider.get(jiraConfig);
+		this.jiraClient = jiraClient;
 		maxThreads = appConfig.getMaxThreads();
 		port = appConfig.getPort();
 		detectIssueRoute = new DetectIssueRoute(rocketChatConfig, jiraClient.getIssueClient(), toRocketChatMessageFactory, attachmentConverter, issueParser);
