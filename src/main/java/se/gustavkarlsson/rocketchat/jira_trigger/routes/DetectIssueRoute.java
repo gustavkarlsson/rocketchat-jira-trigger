@@ -16,6 +16,7 @@ import se.gustavkarlsson.rocketchat.spark.routes.RocketChatMessageRoute;
 import spark.Request;
 import spark.Response;
 
+import javax.inject.Inject;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.List;
@@ -35,6 +36,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 	private final AttachmentConverter attachmentConverter;
 	private final JiraKeyParser jiraKeyParser;
 
+	@Inject
 	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient, ToRocketChatMessageFactory messageFactory,
 							AttachmentConverter attachmentConverter, JiraKeyParser jiraKeyParser) {
 		this.config = notNull(config);

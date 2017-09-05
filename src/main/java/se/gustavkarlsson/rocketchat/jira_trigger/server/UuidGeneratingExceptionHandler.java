@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger;
+package se.gustavkarlsson.rocketchat.jira_trigger.server;
 
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;

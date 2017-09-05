@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger;
+package se.gustavkarlsson.rocketchat.jira_trigger.server;
 
 import org.junit.Before;
 import org.junit.Test;

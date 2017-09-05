@@ -4,6 +4,7 @@ import com.google.inject.*;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
+import se.gustavkarlsson.rocketchat.jira_trigger.routes.JiraKeyParser;
 
 import java.util.List;
 
@@ -29,6 +30,11 @@ public class MessageModule extends AbstractModule {
 	@Provides
 	AttachmentConverter provideAttachmentConverter(MessageConfiguration messageConfig, @Default List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
 		return new AttachmentConverter(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldExtractors, extendedFieldExtractors);
+	}
+
+	@Provides
+	JiraKeyParser provideJiraKeyParser(MessageConfiguration messageConfig) {
+		return new JiraKeyParser(messageConfig.getWhitelistedJiraKeyPrefixes(), messageConfig.getWhitelistedJiraKeySuffixes());
 	}
 
 	public static class DefaultFieldExtractorsProvider implements Provider<List<FieldExtractor>> {
