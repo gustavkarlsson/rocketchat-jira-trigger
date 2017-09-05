@@ -1,6 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -20,7 +21,8 @@ public class UpdatedFieldExtractor extends AbstractFieldExtractor {
 
 	@Override
 	protected String getValue(Issue issue) {
-		return dateFormatter.print(issue.getUpdateDate());
+		DateTime updateDate = issue.getUpdateDate();
+		return updateDate == null ? "-" : dateFormatter.print(updateDate);
 	}
 
 	@Override

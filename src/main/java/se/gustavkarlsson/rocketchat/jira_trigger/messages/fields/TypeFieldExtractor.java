@@ -1,6 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 
 public class TypeFieldExtractor extends AbstractFieldExtractor {
 
@@ -11,7 +12,8 @@ public class TypeFieldExtractor extends AbstractFieldExtractor {
 
 	@Override
 	protected String getValue(Issue issue) {
-		return issue.getIssueType().getName();
+		IssueType issueType = issue.getIssueType();
+		return issueType == null ? "-" : issueType.getName();
 	}
 
 	@Override

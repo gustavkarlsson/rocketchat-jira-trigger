@@ -19,7 +19,7 @@ public class ReporterFieldExtractor extends AbstractFieldExtractor {
 	protected String getValue(Issue issue) {
 		User reporter = issue.getReporter();
 		if (reporter == null) {
-			return "Unassigned";
+			return "-";
 		}
 		return useRealName ? reporter.getDisplayName() : reporter.getName();
 	}

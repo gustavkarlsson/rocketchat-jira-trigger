@@ -12,7 +12,7 @@ public class DescriptionFieldExtractor extends AbstractFieldExtractor {
 	@Override
 	protected String getValue(Issue issue) {
 		String description = issue.getDescription();
-		return description == null ? "None" : description;
+		return description == null ? "-" : description;
 	}
 
 	@Override

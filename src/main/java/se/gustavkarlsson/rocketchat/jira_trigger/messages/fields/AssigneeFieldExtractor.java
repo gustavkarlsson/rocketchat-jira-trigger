@@ -20,7 +20,7 @@ public class AssigneeFieldExtractor extends AbstractFieldExtractor {
 	protected String getValue(Issue issue) {
 		User assignee = issue.getAssignee();
 		if (assignee == null) {
-			return "Unassigned";
+			return "-";
 		}
 		return useRealName ? assignee.getDisplayName() : assignee.getName();
 	}

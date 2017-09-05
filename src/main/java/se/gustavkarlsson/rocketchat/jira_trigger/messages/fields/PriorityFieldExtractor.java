@@ -12,7 +12,7 @@ public class PriorityFieldExtractor extends AbstractFieldExtractor {
 	@Override
 	protected String getValue(Issue issue) {
 		BasicPriority priority = issue.getPriority();
-		return priority == null ? "Unprioritized" : priority.getName();
+		return priority == null ? "-" : priority.getName();
 	}
 
 	@Override

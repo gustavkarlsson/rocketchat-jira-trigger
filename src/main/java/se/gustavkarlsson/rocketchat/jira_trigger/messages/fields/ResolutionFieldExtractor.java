@@ -13,7 +13,7 @@ public class ResolutionFieldExtractor extends AbstractFieldExtractor {
 	@Override
 	protected String getValue(Issue issue) {
 		Resolution resolution = issue.getResolution();
-		return resolution == null ? "None" : resolution.getName();
+		return resolution == null ? "-" : resolution.getName();
 	}
 
 	@Override
