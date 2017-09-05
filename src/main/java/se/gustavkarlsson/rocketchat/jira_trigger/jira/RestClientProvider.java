@@ -6,7 +6,6 @@ import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import org.slf4j.Logger;
-import se.gustavkarlsson.rocketchat.jira_trigger.PasswordReadingConsole;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 
 import javax.inject.Inject;

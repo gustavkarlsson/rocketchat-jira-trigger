@@ -10,14 +10,14 @@ import java.util.regex.Pattern;
 import static com.google.common.collect.Sets.union;
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class JiraKeyParser {
+class JiraKeyParser {
 	private static final Pattern JIRA_KEY = Pattern.compile("[A-Z]+-\\d+\\+?");
 	private static final Set<Character> ALWAYS_VALID = new HashSet<>(Arrays.asList(' ', '\t', '\n'));
 
 	private final Set<Character> whitelistedPrefixes;
 	private final Set<Character> whitelistedSuffixes;
 
-	public JiraKeyParser(Set<Character> whitelistedPrefixes, Set<Character> whitelistedSuffixes) {
+	JiraKeyParser(Set<Character> whitelistedPrefixes, Set<Character> whitelistedSuffixes) {
 		this.whitelistedPrefixes = union(notNull(whitelistedPrefixes), ALWAYS_VALID);
 		this.whitelistedSuffixes = union(notNull(whitelistedSuffixes), ALWAYS_VALID);
 	}

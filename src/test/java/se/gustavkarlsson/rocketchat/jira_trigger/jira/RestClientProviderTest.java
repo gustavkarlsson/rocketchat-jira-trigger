@@ -3,7 +3,6 @@ package se.gustavkarlsson.rocketchat.jira_trigger.jira;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import org.junit.Before;
 import org.junit.Test;
-import se.gustavkarlsson.rocketchat.jira_trigger.PasswordReadingConsole;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 
 import java.net.URI;

@@ -10,7 +10,7 @@
       "fields": [
         {
           "title": "Assigned To",
-          "value": "Unassigned",
+          "value": "-",
           "short": true
         },
         {
