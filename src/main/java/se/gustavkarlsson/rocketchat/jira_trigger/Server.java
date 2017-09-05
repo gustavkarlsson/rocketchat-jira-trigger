@@ -9,10 +9,8 @@ import se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.AttachmentConverter;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.ToRocketChatMessageFactory;
-import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.JiraKeyParser;
 import spark.Request;
@@ -20,7 +18,6 @@ import spark.Response;
 import spark.Service;
 
 import javax.inject.Inject;
-import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static spark.Service.ignite;
@@ -37,8 +34,7 @@ class Server {
 	private Service server;
 
 	@Inject
-	Server(@Default List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors, ToRocketChatMessageFactory toRocketChatMessageFactory, JiraConfiguration jiraConfig, RestClientProvider restClientProvider, RocketChatConfiguration rocketChatConfig, AppConfiguration appConfig, MessageConfiguration messageConfig) {
-		AttachmentConverter attachmentConverter = new AttachmentConverter(messageConfig, defaultFieldExtractors, extendedFieldExtractors);
+	Server(AttachmentConverter attachmentConverter, ToRocketChatMessageFactory toRocketChatMessageFactory, JiraConfiguration jiraConfig, RestClientProvider restClientProvider, RocketChatConfiguration rocketChatConfig, AppConfiguration appConfig, MessageConfiguration messageConfig) {
 		JiraKeyParser issueParser = new JiraKeyParser(messageConfig.getWhitelistedJiraKeyPrefixes(), messageConfig.getWhitelistedJiraKeySuffixes());
 
 		jiraClient = restClientProvider.get(jiraConfig);

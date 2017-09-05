@@ -26,6 +26,11 @@ public class MessageModule extends AbstractModule {
 		return new FieldExtractorMapper(messageConfig.isUseRealNames(), messageConfig.getDateFormatter());
 	}
 
+	@Provides
+	AttachmentConverter provideAttachmentConverter(MessageConfiguration messageConfig, @Default List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
+		return new AttachmentConverter(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldExtractors, extendedFieldExtractors);
+	}
+
 	public static class DefaultFieldExtractorsProvider implements Provider<List<FieldExtractor>> {
 		private final FieldExtractorMapper fieldExtractorMapper;
 		private final MessageConfiguration messageConfig;

@@ -2,7 +2,6 @@ package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
@@ -13,24 +12,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
+import static org.apache.commons.lang3.Validate.noNullElements;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class AttachmentConverter {
-
 	static final String BLOCKER_COLOR = "#FF4437";
 	static final String CRITICAL_COLOR = "#D04437";
 	static final String MAJOR_COLOR = "#E3833C";
 	static final String MINOR_COLOR = "#F6C342";
 	static final String TRIVIAL_COLOR = "#707070";
 
-	private final MessageConfiguration config;
+	private final boolean priorityColors;
+	private final String defaultColor;
 	private final List<FieldExtractor> defaultFieldExtractors;
 	private final List<FieldExtractor> extendedFieldExtractors;
 
-	public AttachmentConverter(MessageConfiguration config, List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
-		this.config = notNull(config);
-		this.defaultFieldExtractors = notNull(defaultFieldExtractors);
-		this.extendedFieldExtractors = notNull(extendedFieldExtractors);
+	AttachmentConverter(boolean priorityColors, String defaultColor, List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
+		this.priorityColors = priorityColors;
+		this.defaultColor = notNull(defaultColor);
+		this.defaultFieldExtractors = noNullElements(defaultFieldExtractors);
+		this.extendedFieldExtractors = noNullElements(extendedFieldExtractors);
 	}
 
 	public ToRocketChatAttachment convert(Issue issue, Boolean extended) {
@@ -41,10 +42,10 @@ public class AttachmentConverter {
 	private ToRocketChatAttachment createAttachment(Issue issue, List<FieldExtractor> fieldExtractors) {
 		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
 		attachment.setTitle(issue.getKey());
-		if (config.isPriorityColors() && issue.getPriority() != null) {
-			attachment.setColor(getPriorityColor(issue.getPriority(), config.getDefaultColor()));
+		if (priorityColors && issue.getPriority() != null) {
+			attachment.setColor(getPriorityColor(issue.getPriority(), defaultColor));
 		} else {
-			attachment.setColor(config.getDefaultColor());
+			attachment.setColor(defaultColor);
 		}
 		attachment.setText(createSummaryLink(issue));
 		List<Field> fields = fieldExtractors.stream().map(fc -> fc.create(issue)).collect(Collectors.toList());
