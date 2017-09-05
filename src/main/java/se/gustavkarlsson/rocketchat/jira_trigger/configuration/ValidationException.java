@@ -1,7 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-public class ValidationException extends Exception {
+class ValidationException extends Exception {
 	ValidationException(Exception cause) {
-		super(cause);
+		super("An error occurred when validating the configuration", cause);
 	}
 }

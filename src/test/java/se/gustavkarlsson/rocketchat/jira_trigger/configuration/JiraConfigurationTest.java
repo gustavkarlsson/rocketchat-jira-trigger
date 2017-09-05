@@ -23,9 +23,9 @@ public class JiraConfigurationTest {
 
 	@Before
 	public void setUp() throws Exception {
-		when(mockConfigMap.getString(KEY_PREFIX + URI_KEY)).thenReturn(URI);
-		when(mockConfigMap.getString(KEY_PREFIX + USER_KEY)).thenReturn(USERNAME);
-		when(mockConfigMap.getString(KEY_PREFIX + PASSWORD_KEY)).thenReturn(PASSWORD);
+		when(mockConfigMap.getString(URI_KEY)).thenReturn(URI);
+		when(mockConfigMap.getString(USER_KEY)).thenReturn(USERNAME);
+		when(mockConfigMap.getString(PASSWORD_KEY)).thenReturn(PASSWORD);
 		this.jiraConfig = new JiraConfiguration(mockConfigMap);
 	}
 
@@ -36,14 +36,14 @@ public class JiraConfigurationTest {
 
 	@Test(expected = ValidationException.class)
 	public void createWithInvalidUriConfigThrowsValidationException() throws Exception {
-		when(mockConfigMap.getString(KEY_PREFIX + URI_KEY)).thenReturn("not a URI\\few %E//%");
+		when(mockConfigMap.getString(URI_KEY)).thenReturn("not a URI\\few %E//%");
 
 		new JiraConfiguration(mockConfigMap);
 	}
 
 	@Test(expected = ValidationException.class)
 	public void createWithNullUriConfigThrowsValidationException() throws Exception {
-		when(mockConfigMap.getString(KEY_PREFIX + URI_KEY)).thenReturn(null);
+		when(mockConfigMap.getString(URI_KEY)).thenReturn(null);
 
 		new JiraConfiguration(mockConfigMap);
 	}

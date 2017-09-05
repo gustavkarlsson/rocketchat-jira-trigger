@@ -8,15 +8,15 @@ import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 import java.io.File;
 import java.util.Arrays;
 
+import static org.apache.commons.lang3.Validate.notEmpty;
+
 public class ConfigurationModule extends AbstractModule {
 	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
 
 	private final File configFile;
 
 	public ConfigurationModule(String... args) {
-		if (args.length != 1) {
-			throw new IllegalArgumentException("Exactly one configuration file must be specified");
-		}
+		notEmpty(args, "A configuration file must be specified as the first argument");
 		configFile = new File(args[0]);
 	}
 
@@ -27,7 +27,7 @@ public class ConfigurationModule extends AbstractModule {
 	@Provides
 	@Default
 	Toml provideDefaultToml() {
-		return new Toml().read(Configuration.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
+		return new Toml().read(ConfigurationModule.class.getClassLoader().getResourceAsStream(DEFAULTS_FILE_NAME));
 	}
 
 	@Provides

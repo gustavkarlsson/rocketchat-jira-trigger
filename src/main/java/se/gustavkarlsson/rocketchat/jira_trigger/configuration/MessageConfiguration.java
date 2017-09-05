@@ -6,25 +6,26 @@ import org.joda.time.format.DateTimeFormatter;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class MessageConfiguration {
-	static final String KEY_PREFIX = "message.";
-
-	static final String USERNAME_KEY = "username";
-	static final String USE_REAL_NAMES_KEY = "use_real_names";
-	static final String ICON_URL_KEY = "icon_url";
-	static final String DATE_PATTERN_KEY = "date_pattern";
-	static final String DATE_LOCALE_KEY = "date_locale";
-	static final String PRIORITY_COLORS_KEY = "priority_colors";
-	static final String DEFAULT_COLOR_KEY = "default_color";
-	static final String DEFAULT_FIELDS_KEY = "default_fields";
-	static final String EXTENDED_FIELDS_KEY = "extended_fields";
-	static final String WHITELISTED_KEY_PREFIXES_KEY = "whitelisted_jira_key_prefixes";
-	static final String WHITELISTED_KEY_SUFFIXES_KEY = "whitelisted_jira_key_suffixes";
+	private static final String KEY_PREFIX = "message.";
+	static final String USERNAME_KEY = KEY_PREFIX + "username";
+	static final String USE_REAL_NAMES_KEY = KEY_PREFIX + "use_real_names";
+	static final String ICON_URL_KEY = KEY_PREFIX + "icon_url";
+	static final String DATE_PATTERN_KEY = KEY_PREFIX + "date_pattern";
+	static final String DATE_LOCALE_KEY = KEY_PREFIX + "date_locale";
+	static final String PRIORITY_COLORS_KEY = KEY_PREFIX + "priority_colors";
+	static final String DEFAULT_COLOR_KEY = KEY_PREFIX + "default_color";
+	static final String DEFAULT_FIELDS_KEY = KEY_PREFIX + "default_fields";
+	static final String EXTENDED_FIELDS_KEY = KEY_PREFIX + "extended_fields";
+	static final String WHITELISTED_KEY_PREFIXES_KEY = KEY_PREFIX + "whitelisted_jira_key_prefixes";
+	static final String WHITELISTED_KEY_SUFFIXES_KEY = KEY_PREFIX + "whitelisted_jira_key_suffixes";
 
 	private final String username;
 	private final boolean useRealNames;
@@ -41,26 +42,26 @@ public class MessageConfiguration {
 	MessageConfiguration(ConfigMap configMap) throws ValidationException {
 		notNull(configMap);
 		try {
-			username = configMap.getString(KEY_PREFIX + USERNAME_KEY);
-			useRealNames = configMap.getBoolean(KEY_PREFIX + USE_REAL_NAMES_KEY);
-			iconUrl = configMap.getString(KEY_PREFIX + ICON_URL_KEY);
+			username = configMap.getString(USERNAME_KEY);
+			useRealNames = notNull(configMap.getBoolean(USE_REAL_NAMES_KEY), String.format("%s must be provided", USE_REAL_NAMES_KEY));
+			iconUrl = configMap.getString(ICON_URL_KEY);
 			dateFormatter = DateTimeFormat
-					.forPattern(configMap.getString(KEY_PREFIX + DATE_PATTERN_KEY))
-					.withLocale(Locale.forLanguageTag(configMap.getString(KEY_PREFIX + DATE_LOCALE_KEY)));
-			priorityColors = configMap.getBoolean(KEY_PREFIX + PRIORITY_COLORS_KEY);
-			defaultColor = configMap.getString(KEY_PREFIX + DEFAULT_COLOR_KEY);
-			defaultFields = configMap.getStringList(KEY_PREFIX + DEFAULT_FIELDS_KEY);
-			extendedFields = configMap.getStringList(KEY_PREFIX + EXTENDED_FIELDS_KEY);
-			whitelistedJiraKeyPrefixes = charSet(configMap.getString(KEY_PREFIX + WHITELISTED_KEY_PREFIXES_KEY));
-			whitelistedJiraKeySuffixes = charSet(configMap.getString(KEY_PREFIX + WHITELISTED_KEY_SUFFIXES_KEY));
+					.forPattern(notNull(configMap.getString(DATE_PATTERN_KEY), String.format("%s must be provided", DATE_PATTERN_KEY)))
+					.withLocale(Locale.forLanguageTag(notNull(configMap.getString(DATE_LOCALE_KEY), String.format("%s must be provided", DATE_LOCALE_KEY))));
+			priorityColors = notNull(configMap.getBoolean(PRIORITY_COLORS_KEY), String.format("%s must be provided", PRIORITY_COLORS_KEY));
+			defaultColor = notNull(configMap.getString(DEFAULT_COLOR_KEY), String.format("%s must be provided", DEFAULT_COLOR_KEY));
+			defaultFields = Optional.ofNullable(configMap.getStringList(DEFAULT_FIELDS_KEY)).orElse(emptyList());
+			extendedFields = Optional.ofNullable(configMap.getStringList(EXTENDED_FIELDS_KEY)).orElse(emptyList());
+			whitelistedJiraKeyPrefixes = toCharacterSet(Optional.ofNullable(configMap.getString(WHITELISTED_KEY_PREFIXES_KEY)).orElse(""));
+			whitelistedJiraKeySuffixes = toCharacterSet(Optional.ofNullable(configMap.getString(WHITELISTED_KEY_SUFFIXES_KEY)).orElse(""));
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
 	}
 
-	private static Set<Character> charSet(String string) {
+	private static Set<Character> toCharacterSet(String string) {
 		return string.chars()
-				.mapToObj(c -> ((char) c))
+				.mapToObj(c -> (char) c)
 				.collect(toSet());
 	}
 

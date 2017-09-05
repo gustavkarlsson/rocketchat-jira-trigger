@@ -6,11 +6,10 @@ import java.net.URI;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class JiraConfiguration {
-	static final String KEY_PREFIX = "jira.";
-
-	static final String URI_KEY = "uri";
-	static final String USER_KEY = "username";
-	static final String PASSWORD_KEY = "password";
+	private static final String KEY_PREFIX = "jira.";
+	static final String URI_KEY = KEY_PREFIX + "uri";
+	static final String USER_KEY = KEY_PREFIX + "username";
+	static final String PASSWORD_KEY = KEY_PREFIX + "password";
 
 	private final URI uri;
 	private final String username;
@@ -20,9 +19,9 @@ public class JiraConfiguration {
 	JiraConfiguration(ConfigMap configMap) throws ValidationException {
 		notNull(configMap);
 		try {
-			uri = URI.create(configMap.getString(KEY_PREFIX + URI_KEY));
-			username = configMap.getString(KEY_PREFIX + USER_KEY);
-			password = configMap.getString(KEY_PREFIX + PASSWORD_KEY);
+			uri = URI.create(notNull(configMap.getString(URI_KEY), String.format("%s must be provided", URI_KEY)));
+			username = configMap.getString(USER_KEY);
+			password = configMap.getString(PASSWORD_KEY);
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}

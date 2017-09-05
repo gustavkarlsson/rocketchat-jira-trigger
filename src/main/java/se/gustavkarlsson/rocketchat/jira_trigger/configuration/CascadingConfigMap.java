@@ -7,13 +7,11 @@ import java.util.function.Function;
 import static org.apache.commons.lang3.Validate.noNullElements;
 
 class CascadingConfigMap implements ConfigMap {
-
 	private final List<ConfigMap> configMaps;
 
 	CascadingConfigMap(List<ConfigMap> configMaps) {
 		this.configMaps = noNullElements(configMaps);
 	}
-
 
 	@Override
 	public String getString(String key) {
