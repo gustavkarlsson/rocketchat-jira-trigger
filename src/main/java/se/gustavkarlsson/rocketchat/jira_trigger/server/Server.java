@@ -1,8 +1,5 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.server;
 
-import com.atlassian.jira.rest.client.api.MetadataRestClient;
-import com.atlassian.jira.rest.client.api.domain.ServerInfo;
-import com.atlassian.util.concurrent.Promise;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.DetectIssueRoute;
 import spark.Request;
@@ -20,33 +17,20 @@ public class Server {
 	private final int maxThreads;
 	private final int port;
 	private final DetectIssueRoute detectIssueRoute;
-	private final MetadataRestClient metadataClient;
+	private final JiraServerInfoLogger jiraServerInfoLogger;
 
 	private Service service;
 
-	Server(int maxThreads, int port, DetectIssueRoute detectIssueRoute, MetadataRestClient metadataClient) {
+	Server(int maxThreads, int port, DetectIssueRoute detectIssueRoute, JiraServerInfoLogger jiraServerInfoLogger) {
 		this.maxThreads = maxThreads;
 		this.port = port;
 		this.detectIssueRoute = detectIssueRoute;
-		this.metadataClient = metadataClient;
+		this.jiraServerInfoLogger = jiraServerInfoLogger;
 	}
 
 	private static void logRequest(Request request) {
 		log.info("Incoming request: {} {} {} {}",
 				request.raw().getRemoteAddr(), request.requestMethod(), request.contentType(), request.pathInfo());
-	}
-
-	private void logJiraServerInfo() {
-		Promise<ServerInfo> serverInfoPromise = metadataClient.getServerInfo();
-		try {
-			ServerInfo serverInfo = serverInfoPromise.get();
-			log.info("Found JIRA instance '{}' running version {} at {}",
-					serverInfo.getServerTitle(),
-					serverInfo.getVersion(),
-					serverInfo.getBaseUri());
-		} catch (Exception e) {
-			log.warn("Failed to connect to JIRA", e);
-		}
 	}
 
 	private static void logResponse(Response response) {
@@ -55,7 +39,7 @@ public class Server {
 	}
 
 	public synchronized void start() {
-		logJiraServerInfo();
+		jiraServerInfoLogger.logInfo();
 		log.info("Starting server...");
 		if (service != null) {
 			throw new IllegalStateException("Already started");

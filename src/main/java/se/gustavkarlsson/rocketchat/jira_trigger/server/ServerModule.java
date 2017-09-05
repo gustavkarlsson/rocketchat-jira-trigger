@@ -1,6 +1,5 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.server;
 
-import com.atlassian.jira.rest.client.api.MetadataRestClient;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration;
@@ -12,7 +11,7 @@ public class ServerModule extends AbstractModule {
 	}
 
 	@Provides
-	Server provideServer(AppConfiguration appConfig, DetectIssueRoute detectIssueRoute, MetadataRestClient metadataClient) {
-		return new Server(appConfig.getMaxThreads(), appConfig.getPort(), detectIssueRoute, metadataClient);
+	Server provideServer(AppConfiguration appConfig, DetectIssueRoute detectIssueRoute, JiraServerInfoLogger jiraServerInfoLogger) {
+		return new Server(appConfig.getMaxThreads(), appConfig.getPort(), detectIssueRoute, jiraServerInfoLogger);
 	}
 }
