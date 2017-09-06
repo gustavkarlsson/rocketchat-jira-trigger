@@ -28,7 +28,7 @@ class JiraServerInfoLogger {
 					serverInfo.getVersion(),
 					serverInfo.getBaseUri());
 		} catch (Exception e) {
-			log.warn("Failed to connect to JIRA", e);
+			log.error("Failed to connect to JIRA", e);
 		}
 	}
 }

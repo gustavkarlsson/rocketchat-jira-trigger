@@ -56,7 +56,7 @@ public class JiraKeyParserTest {
 		public void singleJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(emptySet(), emptySet());
 
-			Map<String, Boolean> keys = parser.parse(text);
+			Map<String, IssueDetail> keys = parser.parse(text);
 
 			assertThat(keys).hasSize(1);
 		}
@@ -94,7 +94,7 @@ public class JiraKeyParserTest {
 		public void noJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(emptySet(), emptySet());
 
-			Map<String, Boolean> keys = parser.parse(text);
+			Map<String, IssueDetail> keys = parser.parse(text);
 
 			assertThat(keys).isEmpty();
 		}
@@ -132,7 +132,7 @@ public class JiraKeyParserTest {
 		public void singleJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(whitelistedPrefixes, whitelistedSuffixes);
 
-			Map<String, Boolean> keys = parser.parse(text);
+			Map<String, IssueDetail> keys = parser.parse(text);
 
 			assertThat(keys).hasSize(1);
 		}

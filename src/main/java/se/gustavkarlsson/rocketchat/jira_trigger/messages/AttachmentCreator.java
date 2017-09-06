@@ -3,6 +3,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
+import se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
 
@@ -14,8 +15,9 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
 import static org.apache.commons.lang3.Validate.noNullElements;
 import static org.apache.commons.lang3.Validate.notNull;
+import static se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail.EXTENDED;
 
-public class AttachmentConverter {
+public class AttachmentCreator {
 	static final String BLOCKER_COLOR = "#FF4437";
 	static final String CRITICAL_COLOR = "#D04437";
 	static final String MAJOR_COLOR = "#E3833C";
@@ -27,15 +29,15 @@ public class AttachmentConverter {
 	private final List<FieldExtractor> defaultFieldExtractors;
 	private final List<FieldExtractor> extendedFieldExtractors;
 
-	AttachmentConverter(boolean priorityColors, String defaultColor, List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
+	AttachmentCreator(boolean priorityColors, String defaultColor, List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
 		this.priorityColors = priorityColors;
 		this.defaultColor = notNull(defaultColor);
 		this.defaultFieldExtractors = noNullElements(defaultFieldExtractors);
 		this.extendedFieldExtractors = noNullElements(extendedFieldExtractors);
 	}
 
-	public ToRocketChatAttachment convert(Issue issue, Boolean extended) {
-		List<FieldExtractor> fieldExtractors = extended ? extendedFieldExtractors : defaultFieldExtractors;
+	public ToRocketChatAttachment create(Issue issue, IssueDetail detail) {
+		List<FieldExtractor> fieldExtractors = detail == EXTENDED ? extendedFieldExtractors : defaultFieldExtractors;
 		return createAttachment(issue, fieldExtractors);
 	}
 

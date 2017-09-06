@@ -3,11 +3,8 @@ package se.gustavkarlsson.rocketchat.jira_trigger.routes;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.util.concurrent.Promise;
-import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
-import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.messages.AttachmentConverter;
+import se.gustavkarlsson.rocketchat.jira_trigger.messages.AttachmentCreator;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.ToRocketChatMessageFactory;
 import se.gustavkarlsson.rocketchat.jira_trigger.validation.Validator;
 import se.gustavkarlsson.rocketchat.models.from_rocket_chat.FromRocketChatMessage;
@@ -18,72 +15,66 @@ import spark.Request;
 import spark.Response;
 
 import javax.inject.Inject;
-import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.Validate.noNullElements;
 import static org.apache.commons.lang3.Validate.notNull;
+import static org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class DetectIssueRoute extends RocketChatMessageRoute {
 	private static final Logger log = getLogger(DetectIssueRoute.class);
 
-	private final RocketChatConfiguration config;
+	private final List<Validator> validators;
+	private final JiraKeyParser jiraKeyParser;
 	private final IssueRestClient issueClient;
 	private final ToRocketChatMessageFactory messageFactory;
-	private final AttachmentConverter attachmentConverter;
-	private final JiraKeyParser jiraKeyParser;
-	private final List<Validator> validators;
+	private final AttachmentCreator attachmentCreator;
 
 	@Inject
-	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient, ToRocketChatMessageFactory messageFactory,
-							AttachmentConverter attachmentConverter, JiraKeyParser jiraKeyParser, List<Validator> validators) {
-		this.config = notNull(config);
+	public DetectIssueRoute(List<Validator> validators, JiraKeyParser jiraKeyParser, IssueRestClient issueClient,
+							ToRocketChatMessageFactory messageFactory, AttachmentCreator attachmentCreator) {
+		this.validators = noNullElements(validators);
+		this.jiraKeyParser = notNull(jiraKeyParser);
 		this.issueClient = notNull(issueClient);
 		this.messageFactory = notNull(messageFactory);
-		this.attachmentConverter = notNull(attachmentConverter);
-		this.jiraKeyParser = notNull(jiraKeyParser);
-		this.validators = noNullElements(validators);
-	}
-
-	private static boolean isNotFound(com.google.common.base.Optional<Integer> statusCode) {
-		return statusCode.isPresent() && statusCode.get() == HttpStatus.NOT_FOUND_404;
+		this.attachmentCreator = notNull(attachmentCreator);
 	}
 
 	@Override
 	protected ToRocketChatMessage handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
+		log.debug("Validating message");
 		if (!isValid(fromRocketChatMessage)) {
 			log.info("Validation failed. Ignoring");
 			return null;
 		}
 
-		log.info("Message is being processed...");
-		log.debug("Parsing keys from text: \"{}\"", fromRocketChatMessage.getText());
-		Map<String, Boolean> jiraKeys = jiraKeyParser.parse(fromRocketChatMessage.getText());
-		log.info("Found {} keys", jiraKeys.size());
+		log.debug("Parsing keys from text: '{}'", fromRocketChatMessage.getText());
+		Map<String, IssueDetail> jiraKeys = jiraKeyParser.parse(fromRocketChatMessage.getText());
+		if (jiraKeys.isEmpty()) {
+			log.info("No keys found. Ignoring");
+			return null;
+		}
+		log.info("Identified {} keys", jiraKeys.size());
 		log.debug("Keys: {}", jiraKeys.keySet());
+
 		log.debug("Fetching issues...");
-		Map<Issue, Boolean> issues = jiraKeys.entrySet().parallelStream()
-				.map(e -> new AbstractMap.SimpleEntry<>(getJiraIssue(e.getKey()), e.getValue()))
-				.filter(e -> e.getKey() != null)
-				.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+		Map<Issue, IssueDetail> issues = getIssues(jiraKeys);
 		if (issues.isEmpty()) {
-			log.debug("No matching issue found. Ignoring");
+			log.info("No issues found. Ignoring");
 			return null;
 		}
 		log.info("Found {} issues", issues.size());
-		log.debug("Issues: {}", issues.keySet().stream()
-				.map(Issue::getId)
-				.collect(Collectors.toList()));
+		log.debug("Issues: {}", issues.keySet().stream().map(Issue::getId).collect(toList()));
+
 		log.debug("Creating message");
 		ToRocketChatMessage message = messageFactory.create();
 		message.setText(issues.size() == 1 ? "Found 1 issue" : "Found " + issues.size() + " issues");
-		log.debug("Creating attachments");
-		List<ToRocketChatAttachment> attachments = issues.entrySet().stream()
-				.map(e -> attachmentConverter.convert(e.getKey(), e.getValue()))
-				.collect(Collectors.toList());
+		List<ToRocketChatAttachment> attachments = createAttachments(issues);
 		message.setAttachments(attachments);
 		return message;
 	}
@@ -92,16 +83,27 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		return validators.stream().allMatch(validator -> validator.isValid(fromRocketChatMessage));
 	}
 
-	private Issue getJiraIssue(String jiraKey) {
-		Promise<Issue> issuePromise = issueClient.getIssue(jiraKey);
+	private Map<Issue, IssueDetail> getIssues(Map<String, IssueDetail> jiraKeys) {
+		return jiraKeys.entrySet().parallelStream()
+				.map(e -> new SimpleEntry<>(getIssue(e.getKey()), e.getValue()))
+				.filter(e -> e.getKey() != null)
+				.collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+	}
+
+	private Issue getIssue(String jiraKey) {
 		try {
-			return issuePromise.claim();
+			return issueClient.getIssue(jiraKey).claim();
 		} catch (RestClientException e) {
-			if (isNotFound(e.getStatusCode())) {
-				return null;
+			if (e.getStatusCode().or(0) != NOT_FOUND_404) {
+				log.error("Jira client error", e);
 			}
-			throw e;
+			return null;
 		}
 	}
 
+	private List<ToRocketChatAttachment> createAttachments(Map<Issue, IssueDetail> issues) {
+		return issues.entrySet().stream()
+				.map(e -> attachmentCreator.create(e.getKey(), e.getValue()))
+				.collect(toList());
+	}
 }

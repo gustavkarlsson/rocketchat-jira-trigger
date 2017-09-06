@@ -27,8 +27,8 @@ public class MessageModule extends AbstractModule {
 	}
 
 	@Provides
-	AttachmentConverter provideAttachmentConverter(MessageConfiguration messageConfig, @Default List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
-		return new AttachmentConverter(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldExtractors, extendedFieldExtractors);
+	AttachmentCreator provideAttachmentConverter(MessageConfiguration messageConfig, @Default List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
+		return new AttachmentCreator(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldExtractors, extendedFieldExtractors);
 	}
 
 	public static class DefaultFieldExtractorsProvider implements Provider<List<FieldExtractor>> {
