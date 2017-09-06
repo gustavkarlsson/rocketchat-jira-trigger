@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.RocketChatConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.AttachmentConverter;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.ToRocketChatMessageFactory;
+import se.gustavkarlsson.rocketchat.jira_trigger.validation.Validator;
 import se.gustavkarlsson.rocketchat.models.from_rocket_chat.FromRocketChatMessage;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatMessage;
@@ -18,12 +19,11 @@ import spark.Response;
 
 import javax.inject.Inject;
 import java.util.AbstractMap;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
+import static org.apache.commons.lang3.Validate.noNullElements;
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -35,23 +35,17 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 	private final ToRocketChatMessageFactory messageFactory;
 	private final AttachmentConverter attachmentConverter;
 	private final JiraKeyParser jiraKeyParser;
+	private final List<Validator> validators;
 
 	@Inject
 	public DetectIssueRoute(RocketChatConfiguration config, IssueRestClient issueClient, ToRocketChatMessageFactory messageFactory,
-							AttachmentConverter attachmentConverter, JiraKeyParser jiraKeyParser) {
+							AttachmentConverter attachmentConverter, JiraKeyParser jiraKeyParser, List<Validator> validators) {
 		this.config = notNull(config);
 		this.issueClient = notNull(issueClient);
 		this.messageFactory = notNull(messageFactory);
 		this.attachmentConverter = notNull(attachmentConverter);
 		this.jiraKeyParser = notNull(jiraKeyParser);
-	}
-
-	private static boolean isAllowed(Collection<String> blacklist, Collection<String> whitelist, String... values) {
-		return stream(values).allMatch((value) -> isAllowed(blacklist, whitelist, value));
-	}
-
-	private static boolean isAllowed(Collection<String> blacklist, Collection<String> whitelist, String value) {
-		return !blacklist.contains(value) && (whitelist.isEmpty() || whitelist.contains(value));
+		this.validators = noNullElements(validators);
 	}
 
 	private static boolean isNotFound(com.google.common.base.Optional<Integer> statusCode) {
@@ -60,23 +54,11 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 
 	@Override
 	protected ToRocketChatMessage handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
-		String token = fromRocketChatMessage.getToken();
-		if (!config.getTokens().isEmpty() && !config.getTokens().contains(token)) {
-			log.info("Forbidden token encountered: {}. Ignoring", token);
+		if (!isValid(fromRocketChatMessage)) {
+			log.info("Validation failed. Ignoring");
 			return null;
 		}
-		String userId = fromRocketChatMessage.getUserId();
-		String userName = fromRocketChatMessage.getUserName();
-		if (!isAllowed(config.getBlacklistedUsers(), config.getWhitelistedUsers(), userId, userName)) {
-			log.info("Forbidden user encountered. ID: {}, Name: {}. Ignoring", userId, userName);
-			return null;
-		}
-		String channelId = fromRocketChatMessage.getChannelId();
-		String channelName = fromRocketChatMessage.getChannelName();
-		if (!isAllowed(config.getBlacklistedChannels(), config.getWhitelistedChannels(), channelId, channelName)) {
-			log.info("Forbidden channel encountered. ID: {}, Name: {}. Ignoring", channelId, channelName);
-			return null;
-		}
+
 		log.info("Message is being processed...");
 		log.debug("Parsing keys from text: \"{}\"", fromRocketChatMessage.getText());
 		Map<String, Boolean> jiraKeys = jiraKeyParser.parse(fromRocketChatMessage.getText());
@@ -104,6 +86,10 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.collect(Collectors.toList());
 		message.setAttachments(attachments);
 		return message;
+	}
+
+	private boolean isValid(FromRocketChatMessage fromRocketChatMessage) {
+		return validators.stream().allMatch(validator -> validator.isValid(fromRocketChatMessage));
 	}
 
 	private Issue getJiraIssue(String jiraKey) {

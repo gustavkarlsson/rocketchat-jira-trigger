@@ -9,6 +9,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.messages.MessageModule;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.RouteModule;
 import se.gustavkarlsson.rocketchat.jira_trigger.server.Server;
 import se.gustavkarlsson.rocketchat.jira_trigger.server.ServerModule;
+import se.gustavkarlsson.rocketchat.jira_trigger.validation.ValidationModule;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -27,7 +28,13 @@ public class App {
 	}
 
 	App(String... args) throws Exception {
-		Injector injector = Guice.createInjector(new ConfigurationModule(args), new MessageModule(), new JiraModule(), new ServerModule(), new RouteModule());
+		Injector injector = Guice.createInjector(
+				new ConfigurationModule(args),
+				new MessageModule(),
+				new JiraModule(),
+				new ServerModule(),
+				new RouteModule(),
+				new ValidationModule());
 		this.server = injector.getInstance(Server.class);
 	}
 
