@@ -31,22 +31,6 @@ public class MessageModule extends AbstractModule {
 		return new AttachmentCreator(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldCreators, extendedFieldCreators);
 	}
 
-	public static class DefaultFieldCreatorsProvider implements Provider<List<FieldCreator>> {
-		private final FieldCreatorMapper fieldCreatorMapper;
-		private final MessageConfiguration messageConfig;
-
-		@Inject
-		public DefaultFieldCreatorsProvider(FieldCreatorMapper fieldCreatorMapper, MessageConfiguration messageConfig) {
-			this.fieldCreatorMapper = fieldCreatorMapper;
-			this.messageConfig = messageConfig;
-		}
-
-		@Override
-		public List<FieldCreator> get() {
-			return fieldCreatorMapper.getCreators(messageConfig.getDefaultFields());
-		}
-	}
-
 	public static class ExtendedFieldCreatorsProvider implements Provider<List<FieldCreator>> {
 		private final FieldCreatorMapper fieldCreatorMapper;
 		private final MessageConfiguration messageConfig;
