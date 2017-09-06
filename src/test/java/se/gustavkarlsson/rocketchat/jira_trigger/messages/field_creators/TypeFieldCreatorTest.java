@@ -1,7 +1,7 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.jira.rest.client.api.domain.Status;
+import com.atlassian.jira.rest.client.api.domain.IssueType;
 import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
@@ -10,17 +10,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class StatusFieldExtractorTest {
+public class TypeFieldCreatorTest {
 
 	private Issue mockIssue;
-	private Status mockStatus;
-	private StatusFieldExtractor extractor;
+	private IssueType type;
+	private TypeFieldCreator extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
-		mockStatus = mock(Status.class);
-		extractor = new StatusFieldExtractor();
+		type = mock(IssueType.class);
+		extractor = new TypeFieldCreator();
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -30,12 +30,12 @@ public class StatusFieldExtractorTest {
 
 	@Test
 	public void createReturnsCorrectField() throws Exception {
-		String status = "Open";
-		when(mockIssue.getStatus()).thenReturn(mockStatus);
-		when(mockStatus.getName()).thenReturn(status);
+		String type = "Bug";
+		when(mockIssue.getIssueType()).thenReturn(this.type);
+		when(this.type.getName()).thenReturn(type);
 
 		Field field = extractor.create(mockIssue);
 
-		assertThat(field.getValue()).isEqualTo(status);
+		assertThat(field.getValue()).isEqualTo(type);
 	}
 }

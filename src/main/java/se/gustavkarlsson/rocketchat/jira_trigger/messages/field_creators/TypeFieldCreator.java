@@ -1,9 +1,9 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.IssueType;
 
-public class TypeFieldExtractor extends AbstractFieldExtractor {
+public class TypeFieldCreator extends AbstractFieldCreator {
 
 	@Override
 	protected String getTitle() {

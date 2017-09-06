@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Resolution;
@@ -10,17 +10,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ResolutionFieldExtractorTest {
+public class ResolutionFieldCreatorTest {
 
 	private Issue mockIssue;
 	private Resolution resolution;
-	private ResolutionFieldExtractor extractor;
+	private ResolutionFieldCreator extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		resolution = mock(Resolution.class);
-		extractor = new ResolutionFieldExtractor();
+		extractor = new ResolutionFieldCreator();
 	}
 
 	@Test(expected = NullPointerException.class)

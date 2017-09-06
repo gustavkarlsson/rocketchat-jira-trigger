@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import org.joda.time.DateTime;
@@ -6,11 +6,11 @@ import org.joda.time.format.DateTimeFormatter;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class UpdatedFieldExtractor extends AbstractFieldExtractor {
+public class UpdatedFieldCreator extends AbstractFieldCreator {
 
 	private final DateTimeFormatter dateFormatter;
 
-	public UpdatedFieldExtractor(DateTimeFormatter dateFormatter) {
+	public UpdatedFieldCreator(DateTimeFormatter dateFormatter) {
 		this.dateFormatter = notNull(dateFormatter);
 	}
 

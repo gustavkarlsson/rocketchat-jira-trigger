@@ -2,7 +2,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
+import se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators.FieldCreator;
 import se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
@@ -26,22 +26,22 @@ public class AttachmentCreator {
 
 	private final boolean priorityColors;
 	private final String defaultColor;
-	private final List<FieldExtractor> defaultFieldExtractors;
-	private final List<FieldExtractor> extendedFieldExtractors;
+	private final List<FieldCreator> defaultFieldCreators;
+	private final List<FieldCreator> extendedFieldCreators;
 
-	AttachmentCreator(boolean priorityColors, String defaultColor, List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
+	AttachmentCreator(boolean priorityColors, String defaultColor, List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators) {
 		this.priorityColors = priorityColors;
 		this.defaultColor = notNull(defaultColor);
-		this.defaultFieldExtractors = noNullElements(defaultFieldExtractors);
-		this.extendedFieldExtractors = noNullElements(extendedFieldExtractors);
+		this.defaultFieldCreators = noNullElements(defaultFieldCreators);
+		this.extendedFieldCreators = noNullElements(extendedFieldCreators);
 	}
 
 	public ToRocketChatAttachment create(Issue issue, IssueDetail detail) {
-		List<FieldExtractor> fieldExtractors = detail == EXTENDED ? extendedFieldExtractors : defaultFieldExtractors;
-		return createAttachment(issue, fieldExtractors);
+		List<FieldCreator> fieldCreators = detail == EXTENDED ? extendedFieldCreators : defaultFieldCreators;
+		return createAttachment(issue, fieldCreators);
 	}
 
-	private ToRocketChatAttachment createAttachment(Issue issue, List<FieldExtractor> fieldExtractors) {
+	private ToRocketChatAttachment createAttachment(Issue issue, List<FieldCreator> fieldCreators) {
 		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
 		attachment.setTitle(issue.getKey());
 		if (priorityColors && issue.getPriority() != null) {
@@ -50,7 +50,7 @@ public class AttachmentCreator {
 			attachment.setColor(defaultColor);
 		}
 		attachment.setText(createSummaryLink(issue));
-		List<Field> fields = fieldExtractors.stream().map(fc -> fc.create(issue)).collect(Collectors.toList());
+		List<Field> fields = fieldCreators.stream().map(fc -> fc.create(issue)).collect(Collectors.toList());
 		attachment.setFields(fields);
 		return attachment;
 	}

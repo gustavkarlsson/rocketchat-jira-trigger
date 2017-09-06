@@ -1,27 +1,28 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.User;
 
-public class ReporterFieldExtractor extends AbstractFieldExtractor {
+public class AssigneeFieldCreator extends AbstractFieldCreator {
 
 	private final boolean useRealName;
 
-	public ReporterFieldExtractor(boolean useRealName) {
+	public AssigneeFieldCreator(boolean useRealName) {
 		this.useRealName = useRealName;
 	}
+
 	@Override
 	protected String getTitle() {
-		return "Reporter";
+		return "Assigned To";
 	}
 
 	@Override
 	protected String getValue(Issue issue) {
-		User reporter = issue.getReporter();
-		if (reporter == null) {
+		User assignee = issue.getAssignee();
+		if (assignee == null) {
 			return "-";
 		}
-		return useRealName ? reporter.getDisplayName() : reporter.getName();
+		return useRealName ? assignee.getDisplayName() : assignee.getName();
 	}
 
 	@Override

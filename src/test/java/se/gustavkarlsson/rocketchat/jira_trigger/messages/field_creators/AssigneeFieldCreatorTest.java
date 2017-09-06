@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.User;
@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AssigneeFieldExtractorTest {
+public class AssigneeFieldCreatorTest {
 
 	private Issue mockIssue;
 	private User mockUser;
@@ -23,7 +23,7 @@ public class AssigneeFieldExtractorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void createNullThrowsNPE() throws Exception {
-		new AssigneeFieldExtractor(false).create(null);
+		new AssigneeFieldCreator(false).create(null);
 	}
 
 	@Test
@@ -32,7 +32,7 @@ public class AssigneeFieldExtractorTest {
 		when(mockIssue.getAssignee()).thenReturn(mockUser);
 		when(mockUser.getName()).thenReturn(name);
 
-		Field field = new AssigneeFieldExtractor(false).create(mockIssue);
+		Field field = new AssigneeFieldCreator(false).create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(name);
 	}
@@ -43,7 +43,7 @@ public class AssigneeFieldExtractorTest {
 		when(mockIssue.getAssignee()).thenReturn(mockUser);
 		when(mockUser.getDisplayName()).thenReturn(name);
 
-		Field field = new AssigneeFieldExtractor(true).create(mockIssue);
+		Field field = new AssigneeFieldCreator(true).create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(name);
 	}
@@ -52,7 +52,7 @@ public class AssigneeFieldExtractorTest {
 	public void createWithNullAssigneeSetsNonEmptyValue() throws Exception {
 		when(mockIssue.getAssignee()).thenReturn(null);
 
-		Field field = new AssigneeFieldExtractor(false).create(mockIssue);
+		Field field = new AssigneeFieldCreator(false).create(mockIssue);
 
 		assertThat(field.getValue()).isNotEmpty();
 	}

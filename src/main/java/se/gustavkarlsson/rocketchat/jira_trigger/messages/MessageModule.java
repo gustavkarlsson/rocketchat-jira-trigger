@@ -3,17 +3,17 @@ package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 import com.google.inject.*;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
-import se.gustavkarlsson.rocketchat.jira_trigger.messages.fields.FieldExtractor;
+import se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators.FieldCreator;
 
 import java.util.List;
 
 public class MessageModule extends AbstractModule {
 	@Override
 	protected void configure() {
-		bind(new TypeLiteral<List<FieldExtractor>>() {
-		}).annotatedWith(Default.class).toProvider(DefaultFieldExtractorsProvider.class);
-		bind(new TypeLiteral<List<FieldExtractor>>() {
-		}).toProvider(ExtendedFieldExtractorsProvider.class);
+		bind(new TypeLiteral<List<FieldCreator>>() {
+		}).annotatedWith(Default.class).toProvider(DefaultFieldCreatorsProvider.class);
+		bind(new TypeLiteral<List<FieldCreator>>() {
+		}).toProvider(ExtendedFieldCreatorsProvider.class);
 	}
 
 	@Provides
@@ -22,44 +22,44 @@ public class MessageModule extends AbstractModule {
 	}
 
 	@Provides
-	FieldExtractorMapper provideFieldExtractorMapper(MessageConfiguration messageConfig) {
-		return new FieldExtractorMapper(messageConfig.isUseRealNames(), messageConfig.getDateFormatter());
+	FieldCreatorMapper provideFieldCreatorMapper(MessageConfiguration messageConfig) {
+		return new FieldCreatorMapper(messageConfig.isUseRealNames(), messageConfig.getDateFormatter());
 	}
 
 	@Provides
-	AttachmentCreator provideAttachmentConverter(MessageConfiguration messageConfig, @Default List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
-		return new AttachmentCreator(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldExtractors, extendedFieldExtractors);
+	AttachmentCreator provideAttachmentConverter(MessageConfiguration messageConfig, @Default List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators) {
+		return new AttachmentCreator(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldCreators, extendedFieldCreators);
 	}
 
-	public static class DefaultFieldExtractorsProvider implements Provider<List<FieldExtractor>> {
-		private final FieldExtractorMapper fieldExtractorMapper;
+	public static class DefaultFieldCreatorsProvider implements Provider<List<FieldCreator>> {
+		private final FieldCreatorMapper fieldCreatorMapper;
 		private final MessageConfiguration messageConfig;
 
 		@Inject
-		public DefaultFieldExtractorsProvider(FieldExtractorMapper fieldExtractorMapper, MessageConfiguration messageConfig) {
-			this.fieldExtractorMapper = fieldExtractorMapper;
+		public DefaultFieldCreatorsProvider(FieldCreatorMapper fieldCreatorMapper, MessageConfiguration messageConfig) {
+			this.fieldCreatorMapper = fieldCreatorMapper;
 			this.messageConfig = messageConfig;
 		}
 
 		@Override
-		public List<FieldExtractor> get() {
-			return fieldExtractorMapper.getCreators(messageConfig.getDefaultFields());
+		public List<FieldCreator> get() {
+			return fieldCreatorMapper.getCreators(messageConfig.getDefaultFields());
 		}
 	}
 
-	public static class ExtendedFieldExtractorsProvider implements Provider<List<FieldExtractor>> {
-		private final FieldExtractorMapper fieldExtractorMapper;
+	public static class ExtendedFieldCreatorsProvider implements Provider<List<FieldCreator>> {
+		private final FieldCreatorMapper fieldCreatorMapper;
 		private final MessageConfiguration messageConfig;
 
 		@Inject
-		public ExtendedFieldExtractorsProvider(FieldExtractorMapper fieldExtractorMapper, MessageConfiguration messageConfig) {
-			this.fieldExtractorMapper = fieldExtractorMapper;
+		public ExtendedFieldCreatorsProvider(FieldCreatorMapper fieldCreatorMapper, MessageConfiguration messageConfig) {
+			this.fieldCreatorMapper = fieldCreatorMapper;
 			this.messageConfig = messageConfig;
 		}
 
 		@Override
-		public List<FieldExtractor> get() {
-			return fieldExtractorMapper.getCreators(messageConfig.getExtendedFields());
+		public List<FieldCreator> get() {
+			return fieldCreatorMapper.getCreators(messageConfig.getExtendedFields());
 		}
 	}
 }

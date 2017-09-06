@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.User;
@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ReporterFieldExtractorTest {
+public class ReporterFieldCreatorTest {
 
 	private Issue mockIssue;
 	private User mockUser;
@@ -23,7 +23,7 @@ public class ReporterFieldExtractorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void createNullThrowsNPE() throws Exception {
-		new ReporterFieldExtractor(false).create(null);
+		new ReporterFieldCreator(false).create(null);
 	}
 
 	@Test
@@ -32,7 +32,7 @@ public class ReporterFieldExtractorTest {
 		when(mockIssue.getReporter()).thenReturn(mockUser);
 		when(mockUser.getName()).thenReturn(name);
 
-		Field field = new ReporterFieldExtractor(false).create(mockIssue);
+		Field field = new ReporterFieldCreator(false).create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(name);
 	}
@@ -43,7 +43,7 @@ public class ReporterFieldExtractorTest {
 		when(mockIssue.getReporter()).thenReturn(mockUser);
 		when(mockUser.getDisplayName()).thenReturn(name);
 
-		Field field = new ReporterFieldExtractor(true).create(mockIssue);
+		Field field = new ReporterFieldCreator(true).create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(name);
 	}
@@ -54,7 +54,7 @@ public class ReporterFieldExtractorTest {
 		when(mockIssue.getReporter()).thenReturn(mockUser);
 		when(mockUser.getName()).thenReturn(name);
 
-		Field field = new ReporterFieldExtractor(false).create(mockIssue);
+		Field field = new ReporterFieldCreator(false).create(mockIssue);
 
 		assertThat(field.getValue()).isEqualTo(name);
 	}
@@ -63,7 +63,7 @@ public class ReporterFieldExtractorTest {
 	public void createWithNullReporterSetsNonEmptyValue() throws Exception {
 		when(mockIssue.getReporter()).thenReturn(null);
 
-		Field field = new ReporterFieldExtractor(false).create(mockIssue);
+		Field field = new ReporterFieldCreator(false).create(mockIssue);
 
 		assertThat(field.getValue()).isNotEmpty();
 	}

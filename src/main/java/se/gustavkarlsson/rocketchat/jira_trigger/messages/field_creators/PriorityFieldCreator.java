@@ -1,9 +1,9 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
-public class PriorityFieldExtractor extends AbstractFieldExtractor {
+public class PriorityFieldCreator extends AbstractFieldCreator {
 	@Override
 	protected String getTitle() {
 		return "Priority";

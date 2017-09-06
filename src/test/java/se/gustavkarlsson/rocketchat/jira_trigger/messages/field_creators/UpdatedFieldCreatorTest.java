@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import org.joda.time.DateTime;
@@ -12,24 +12,24 @@ import static org.joda.time.format.DateTimeFormat.mediumDate;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CreatedFieldExtractorTest {
+public class UpdatedFieldCreatorTest {
 
 	private Issue mockIssue;
 	private DateTime dateTime;
 	private DateTimeFormatter defaultDateFormatter;
-	private CreatedFieldExtractor extractor;
+	private UpdatedFieldCreator extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
 		dateTime = new DateTime();
 		defaultDateFormatter = mediumDate();
-		extractor = new CreatedFieldExtractor(defaultDateFormatter);
+		extractor = new UpdatedFieldCreator(defaultDateFormatter);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void createWithNullDateFormatThrowsNPE() throws Exception {
-		new CreatedFieldExtractor(null);
+		new CreatedFieldCreator(null);
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -39,7 +39,7 @@ public class CreatedFieldExtractorTest {
 
 	@Test
 	public void createReturnsCorrectField() throws Exception {
-		when(mockIssue.getCreationDate()).thenReturn(dateTime);
+		when(mockIssue.getUpdateDate()).thenReturn(dateTime);
 
 		Field field = extractor.create(mockIssue);
 

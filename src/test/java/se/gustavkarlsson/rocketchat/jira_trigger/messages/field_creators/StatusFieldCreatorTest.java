@@ -1,6 +1,7 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.atlassian.jira.rest.client.api.domain.Status;
 import org.junit.Before;
 import org.junit.Test;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
@@ -9,15 +10,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DescriptionFieldExtractorTest {
+public class StatusFieldCreatorTest {
 
 	private Issue mockIssue;
-	private DescriptionFieldExtractor extractor;
+	private Status mockStatus;
+	private StatusFieldCreator extractor;
 
 	@Before
 	public void setUp() throws Exception {
 		mockIssue = mock(Issue.class);
-		extractor = new DescriptionFieldExtractor();
+		mockStatus = mock(Status.class);
+		extractor = new StatusFieldCreator();
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -27,20 +30,12 @@ public class DescriptionFieldExtractorTest {
 
 	@Test
 	public void createReturnsCorrectField() throws Exception {
-		String description = "Description of the issue";
-		when(mockIssue.getDescription()).thenReturn(description);
+		String status = "Open";
+		when(mockIssue.getStatus()).thenReturn(mockStatus);
+		when(mockStatus.getName()).thenReturn(status);
 
 		Field field = extractor.create(mockIssue);
 
-		assertThat(field.getValue()).isEqualTo(description);
-	}
-
-	@Test
-	public void createWithNullPrioritySetsNonEmptyValue() throws Exception {
-		when(mockIssue.getDescription()).thenReturn(null);
-
-		Field field = extractor.create(mockIssue);
-
-		assertThat(field.getValue()).isNotNull();
+		assertThat(field.getValue()).isEqualTo(status);
 	}
 }

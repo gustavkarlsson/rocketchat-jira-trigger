@@ -1,9 +1,9 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.messages.fields;
+package se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators;
 
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.Status;
 
-public class StatusFieldExtractor extends AbstractFieldExtractor {
+public class StatusFieldCreator extends AbstractFieldCreator {
 	@Override
 	protected String getTitle() {
 		return "Status";
