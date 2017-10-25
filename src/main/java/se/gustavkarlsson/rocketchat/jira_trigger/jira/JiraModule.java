@@ -9,6 +9,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 
+import java.io.Console;
+
 public class JiraModule extends AbstractModule {
 	@Override
 	protected void configure() {
@@ -29,6 +31,11 @@ public class JiraModule extends AbstractModule {
 	@Provides
 	IssueRestClient provideIssueRestClient(JiraRestClient jiraClient) {
 		return jiraClient.getIssueClient();
+	}
+
+	@Provides
+	Console provideConsole() {
+		return System.console();
 	}
 
 }

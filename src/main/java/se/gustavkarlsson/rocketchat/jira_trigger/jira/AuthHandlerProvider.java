@@ -8,6 +8,7 @@ import com.google.inject.Provider;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 
+import javax.annotation.Nullable;
 import java.io.Console;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -17,34 +18,38 @@ class AuthHandlerProvider implements Provider<AuthenticationHandler> {
 
 	private final String username;
 	private final String password;
+	private final Console console;
 
 	@Inject
-	AuthHandlerProvider(JiraConfiguration jiraConfig) {
+	AuthHandlerProvider(JiraConfiguration jiraConfig, @Nullable Console console) {
 		this.username = jiraConfig.getUsername();
 		this.password = jiraConfig.getPassword();
+		this.console = console;
 	}
 
 	@Override
 	public AuthenticationHandler get() {
-		String actualPassword = password;
+		String finalPassword = password;
 		if (username == null) {
 			log.info("No username configured. Using anonymous authentication");
+			if (password != null) {
+				log.warn("Ignoring password from configuration");
+			}
 			return new AnonymousAuthenticationHandler();
 		} else {
 			log.info("Using basic authentication");
-			if (actualPassword != null) {
+			if (finalPassword != null) {
 				log.info("Password already provided");
 			} else {
 				log.info("No password configured");
-				actualPassword = readPassword(username);
+				finalPassword = readPassword(username);
 				log.info("Password provided through console");
 			}
-			return new BasicHttpAuthenticationHandler(username, actualPassword);
+			return new BasicHttpAuthenticationHandler(username, finalPassword);
 		}
 	}
 
 	private String readPassword(String username) {
-		Console console = System.console();
 		if (console == null) {
 			throw new IllegalStateException("No console available for password input");
 		}
