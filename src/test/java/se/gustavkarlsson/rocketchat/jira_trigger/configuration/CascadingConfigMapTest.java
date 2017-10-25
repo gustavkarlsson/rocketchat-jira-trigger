@@ -6,11 +6,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CascadingConfigMapTest {
@@ -26,28 +23,28 @@ public class CascadingConfigMapTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.cascadingConfigMap = new CascadingConfigMap(asList(mockFirstConfigMap, mockSecondConfigMap));
+		this.cascadingConfigMap = new CascadingConfigMap(mockFirstConfigMap, mockSecondConfigMap);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void createWithNullConfigMapsThrowsException() throws Exception {
-		new CascadingConfigMap(null);
+		new CascadingConfigMap((ConfigMap[]) null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createWithNullConfigMapsValueThrowsException() throws Exception {
-		new CascadingConfigMap(singletonList(null));
+		new CascadingConfigMap(new ConfigMap[]{null});
 	}
 
 	@Test
-	public void getWithTwoValuesReturnsSecond() throws Exception {
-		String second = "second";
-		when(mockFirstConfigMap.getString(KEY)).thenReturn("first");
-		when(mockSecondConfigMap.getString(KEY)).thenReturn(second);
+	public void getWithTwoValuesReturnsFirst() throws Exception {
+		String first = "first";
+		when(mockFirstConfigMap.getString(KEY)).thenReturn(first);
 
 		String value = cascadingConfigMap.getString(KEY);
 
-		assertThat(value).isEqualTo(second);
+		assertThat(value).isEqualTo(first);
+		verify(mockSecondConfigMap, never()).getString(KEY);
 	}
 
 	@Test
@@ -65,11 +62,11 @@ public class CascadingConfigMapTest {
 	public void getWithNullAsSecondValueReturnsFirst() throws Exception {
 		String first = "first";
 		when(mockFirstConfigMap.getString(KEY)).thenReturn(first);
-		when(mockSecondConfigMap.getString(KEY)).thenReturn(null);
 
 		String value = cascadingConfigMap.getString(KEY);
 
 		assertThat(value).isEqualTo(first);
+		verify(mockSecondConfigMap, never()).getString(KEY);
 	}
 
 	@Test
@@ -84,7 +81,7 @@ public class CascadingConfigMapTest {
 
 	@Test
 	public void getWithNoConfigMapsReturnsNull() throws Exception {
-		CascadingConfigMap cascadingConfigMap = new CascadingConfigMap(emptyList());
+		CascadingConfigMap cascadingConfigMap = new CascadingConfigMap();
 
 		String value = cascadingConfigMap.getString(KEY);
 

@@ -6,7 +6,6 @@ import com.moandjiezana.toml.Toml;
 import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 
 import java.io.File;
-import java.util.Arrays;
 
 import static org.apache.commons.lang3.Validate.notEmpty;
 
@@ -37,8 +36,8 @@ public class ConfigurationModule extends AbstractModule {
 
 	@Provides
 	ConfigMap provideConfigMap(@Default Toml defaultToml, Toml configFileToml) {
-		ConfigMap defaultConfig = new TomlConfigMap(defaultToml);
 		ConfigMap configFileConfig = new TomlConfigMap(configFileToml);
-		return new CascadingConfigMap(Arrays.asList(defaultConfig, configFileConfig));
+		ConfigMap defaultConfig = new TomlConfigMap(defaultToml);
+		return new CascadingConfigMap(configFileConfig, defaultConfig);
 	}
 }
