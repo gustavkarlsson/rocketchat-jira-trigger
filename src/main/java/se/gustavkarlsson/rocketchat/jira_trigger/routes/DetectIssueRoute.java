@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -44,16 +43,24 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		this.jiraKeyParser = notNull(jiraKeyParser);
 	}
 
-	private static boolean isAllowed(Collection<String> blacklist, Collection<String> whitelist, String... values) {
-		return stream(values).allMatch((value) -> isAllowed(blacklist, whitelist, value));
-	}
-
 	private static boolean isAllowed(Collection<String> blacklist, Collection<String> whitelist, String value) {
 		return !blacklist.contains(value) && (whitelist.isEmpty() || whitelist.contains(value));
 	}
 
 	private static boolean isNotFound(com.google.common.base.Optional<Integer> statusCode) {
 		return statusCode.isPresent() && statusCode.get() == HttpStatus.NOT_FOUND_404;
+	}
+
+	private Issue getJiraIssue(String jiraKey) {
+		Promise<Issue> issuePromise = issueClient.getIssue(jiraKey);
+		try {
+			return issuePromise.claim();
+		} catch (RestClientException e) {
+			if (isNotFound(e.getStatusCode())) {
+				return null;
+			}
+			throw e;
+		}
 	}
 
 	@Override
@@ -63,16 +70,14 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 			log.info("Forbidden token encountered: {}. Ignoring", token);
 			return null;
 		}
-		String userId = fromRocketChatMessage.getUserId();
 		String userName = fromRocketChatMessage.getUserName();
-		if (!isAllowed(config.getBlacklistedUsers(), config.getWhitelistedUsers(), userId, userName)) {
-			log.info("Forbidden user encountered. ID: {}, Name: {}. Ignoring", userId, userName);
+		if (!isAllowed(config.getBlacklistedUsers(), config.getWhitelistedUsers(), userName)) {
+			log.info("Forbidden user encountered: {}. Ignoring", userName);
 			return null;
 		}
-		String channelId = fromRocketChatMessage.getChannelId();
 		String channelName = fromRocketChatMessage.getChannelName();
-		if (!isAllowed(config.getBlacklistedChannels(), config.getWhitelistedChannels(), channelId, channelName)) {
-			log.info("Forbidden channel encountered. ID: {}, Name: {}. Ignoring", channelId, channelName);
+		if (!isAllowed(config.getBlacklistedChannels(), config.getWhitelistedChannels(), channelName)) {
+			log.info("Forbidden channel encountered: {}. Ignoring", channelName);
 			return null;
 		}
 		log.info("Message is being processed...");
@@ -103,17 +108,4 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		message.setAttachments(attachments);
 		return message;
 	}
-
-	private Issue getJiraIssue(String jiraKey) {
-		Promise<Issue> issuePromise = issueClient.getIssue(jiraKey);
-		try {
-			return issuePromise.claim();
-		} catch (RestClientException e) {
-			if (isNotFound(e.getStatusCode())) {
-				return null;
-			}
-			throw e;
-		}
-	}
-
 }
