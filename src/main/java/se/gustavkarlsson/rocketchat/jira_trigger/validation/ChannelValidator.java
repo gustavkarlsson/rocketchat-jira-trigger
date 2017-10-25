@@ -5,7 +5,6 @@ import se.gustavkarlsson.rocketchat.models.from_rocket_chat.FromRocketChatMessag
 
 import java.util.Set;
 
-import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.Validate.noNullElements;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -22,20 +21,15 @@ class ChannelValidator implements Validator {
 
 	@Override
 	public boolean isValid(FromRocketChatMessage message) {
-		String channelId = message.getChannelId();
 		String channelName = message.getChannelName();
-		if (!areAllowed(channelId, channelName)) {
-			log.info("Forbidden channel encountered. ID: {}, Name: {}", channelId, channelName);
+		if (!isAllowed(channelName)) {
+			log.info("Forbidden channel encountered: {}", channelName);
 			return false;
 		}
 		return true;
 	}
 
-	private boolean areAllowed(String... channelNamesAndIds) {
-		return stream(channelNamesAndIds).allMatch(this::isAllowed);
-	}
-
-	private boolean isAllowed(String value) {
-		return !blacklistedChannels.contains(value) && (whitelistedChannels.isEmpty() || whitelistedChannels.contains(value));
+	private boolean isAllowed(String channelName) {
+		return !blacklistedChannels.contains(channelName) && (whitelistedChannels.isEmpty() || whitelistedChannels.contains(channelName));
 	}
 }

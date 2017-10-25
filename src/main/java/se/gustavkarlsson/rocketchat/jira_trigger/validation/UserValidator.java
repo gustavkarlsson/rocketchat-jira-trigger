@@ -5,7 +5,6 @@ import se.gustavkarlsson.rocketchat.models.from_rocket_chat.FromRocketChatMessag
 
 import java.util.Set;
 
-import static java.util.Arrays.stream;
 import static org.apache.commons.lang3.Validate.noNullElements;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -22,20 +21,15 @@ class UserValidator implements Validator {
 
 	@Override
 	public boolean isValid(FromRocketChatMessage message) {
-		String userId = message.getUserId();
 		String userName = message.getUserName();
-		if (!areAllowed(userId, userName)) {
-			log.info("Forbidden user encountered. ID: {}, Name: {}", userId, userName);
+		if (!isAllowed(userName)) {
+			log.info("Forbidden user encountered: {}", userName);
 			return false;
 		}
 		return true;
 	}
 
-	private boolean areAllowed(String... userNamesAndIds) {
-		return stream(userNamesAndIds).allMatch(this::isAllowed);
-	}
-
-	private boolean isAllowed(String value) {
-		return !blacklistedUsers.contains(value) && (whitelistedUsers.isEmpty() || whitelistedUsers.contains(value));
+	private boolean isAllowed(String userName) {
+		return !blacklistedUsers.contains(userName) && (whitelistedUsers.isEmpty() || whitelistedUsers.contains(userName));
 	}
 }
