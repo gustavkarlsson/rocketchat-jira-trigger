@@ -27,16 +27,16 @@ repositories {
 dependencies {
     // Hack to handle dependencies with 'atlassian-plugin' extension
     compile module('com.atlassian.jira:jira-rest-java-client-core:4.0.0') {
-        dependency 'com.atlassian.httpclient:atlassian-httpclient-plugin:0.23.0@jar'
-        dependency 'com.atlassian.sal:sal-api:3.0.3@jar'
+        dependency 'com.atlassian.httpclient:atlassian-httpclient-plugin:0.23.4@jar'
+        dependency 'com.atlassian.sal:sal-api:3.1.0@jar'
         dependency 'com.atlassian.jira:jira-rest-java-client-api:4.0.0'
         dependency 'com.atlassian.event:atlassian-event:2.3.5'
-        dependency 'com.atlassian.util.concurrent:atlassian-util-concurrent:2.4.2'
+        dependency 'com.atlassian.util.concurrent:atlassian-util-concurrent:2.6.3'
         dependency 'org.springframework:spring-beans:2.5.6'
-        dependency 'com.sun.jersey:jersey-client:1.5'
-        dependency 'com.sun.jersey:jersey-json:1.5'
-        dependency 'joda-time:joda-time:1.6'
-        dependency 'org.apache.httpcomponents:httpmime:4.1.2'
+        dependency 'com.sun.jersey:jersey-client:1.19.4'
+        dependency 'com.sun.jersey:jersey-json:1.19.4'
+        dependency 'joda-time:joda-time:1.6.2'
+        dependency 'org.apache.httpcomponents:httpmime:4.5.3'
     }
     compile 'com.github.gustavkarlsson:rocketchat-outgoing-webhook-server:3.1.0'
     compile 'com.atlassian.fugue:fugue:2.6.1'
