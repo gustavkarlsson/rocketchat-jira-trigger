@@ -64,7 +64,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 	}
 
 	@Override
-	protected ToRocketChatMessage handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
+	protected ToRocketChatMessage handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) {
 		String token = fromRocketChatMessage.getToken();
 		if (!config.getTokens().isEmpty() && !config.getTokens().contains(token)) {
 			log.info("Forbidden token encountered: {}. Ignoring", token);
@@ -90,11 +90,10 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 				.map(e -> new AbstractMap.SimpleEntry<>(getJiraIssue(e.getKey()), e.getValue()))
 				.filter(e -> e.getKey() != null)
 				.collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+		log.info("Found {} issues", issues.size());
 		if (issues.isEmpty()) {
-			log.debug("No matching issue found. Ignoring");
 			return null;
 		}
-		log.info("Found {} issues", issues.size());
 		log.debug("Issues: {}", issues.keySet().stream()
 				.map(Issue::getId)
 				.collect(Collectors.toList()));
