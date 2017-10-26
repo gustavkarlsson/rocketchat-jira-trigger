@@ -46,7 +46,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 	}
 
 	@Override
-	protected ToRocketChatMessage handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) throws Exception {
+	protected ToRocketChatMessage handle(Request request, Response response, FromRocketChatMessage fromRocketChatMessage) {
 		log.debug("Validating message");
 		if (!isValid(fromRocketChatMessage)) {
 			log.info("Validation failed. Ignoring");
@@ -64,13 +64,12 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 
 		log.debug("Fetching issues...");
 		Map<Issue, IssueDetail> issues = getIssues(jiraKeys);
+		log.info("Found {} issues", issues.size());
 		if (issues.isEmpty()) {
 			log.info("No issues found. Ignoring");
 			return null;
 		}
-		log.info("Found {} issues", issues.size());
 		log.debug("Issues: {}", issues.keySet().stream().map(Issue::getId).collect(toList()));
-
 		log.debug("Creating message");
 		ToRocketChatMessage message = messageFactory.create();
 		message.setText(issues.size() == 1 ? "Found 1 issue" : "Found " + issues.size() + " issues");
