@@ -8,6 +8,7 @@ import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
 
 import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,14 +24,16 @@ public class AttachmentConverter {
 	static final String MINOR_COLOR = "#F6C342";
 	static final String TRIVIAL_COLOR = "#707070";
 
-	private final MessageConfiguration config;
+	private final MessageConfiguration messageConfig;
 	private final List<FieldExtractor> defaultFieldExtractors;
 	private final List<FieldExtractor> extendedFieldExtractors;
+	private final URI baseUri;
 
-	public AttachmentConverter(MessageConfiguration config, List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors) {
-		this.config = notNull(config);
+	public AttachmentConverter(MessageConfiguration messageConfig, List<FieldExtractor> defaultFieldExtractors, List<FieldExtractor> extendedFieldExtractors, URI baseUri) {
+		this.messageConfig = notNull(messageConfig);
 		this.defaultFieldExtractors = notNull(defaultFieldExtractors);
 		this.extendedFieldExtractors = notNull(extendedFieldExtractors);
+		this.baseUri = notNull(baseUri);
 	}
 
 	public ToRocketChatAttachment convert(Issue issue, Boolean extended) {
@@ -41,10 +44,10 @@ public class AttachmentConverter {
 	private ToRocketChatAttachment createAttachment(Issue issue, List<FieldExtractor> fieldExtractors) {
 		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
 		attachment.setTitle(issue.getKey());
-		if (config.isPriorityColors() && issue.getPriority() != null) {
-			attachment.setColor(getPriorityColor(issue.getPriority(), config.getDefaultColor()));
+		if (messageConfig.isPriorityColors() && issue.getPriority() != null) {
+			attachment.setColor(getPriorityColor(issue.getPriority(), messageConfig.getDefaultColor()));
 		} else {
-			attachment.setColor(config.getDefaultColor());
+			attachment.setColor(messageConfig.getDefaultColor());
 		}
 		attachment.setText(createSummaryLink(issue));
 		List<Field> fields = fieldExtractors.stream().map(fc -> fc.create(issue)).collect(Collectors.toList());
@@ -64,8 +67,7 @@ public class AttachmentConverter {
 	}
 
 	private String parseTitleLink(Issue issue) {
-		return UriBuilder.fromUri(issue.getSelf())
-				.replacePath(null)
+		return UriBuilder.fromUri(baseUri)
 				.path("browse/")
 				.path(issue.getKey())
 				.build()

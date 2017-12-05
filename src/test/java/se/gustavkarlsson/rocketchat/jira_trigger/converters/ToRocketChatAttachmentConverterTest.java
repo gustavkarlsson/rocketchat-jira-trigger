@@ -17,38 +17,43 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ToRocketChatAttachmentConverterTest {
+	private static final URI DUMMY_URI = URI.create("http://somejira");
 
 	private MessageConfiguration mockConfig;
 	private Issue mockIssue;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		mockConfig = mock(MessageConfiguration.class);
 		mockIssue = mock(Issue.class);
 		when(mockIssue.getKey()).thenReturn("ISS-1234");
-		when(mockIssue.getSelf()).thenReturn(URI.create("http://somejira/browse/ISS-1234"));
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void createWithNullConfigThrowsNPE() throws Exception {
-		new AttachmentConverter(null, emptyList(), emptyList());
+	public void createWithNullConfigThrowsNPE() {
+		new AttachmentConverter(null, emptyList(), emptyList(), DUMMY_URI);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void createWithNullDefaultFieldCreatorsThrowsNPE() throws Exception {
-		new AttachmentConverter(mockConfig, null, emptyList());
+	public void createWithNullDefaultFieldCreatorsThrowsNPE() {
+		new AttachmentConverter(mockConfig, null, emptyList(), DUMMY_URI);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void createWithNullExtendedFieldCreatorsConfigThrowsNPE() throws Exception {
-		new AttachmentConverter(mockConfig, emptyList(), null);
+	public void createWithNullExtendedFieldCreatorsConfigThrowsNPE() {
+		new AttachmentConverter(mockConfig, emptyList(), null, DUMMY_URI);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void createWithNullBaseUriThrowsNPE() {
+		new AttachmentConverter(mockConfig, emptyList(), emptyList(), null);
 	}
 
 	@Test
-	public void convertWithBlockerPrioritySetsBlockerColor() throws Exception {
+	public void convertWithBlockerPrioritySetsBlockerColor() {
 		when(mockIssue.getPriority()).thenReturn(new BasicPriority(null, 0L, "Blocker"));
 		when(mockConfig.isPriorityColors()).thenReturn(true);
-		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList());
+		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList(), DUMMY_URI);
 
 		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
@@ -56,12 +61,12 @@ public class ToRocketChatAttachmentConverterTest {
 	}
 
 	@Test
-	public void convertWithoutPriorityColorsSetsDefaultColor() throws Exception {
+	public void convertWithoutPriorityColorsSetsDefaultColor() {
 		String defaultColor = "#F24678";
 		when(mockConfig.isPriorityColors()).thenReturn(false);
 		when(mockConfig.getDefaultColor()).thenReturn(defaultColor);
 		when(mockIssue.getPriority()).thenReturn(new BasicPriority(null, 0L, "Blocker"));
-		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList());
+		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList(), DUMMY_URI);
 
 		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
@@ -69,12 +74,12 @@ public class ToRocketChatAttachmentConverterTest {
 	}
 
 	@Test
-	public void convertWithUnknownPrioritySetsDefaultColor() throws Exception {
+	public void convertWithUnknownPrioritySetsDefaultColor() {
 		String defaultColor = "#F24678";
 		when(mockConfig.isPriorityColors()).thenReturn(true);
 		when(mockConfig.getDefaultColor()).thenReturn(defaultColor);
 		when(mockIssue.getPriority()).thenReturn(new BasicPriority(null, 0L, "Unknown"));
-		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList());
+		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList(), DUMMY_URI);
 
 		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
@@ -82,9 +87,9 @@ public class ToRocketChatAttachmentConverterTest {
 	}
 
 	@Test
-	public void convertWithSingleDefaultFieldCreator() throws Exception {
+	public void convertWithSingleDefaultFieldCreator() {
 		Field field = new Field("title", "value", true);
-		AttachmentConverter converter = new AttachmentConverter(mockConfig, singletonList(issue -> field), emptyList());
+		AttachmentConverter converter = new AttachmentConverter(mockConfig, singletonList(issue -> field), emptyList(), DUMMY_URI);
 
 		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
@@ -92,9 +97,9 @@ public class ToRocketChatAttachmentConverterTest {
 	}
 
 	@Test
-	public void convertWithSingleExtendedFieldCreator() throws Exception {
+	public void convertWithSingleExtendedFieldCreator() {
 		Field field = new Field("title", "value", true);
-		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), singletonList(issue -> field));
+		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), singletonList(issue -> field), DUMMY_URI);
 
 		ToRocketChatAttachment attachment = converter.convert(mockIssue, true);
 
@@ -102,9 +107,9 @@ public class ToRocketChatAttachmentConverterTest {
 	}
 
 	@Test
-	public void htmlEndodedSummaryIsCleaned() throws Exception {
+	public void htmlEndodedSummaryIsCleaned() {
 		when(mockIssue.getSummary()).thenReturn("&lt;Fran&ccedil;ais&gt;");
-		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList());
+		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList(), DUMMY_URI);
 
 		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
 
@@ -112,7 +117,17 @@ public class ToRocketChatAttachmentConverterTest {
 	}
 
 	@Test
-	public void create() throws Exception {
-		new AttachmentConverter(mockConfig, emptyList(), emptyList());
+	public void nonRootJiraUriCreatesCorrectLink() {
+		when(mockIssue.getSummary()).thenReturn("&lt;Fran&ccedil;ais&gt;");
+		AttachmentConverter converter = new AttachmentConverter(mockConfig, emptyList(), emptyList(), URI.create("http://some/dummy/jira"));
+
+		ToRocketChatAttachment attachment = converter.convert(mockIssue, false);
+
+		assertThat(attachment.getText()).isEqualTo("<http://some/dummy/jira/browse/ISS-1234|Français>");
+	}
+
+	@Test
+	public void create() {
+		new AttachmentConverter(mockConfig, emptyList(), emptyList(), DUMMY_URI);
 	}
 }

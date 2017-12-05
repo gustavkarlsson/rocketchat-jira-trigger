@@ -42,7 +42,7 @@ class Server {
 		FieldExtractorMapper fieldExtractorMapper = new FieldExtractorMapper(messageConfig);
 		List<FieldExtractor> defaultFieldExtractors = fieldExtractorMapper.getCreators(messageConfig.getDefaultFields());
 		List<FieldExtractor> extendedFieldExtractors = fieldExtractorMapper.getCreators(messageConfig.getExtendedFields());
-		AttachmentConverter attachmentConverter = new AttachmentConverter(messageConfig, defaultFieldExtractors, extendedFieldExtractors);
+		AttachmentConverter attachmentConverter = new AttachmentConverter(messageConfig, defaultFieldExtractors, extendedFieldExtractors, jiraConfig.getUri());
 		JiraKeyParser issueParser = new JiraKeyParser(messageConfig.getWhitelistedJiraKeyPrefixes(), messageConfig.getWhitelistedJiraKeySuffixes());
 
 		jiraClient = restClientProvider.get(jiraConfig);
