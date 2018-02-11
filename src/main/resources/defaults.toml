@@ -1,6 +1,6 @@
 [app]
 port = 4567 # The listening port of the server
-max_threads = 10 # Number of concurrent threads to handle requests from Rocket.Chat and communicate with JIRA.
+max_threads = 30 # Number of concurrent threads to handle requests from Rocket.Chat and communicate with JIRA.
 
 [message]
 username = "JIRA" # Override username
