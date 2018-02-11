@@ -5,10 +5,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import se.gustavkarlsson.rocketchat.jira_trigger.server.Server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration.*;
+import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration.MAX_THREADS_KEY;
+import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration.PORT_KEY;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppConfigurationTest {
@@ -34,7 +36,7 @@ public class AppConfigurationTest {
 
 	@Test(expected = ValidationException.class)
 	public void createWithTooHighPortThrowsValidationException() throws Exception {
-		when(mockConfigMap.getLong(PORT_KEY)).thenReturn(MAX_PORT_NUMBER + 1);
+		when(mockConfigMap.getLong(PORT_KEY)).thenReturn(Server.MAX_PORT_NUMBER + 1);
 
 		new AppConfiguration(mockConfigMap);
 	}
@@ -55,7 +57,7 @@ public class AppConfigurationTest {
 
 	@Test
 	public void createWithHighestPortSucceeds() throws Exception {
-		when(mockConfigMap.getLong(PORT_KEY)).thenReturn(MAX_PORT_NUMBER);
+		when(mockConfigMap.getLong(PORT_KEY)).thenReturn(Server.MAX_PORT_NUMBER);
 
 		new AppConfiguration(mockConfigMap);
 	}
@@ -75,14 +77,14 @@ public class AppConfigurationTest {
 	}
 
 	@Test
-	public void getPort() throws Exception {
+	public void getPort() {
 		int port = appConfig.getPort();
 
 		assertThat(port).isEqualTo(PORT);
 	}
 
 	@Test
-	public void getMaxThreads() throws Exception {
+	public void getMaxThreads() {
 		int maxThreads = appConfig.getMaxThreads();
 
 		assertThat(maxThreads).isEqualTo(MAX_THREADS);

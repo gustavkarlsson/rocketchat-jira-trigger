@@ -6,12 +6,15 @@ import spark.Request;
 import spark.Response;
 import spark.Service;
 
+import static org.apache.commons.lang3.Validate.inclusiveBetween;
+import static org.apache.commons.lang3.Validate.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 import static spark.Service.ignite;
 
 public class Server {
 	private static final Logger log = getLogger(Server.class);
 
+	public static final long MAX_PORT_NUMBER = 65535;
 	private static final String APPLICATION_JSON = "application/json";
 
 	private final int maxThreads;
@@ -23,9 +26,11 @@ public class Server {
 
 	Server(int maxThreads, int port, DetectIssueRoute detectIssueRoute, JiraServerInfoLogger jiraServerInfoLogger) {
 		this.maxThreads = maxThreads;
+		inclusiveBetween(1, Integer.MAX_VALUE, maxThreads);
 		this.port = port;
-		this.detectIssueRoute = detectIssueRoute;
-		this.jiraServerInfoLogger = jiraServerInfoLogger;
+		inclusiveBetween(1, MAX_PORT_NUMBER, port);
+		this.detectIssueRoute = notNull(detectIssueRoute);
+		this.jiraServerInfoLogger = notNull(jiraServerInfoLogger);
 	}
 
 	private static void logRequest(Request request) {

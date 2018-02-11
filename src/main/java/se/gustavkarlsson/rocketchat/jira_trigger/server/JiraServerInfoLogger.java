@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 
+import static org.apache.commons.lang3.Validate.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 class JiraServerInfoLogger {
@@ -16,7 +17,7 @@ class JiraServerInfoLogger {
 
 	@Inject
 	JiraServerInfoLogger(MetadataRestClient metadataClient) {
-		this.metadataClient = metadataClient;
+		this.metadataClient = notNull(metadataClient);
 	}
 
 	void logInfo() {
