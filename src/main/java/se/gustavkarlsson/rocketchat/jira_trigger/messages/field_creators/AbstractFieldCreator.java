@@ -6,7 +6,7 @@ import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 abstract class AbstractFieldCreator implements FieldCreator {
 
 	@Override
-	public Field create(Issue issue) {
+	public final Field create(Issue issue) {
 		return new Field(getTitle(), getValue(issue), isShortValue());
 	}
 

@@ -4,6 +4,7 @@ import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
 public class PriorityFieldCreator extends AbstractFieldCreator {
+
 	@Override
 	protected String getTitle() {
 		return "Priority";

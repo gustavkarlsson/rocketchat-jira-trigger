@@ -10,6 +10,7 @@ public class ReporterFieldCreator extends AbstractFieldCreator {
 	public ReporterFieldCreator(boolean useRealName) {
 		this.useRealName = useRealName;
 	}
+
 	@Override
 	protected String getTitle() {
 		return "Reporter";
