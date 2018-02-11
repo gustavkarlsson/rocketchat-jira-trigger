@@ -8,6 +8,7 @@ import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
 
 import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,12 +29,14 @@ public class AttachmentCreator {
 	private final String defaultColor;
 	private final List<FieldCreator> defaultFieldCreators;
 	private final List<FieldCreator> extendedFieldCreators;
+	private final URI baseUri;
 
-	AttachmentCreator(boolean priorityColors, String defaultColor, List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators) {
+	AttachmentCreator(boolean priorityColors, String defaultColor, List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators, URI baseUri) {
 		this.priorityColors = priorityColors;
 		this.defaultColor = notNull(defaultColor);
 		this.defaultFieldCreators = noNullElements(defaultFieldCreators);
 		this.extendedFieldCreators = noNullElements(extendedFieldCreators);
+		this.baseUri = notNull(baseUri);
 	}
 
 	public ToRocketChatAttachment create(Issue issue, IssueDetail detail) {
@@ -67,8 +70,7 @@ public class AttachmentCreator {
 	}
 
 	private String parseTitleLink(Issue issue) {
-		return UriBuilder.fromUri(issue.getSelf())
-				.replacePath(null)
+		return UriBuilder.fromUri(baseUri)
 				.path("browse/")
 				.path(issue.getKey())
 				.build()
