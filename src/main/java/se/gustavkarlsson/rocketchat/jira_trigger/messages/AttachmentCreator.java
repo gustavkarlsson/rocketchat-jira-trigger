@@ -71,7 +71,7 @@ public class AttachmentCreator {
 
 	private String parseTitleLink(Issue issue) {
 		return UriBuilder.fromUri(baseUri)
-				.path("browse/")
+				.path("browse")
 				.path(issue.getKey())
 				.build()
 				.toASCIIString();
