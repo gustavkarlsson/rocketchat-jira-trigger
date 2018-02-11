@@ -1,4 +1,4 @@
-package se.gustavkarlsson.rocketchat.jira_trigger.di.annotations;
+package se.gustavkarlsson.rocketchat.jira_trigger.di.qualifiers;
 
 import com.google.inject.BindingAnnotation;
 

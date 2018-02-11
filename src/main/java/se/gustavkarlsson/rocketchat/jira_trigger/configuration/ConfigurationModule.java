@@ -3,7 +3,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.moandjiezana.toml.Toml;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.qualifiers.Default;
 
 import java.io.File;
 

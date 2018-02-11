@@ -3,7 +3,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 import com.google.inject.*;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
-import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
+import se.gustavkarlsson.rocketchat.jira_trigger.di.qualifiers.Default;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators.FieldCreator;
 
 import java.util.List;
