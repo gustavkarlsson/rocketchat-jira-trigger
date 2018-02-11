@@ -1,6 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 
 import com.google.inject.*;
+import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.MessageConfiguration;
 import se.gustavkarlsson.rocketchat.jira_trigger.di.annotations.Default;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators.FieldCreator;
@@ -27,8 +28,8 @@ public class MessageModule extends AbstractModule {
 	}
 
 	@Provides
-	AttachmentCreator provideAttachmentConverter(MessageConfiguration messageConfig, @Default List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators) {
-		return new AttachmentCreator(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldCreators, extendedFieldCreators);
+	AttachmentCreator provideAttachmentConverter(MessageConfiguration messageConfig, JiraConfiguration jiraConfig, @Default List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators) {
+		return new AttachmentCreator(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldCreators, extendedFieldCreators, jiraConfig.getUri());
 	}
 
 	public static class ExtendedFieldCreatorsProvider implements Provider<List<FieldCreator>> {
