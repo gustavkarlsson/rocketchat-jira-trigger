@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.Validate.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 class FieldCreatorMapper {
@@ -35,8 +36,8 @@ class FieldCreatorMapper {
 		fieldCreatorsByName.put(RESOLUTION_KEY, new ResolutionFieldCreator());
 		fieldCreatorsByName.put(REPORTER_KEY, new ReporterFieldCreator(useRealNames));
 		fieldCreatorsByName.put(ASSIGNEE_KEY, new AssigneeFieldCreator(useRealNames));
-		fieldCreatorsByName.put(CREATED_KEY, new CreatedFieldCreator(dateTimeFormatter));
-		fieldCreatorsByName.put(UPDATED_KEY, new UpdatedFieldCreator(dateTimeFormatter));
+		fieldCreatorsByName.put(CREATED_KEY, new CreatedFieldCreator(notNull(dateTimeFormatter)));
+		fieldCreatorsByName.put(UPDATED_KEY, new UpdatedFieldCreator(notNull(dateTimeFormatter)));
 	}
 
 
