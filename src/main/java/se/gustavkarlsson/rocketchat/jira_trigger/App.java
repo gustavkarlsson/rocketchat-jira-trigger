@@ -27,7 +27,7 @@ public class App {
 		}
 	}
 
-	App(String... args) throws Exception {
+	App(String... args) {
 		Injector injector = Guice.createInjector(
 				new ConfigurationModule(args),
 				new MessageModule(),

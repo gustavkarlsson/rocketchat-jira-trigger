@@ -36,8 +36,8 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 	private final AttachmentCreator attachmentCreator;
 
 	@Inject
-	public DetectIssueRoute(List<Validator> validators, JiraKeyParser jiraKeyParser, IssueRestClient issueClient,
-							ToRocketChatMessageFactory messageFactory, AttachmentCreator attachmentCreator) {
+	DetectIssueRoute(List<Validator> validators, JiraKeyParser jiraKeyParser, IssueRestClient issueClient,
+					 ToRocketChatMessageFactory messageFactory, AttachmentCreator attachmentCreator) {
 		this.validators = noNullElements(validators);
 		this.jiraKeyParser = notNull(jiraKeyParser);
 		this.issueClient = notNull(issueClient);
