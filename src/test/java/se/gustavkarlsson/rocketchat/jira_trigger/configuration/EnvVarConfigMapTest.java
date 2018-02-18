@@ -23,6 +23,20 @@ public class EnvVarConfigMapTest {
 		public void createWithNullMapThrowsNPE() {
 			new EnvVarConfigMap(null);
 		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void createWithNullKeyThrowsException() {
+			Map<String, String> map = new HashMap<>();
+			map.put(null, "value");
+			new EnvVarConfigMap(map);
+		}
+
+		@Test(expected = IllegalArgumentException.class)
+		public void createWithNullValueThrowsException() {
+			Map<String, String> map = new HashMap<>();
+			map.put("key", null);
+			new EnvVarConfigMap(map);
+		}
 	}
 
 	@RunWith(Parameterized.class)

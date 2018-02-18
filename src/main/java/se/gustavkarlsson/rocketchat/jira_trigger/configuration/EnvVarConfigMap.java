@@ -13,9 +13,17 @@ class EnvVarConfigMap implements ConfigMap {
 	private final Map<String, String> environment;
 
 	EnvVarConfigMap(Map<String, String> environment) {
+
 		this.environment = environment.entrySet().stream()
+				.peek(EnvVarConfigMap::validateEntry)
 				.map(EnvVarConfigMap::normalizeEntry)
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+	}
+
+	private static void validateEntry(Entry<String, String> entry) {
+		if (entry.getKey() == null || entry.getValue() == null) {
+			throw new IllegalArgumentException("environment may not contain null keys or values");
+		}
 	}
 
 	private static Entry<String, String> normalizeEntry(Entry<String, String> entry) {
