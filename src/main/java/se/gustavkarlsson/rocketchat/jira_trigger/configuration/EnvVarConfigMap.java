@@ -1,8 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import org.apache.commons.lang3.NotImplementedException;
-
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,10 +24,6 @@ class EnvVarConfigMap implements ConfigMap {
 
 	private static String normalizeKey(String key) {
 		return key.replaceAll("\\.", "_").toUpperCase();
-	}
-
-	private static List<String> parseStringList(String rawString) {
-		throw new NotImplementedException("parseStringList");
 	}
 
 	@Override
@@ -65,5 +60,32 @@ class EnvVarConfigMap implements ConfigMap {
 		return Optional.ofNullable(getString(key))
 				.map(EnvVarConfigMap::parseStringList)
 				.orElse(null);
+	}
+
+	private static List<String> parseStringList(String rawString) {
+		return parseRemainingStrings(new ArrayList<>(), rawString);
+	}
+
+	private static List<String> parseRemainingStrings(List<String> list, String rawString) {
+		StringBuilder sb = new StringBuilder();
+		if (rawString.isEmpty()) {
+			list.add(sb.toString());
+			return list;
+		}
+
+		char[] chars = rawString.toCharArray();
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] == ',') {
+				list.add(sb.toString());
+				return (parseRemainingStrings(list, rawString.substring(i + 1)));
+			}
+			if (chars[i] == '\\') {
+				i++;
+			}
+			sb.append(chars[i]);
+		}
+
+		list.add(sb.toString());
+		return list;
 	}
 }

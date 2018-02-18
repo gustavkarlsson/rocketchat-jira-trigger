@@ -1,14 +1,17 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -40,7 +43,7 @@ public class EnvVarConfigMapTest {
 
 		@Parameters(name = "{0}={1} | getString({2}) should return: {3}")
 		public static Collection<Object[]> data() {
-			return Arrays.asList(new Object[][]{
+			return asList(new Object[][]{
 					{"KEY", "value", "KEY", "value"},
 					{"key", "value", "key", "value"},
 					{"key", "value", "KEY", "value"},
@@ -81,7 +84,7 @@ public class EnvVarConfigMapTest {
 
 		@Parameters(name = "{0}={1} | getLong({2}) should return: {3}")
 		public static Collection<Object[]> data() {
-			return Arrays.asList(new Object[][]{
+			return asList(new Object[][]{
 					{"KEY", "1", "KEY", 1L},
 					{"key", "1", "key", 1L},
 					{"key", "1", "KEY", 1L},
@@ -133,7 +136,7 @@ public class EnvVarConfigMapTest {
 
 		@Parameters(name = "{0}={1} | getBoolean({2}) should return: {3}")
 		public static Collection<Object[]> data() {
-			return Arrays.asList(new Object[][]{
+			return asList(new Object[][]{
 					{"KEY", "true", "KEY", true},
 					{"key", "true", "key", true},
 					{"key", "true", "KEY", true},
@@ -184,7 +187,18 @@ public class EnvVarConfigMapTest {
 
 		@Parameters(name = "{0}={1} | getStringList({2}) should return: {3}")
 		public static Collection<Object[]> data() {
-			throw new NotImplementedException("Not yet implemented");
+			return asList(new Object[][]{
+					{"KEY", "foo", "KEY", asList("foo")},
+					{"KEY", "", "KEY", asList("")},
+					{"KEY", ",", "KEY", asList("", "")},
+					{"KEY", "foo,bar", "KEY", asList("foo", "bar")},
+					{"KEY", "foo,", "KEY", asList("foo", "")},
+					{"KEY", ",foo", "KEY", asList("", "foo")},
+					{"KEY", "foo\\,bar", "KEY", asList("foo,bar")},
+					{"KEY", "foo\\\\bar", "KEY", asList("foo\\bar")},
+					{"KEY", "foo\\", "KEY", Exception.class},
+					{"KEY", "foo\\bar", "KEY", asList("foobar")},
+			});
 		}
 
 		@Test
