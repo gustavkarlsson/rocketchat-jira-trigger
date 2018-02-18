@@ -194,9 +194,12 @@ public class EnvVarConfigMapTest {
 					{"KEY", "foo,bar", "KEY", asList("foo", "bar")},
 					{"KEY", "foo,", "KEY", asList("foo", "")},
 					{"KEY", ",foo", "KEY", asList("", "foo")},
+					{"KEY", "\\\\", "KEY", asList("\\")},
 					{"KEY", "foo\\,bar", "KEY", asList("foo,bar")},
 					{"KEY", "foo\\\\bar", "KEY", asList("foo\\bar")},
 					{"KEY", "foo\\", "KEY", Exception.class},
+					{"KEY", "foo\\\\\\", "KEY", Exception.class},
+					{"KEY", "foo\\\\", "KEY", asList("foo\\")},
 					{"KEY", "foo\\bar", "KEY", asList("foobar")},
 			});
 		}
