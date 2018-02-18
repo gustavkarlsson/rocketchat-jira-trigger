@@ -5,9 +5,11 @@ import com.google.inject.Provides;
 import com.moandjiezana.toml.Toml;
 import se.gustavkarlsson.rocketchat.jira_trigger.di.qualifiers.Default;
 
+import javax.annotation.Nullable;
 import java.io.File;
-
-import static org.apache.commons.lang3.Validate.notEmpty;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class ConfigurationModule extends AbstractModule {
 	private static final String DEFAULTS_FILE_NAME = "defaults.toml";
@@ -15,8 +17,11 @@ public class ConfigurationModule extends AbstractModule {
 	private final File configFile;
 
 	public ConfigurationModule(String... args) {
-		notEmpty(args, "A configuration file must be specified as the first argument");
-		configFile = new File(args[0]);
+		if (args.length > 0) {
+			configFile = new File(args[0]);
+		} else {
+			configFile = null;
+		}
 	}
 
 	@Override
@@ -31,13 +36,17 @@ public class ConfigurationModule extends AbstractModule {
 
 	@Provides
 	Toml provideTomlFromFile() {
-		return new Toml().read(configFile);
+		return Optional.ofNullable(configFile).map(configFile -> new Toml().read(configFile)).orElse(null);
 	}
 
 	@Provides
-	ConfigMap provideConfigMap(@Default Toml defaultToml, Toml configFileToml) {
-		ConfigMap configFileConfig = new TomlConfigMap(configFileToml);
-		ConfigMap defaultConfig = new TomlConfigMap(defaultToml);
-		return new CascadingConfigMap(configFileConfig, defaultConfig);
+	ConfigMap provideConfigMap(@Default Toml defaultToml, @Nullable Toml configFileToml) {
+		List<ConfigMap> configMaps = new ArrayList<>();
+		configMaps.add(new EnvVarConfigMap(System.getenv()));
+		if (configFileToml != null) {
+			configMaps.add(new TomlConfigMap(configFileToml));
+		}
+		configMaps.add(new TomlConfigMap(defaultToml));
+		return new CascadingConfigMap(configMaps);
 	}
 }

@@ -1,6 +1,5 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -10,8 +9,8 @@ import static org.apache.commons.lang3.Validate.noNullElements;
 class CascadingConfigMap implements ConfigMap {
 	private final List<ConfigMap> configMaps;
 
-	CascadingConfigMap(ConfigMap... configMaps) {
-		this.configMaps = noNullElements(Arrays.asList(configMaps));
+	CascadingConfigMap(List<ConfigMap> configMaps) {
+		this.configMaps = noNullElements(configMaps);
 	}
 
 	@Override
