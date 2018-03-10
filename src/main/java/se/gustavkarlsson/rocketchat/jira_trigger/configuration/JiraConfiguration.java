@@ -1,10 +1,13 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
+import com.google.inject.Singleton;
+
 import javax.inject.Inject;
 import java.net.URI;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+@Singleton
 public class JiraConfiguration {
 	private static final String KEY_PREFIX = "jira.";
 	static final String URI_KEY = KEY_PREFIX + "uri";

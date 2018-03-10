@@ -1,5 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
+import com.google.inject.Singleton;
+
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,6 +10,7 @@ import java.util.Set;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
+@Singleton
 public class RocketChatConfiguration {
 	private static final String KEY_PREFIX = "rocketchat.";
 	static final String TOKENS_KEY = KEY_PREFIX + "tokens";

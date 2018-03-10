@@ -3,6 +3,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.routes;
 import com.atlassian.jira.rest.client.api.IssueRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.AttachmentCreator;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.ToRocketChatMessageFactory;
@@ -26,6 +27,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import static org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404;
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Singleton
 public class DetectIssueRoute extends RocketChatMessageRoute {
 	private static final Logger log = getLogger(DetectIssueRoute.class);
 

@@ -5,6 +5,7 @@ import com.atlassian.jira.rest.client.auth.AnonymousAuthenticationHandler;
 import com.atlassian.jira.rest.client.auth.BasicHttpAuthenticationHandler;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import se.gustavkarlsson.rocketchat.jira_trigger.configuration.JiraConfiguration;
 
@@ -13,6 +14,7 @@ import java.io.Console;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Singleton
 class AuthHandlerProvider implements Provider<AuthenticationHandler> {
 	private static final Logger log = getLogger(AuthHandlerProvider.class);
 

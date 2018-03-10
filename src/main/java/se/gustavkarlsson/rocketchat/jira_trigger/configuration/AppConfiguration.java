@@ -1,5 +1,6 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
+import com.google.inject.Singleton;
 import se.gustavkarlsson.rocketchat.jira_trigger.server.Server;
 
 import javax.inject.Inject;
@@ -7,6 +8,7 @@ import javax.inject.Inject;
 import static org.apache.commons.lang3.Validate.inclusiveBetween;
 import static org.apache.commons.lang3.Validate.notNull;
 
+@Singleton
 public class AppConfiguration {
 	private static final String KEY_PREFIX = "app.";
 	static final String PORT_KEY = KEY_PREFIX + "port";

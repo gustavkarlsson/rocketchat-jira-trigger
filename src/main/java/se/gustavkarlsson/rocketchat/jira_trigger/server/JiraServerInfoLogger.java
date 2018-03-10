@@ -3,6 +3,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.server;
 import com.atlassian.jira.rest.client.api.MetadataRestClient;
 import com.atlassian.jira.rest.client.api.domain.ServerInfo;
 import com.atlassian.util.concurrent.Promise;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
+@Singleton
 class JiraServerInfoLogger {
 	private static final Logger log = getLogger(JiraServerInfoLogger.class);
 

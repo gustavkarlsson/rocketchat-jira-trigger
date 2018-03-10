@@ -1,5 +1,6 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.configuration;
 
+import com.google.inject.Singleton;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -13,6 +14,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.Validate.notNull;
 
+@Singleton
 public class MessageConfiguration {
 	private static final String KEY_PREFIX = "message.";
 	static final String USERNAME_KEY = KEY_PREFIX + "username";
