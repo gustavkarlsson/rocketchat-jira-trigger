@@ -55,9 +55,9 @@ docker run -v $(pwd)/config.toml:/app/config.toml -p 4567:4567 --rm -it gustavka
 
 To get started you only need to configure the URI of your JIRA server and some user credentials (unless anonymous access is allowed). There are two ways to configure the application:
 
-### Config file
+### Configuration file
 
-Create a configuration file with the `.toml` extension and set it up like this:
+Create a file with the `.toml` extension and set it up like this:
 
 ```toml
 [jira]
@@ -68,18 +68,28 @@ password = "somepassword"
 
 ### Environment variables
 
-Set environment variables for the configuration options according to the following pattern: `<section>_<key>=<value>`. Compare this example with the above config file example to see the similarity:
+Environment variables should follow the pattern: `<section>_<key>`. Compare these examples with the above config file example to see the similarity:
+
+#### Configuring environment variables on Linux/OS X
 
 ```shell
-jira_uri=https://jira.mycompany.com
-jira_username=someuser
-jira_password=somepassword
+export jira_uri="https://jira.mycompany.com"
+export jira_username="someuser"
+export jira_password="somepassword"
+```
+
+#### Configuring environment variables on Windows
+
+```shell
+setx jira_uri "https://jira.mycompany.com"
+setx jira_username "someuser"
+setx jira_password "somepassword"
 ```
 
 For lists of values, use a comma as a separator:
 
-```shell
-message_default_fields=assignee,status,reporter,priority
+```text
+assignee,status,reporter,priority
 ```
 
 ### Reference
