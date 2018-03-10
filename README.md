@@ -1,13 +1,15 @@
 # rocketchat-jira-trigger
 
-Outgoing webhook integration for [Rocket.Chat](https://rocket.chat) that summarizes any [JIRA](https://www.atlassian.com/software/jira) issues mentioned
-
 [![Build Status](https://travis-ci.org/gustavkarlsson/rocketchat-jira-trigger.svg?branch=master)](https://travis-ci.org/gustavkarlsson/rocketchat-jira-trigger)
 [![codecov](https://codecov.io/gh/gustavkarlsson/rocketchat-jira-trigger/branch/master/graph/badge.svg)](https://codecov.io/gh/gustavkarlsson/rocketchat-jira-trigger)
 [![Docker Automated build](https://img.shields.io/docker/automated/gustavkarlsson/rocketchat-jira-trigger.svg)](https://hub.docker.com/r/gustavkarlsson/rocketchat-jira-trigger)
 [![Image Layers](https://images.microbadger.com/badges/image/gustavkarlsson/rocketchat-jira-trigger.svg)](https://microbadger.com/images/gustavkarlsson/rocketchat-jira-trigger)
 [![Image version](https://images.microbadger.com/badges/version/gustavkarlsson/rocketchat-jira-trigger.svg)](https://microbadger.com/images/gustavkarlsson/rocketchat-jira-trigger)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gustavkarlsson/rocketchat-jira-trigger/blob/master/LICENSE)
+
+Outgoing webhook integration for [Rocket.Chat](https://rocket.chat) that summarizes any [JIRA](https://www.atlassian.com/software/jira) issues mentioned
+
+![Example](example.png)
 
 ## Running
 
