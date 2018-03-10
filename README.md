@@ -1,3 +1,7 @@
+# rocketchat-jira-trigger
+
+Outgoing webhook integration for [Rocket.Chat](https://rocket.chat) that summarizes any [JIRA](https://www.atlassian.com/software/jira) issues mentioned
+
 [![Build Status](https://travis-ci.org/gustavkarlsson/rocketchat-jira-trigger.svg?branch=master)](https://travis-ci.org/gustavkarlsson/rocketchat-jira-trigger)
 [![codecov](https://codecov.io/gh/gustavkarlsson/rocketchat-jira-trigger/branch/master/graph/badge.svg)](https://codecov.io/gh/gustavkarlsson/rocketchat-jira-trigger)
 [![Docker Automated build](https://img.shields.io/docker/automated/gustavkarlsson/rocketchat-jira-trigger.svg)](https://hub.docker.com/r/gustavkarlsson/rocketchat-jira-trigger)
@@ -5,70 +9,107 @@
 [![Image version](https://images.microbadger.com/badges/version/gustavkarlsson/rocketchat-jira-trigger.svg)](https://microbadger.com/images/gustavkarlsson/rocketchat-jira-trigger)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gustavkarlsson/rocketchat-jira-trigger/blob/master/LICENSE)
 
-# rocketchat-jira-trigger
-Outgoing webhook integration for Rocket.Chat that summarizes any JIRA issues mentioned
+## Running
 
-## Building
-Clone the repository and run:
+You can run rocketchat-jira-trigger either natively (requires at [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html) to build and [JRE 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html) to run) or with [Docker](https://www.docker.com).
 
-**Linux/OS X**
-```
+### Natively
+
+First download the [source code](https://github.com/gustavkarlsson/rocketchat-jira-trigger/releases) and run:
+
+#### Build on Linux/OS X
+
+```shell
 ./gradlew installDist
 ```
-**Windows**
-```
+
+#### Build on Windows
+
+```shell
 gradlew.bat installDist
 ```
-The binaries will be located in `build/install`
+
+The app will be located in `build/install`. Now run the start script with a configuration file (if you have one) as the only argument:
+
+#### Run on Linux/OS X
+
+```shell
+bin/rocketchat-jira-trigger config.toml
+```
+
+#### Run on Windows
+
+```shell
+bin\rocketchat-jira-trigger.bat config.toml
+```
+
+### With Docker
+
+Use the Docker cli to mount a config file (if you have one) as volume `/app/config.toml` and set up port mapping for port `4567`:
+
+```shell
+docker run -v $(pwd)/config.toml:/app/config.toml -p 4567:4567 --rm -it gustavkarlsson/rocketchat-jira-trigger:latest
+```
 
 ## Configuration
-To get started you only need to configure the URI of your JIRA server and some user credentials (unless anonymous access is allowed).
+
+To get started you only need to configure the URI of your JIRA server and some user credentials (unless anonymous access is allowed). There are two ways to configure the application:
+
+### Config file
+
 Create a configuration file with the `.toml` extension and set it up like this:
-```
+
+```toml
 [jira]
 uri = "https://jira.mycompany.com"
 username = "someuser"
 password = "somepassword"
 ```
-If you don't want to save your password in plain text, then leave it out and you will be prompted to enter it when running the app.
-For further configuration settings, check out the [defaults](https://github.com/gustavkarlsson/rocketchat-jira-trigger/blob/master/src/main/resources/defaults.toml).
 
-## Running
+### Environment variables
 
-### With a start script
-Run the start scripts with a configuration file as the only argument:
+Set environment variables for the configuration options according to the following pattern: `<section>_<key>=<value>`. Compare this example with the above config file example to see the similarity:
 
-**Linux/OS X**
-```
-bin/rocketchat-jira-trigger config.toml
-```
-**Windows**
-```
-bin\rocketchat-jira-trigger.bat config.toml
+```shell
+jira_uri=https://jira.mycompany.com
+jira_username=someuser
+jira_password=somepassword
 ```
 
-### With Docker
-Use the `docker` cli and mount a config file as volume `/app/config.toml` and set up port mapping for port `4567`:
-```
-docker run -v $(pwd)/config.toml:/app/config.toml -p 4567:4567 --rm -it gustavkarlsson/rocketchat-jira-trigger:latest
+For lists of values, use a comma as a separator:
+
+```shell
+message_default_fields=assignee,status,reporter,priority
 ```
 
-## Trying it out
-In Rocket.Chat, set up an outgoing webhook pointing at the server on port 4567. Example: `http://server.mycompany.com:4567/`
+### Reference
+
+For a list of all configuration settings, check out the [defaults](https://github.com/gustavkarlsson/rocketchat-jira-trigger/blob/master/src/main/resources/defaults.toml).
+
+### Passwords
+
+If you don't want to store your password in a file or environment variable, then leave it out and you will be prompted to enter it when running the app.
+
+## Usage
+
+In Rocket.Chat, set up an outgoing webhook pointing at the server on port `4567`. Example: `http://server.mycompany.com:4567/`
 and write a message containing a known JIRA issue to try it out. Example: `Let's check out SUP-1234`
 
 Rocket.Chat should reply with details about the JIRA issue.
 
-*Tip: If you want more details, append a + like this: `Let's check out SUP-1234+`*
+*Tip: If you want more details, append a `+` like this: `Let's check out SUP-1234+`*
 
 ## Troubleshooting
-If your messages aren't getting any replies, first check the log.
+
+If your messages aren't getting any replies, first check the logs of Rocket.Chat and rocketchat-jira-trigger.
 
 ### HTTP 403 errors
-If you're getting HTTP 403 errors, it might be because CAPTCHA is enabled on your JIRA server and it wants you to manually re-authenticate. In that case, log out of JIRA in your browser and then log in again.
+
+If you're getting HTTP 403 errors, it might be because [CAPTCHA](https://en.wikipedia.org/wiki/CAPTCHA) is enabled on your JIRA server and it wants you to manually re-authenticate. In that case, log out of JIRA in your browser and then log in again.
 
 If you're still having trouble, feel free to [create an issue](https://github.com/gustavkarlsson/rocketchat-jira-trigger/issues/new) explaining your problem.
 
-### Connection refused when using docker
-When using docker, you must NOT override the app port in the configuration file. The docker image is configured to
-only export export port 4567. You can change what port the container should listen to with the `-p` option.
+### Connection refused when using Docker
+
+When using Docker, you must NOT override the app port in the configuration file. The Docker image is configured to
+only export export port `4567`. You can change what port the container should listen to with the `-p` option.
