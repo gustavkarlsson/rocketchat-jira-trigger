@@ -48,7 +48,8 @@ public class JiraKeyParserTest {
 					{"ABC-123 is a good one"},
 					{"\nABC-123\n"},
 					{"\tABC-123\t"},
-					{" ABC-123 "}
+					{" ABC-123 "},
+					{"A1BC3-123"}
 			});
 		}
 
