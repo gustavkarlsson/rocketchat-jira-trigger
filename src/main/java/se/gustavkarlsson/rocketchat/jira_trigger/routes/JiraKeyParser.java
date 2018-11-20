@@ -13,7 +13,7 @@ import static se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail.EXTEN
 import static se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail.NORMAL;
 
 class JiraKeyParser {
-	private static final Pattern JIRA_KEY = Pattern.compile("[A-Z]+-\\d+\\+?");
+	private static final Pattern JIRA_KEY = Pattern.compile("[A-Z][A-Z0-9]+-\\d+\\+?");
 	private static final Set<Character> ALWAYS_VALID = new HashSet<>(Arrays.asList(' ', '\t', '\n'));
 
 	private final Set<Character> whitelistedPrefixes;
