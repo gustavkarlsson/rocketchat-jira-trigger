@@ -39,9 +39,7 @@ public class JiraKeyParserTest {
 		@Parameters(name = "{0}")
 		public static Collection<Object[]> data() {
 			return Arrays.asList(new Object[][]{
-					{"A-1"},
 					{"AB-1"},
-					{"A-999999999"},
 					{"AAAAAAAAAA-1"},
 					{"ZZZZZZZZZZ-9999999999"},
 					{"Lets try ABC-123"},
@@ -89,7 +87,9 @@ public class JiraKeyParserTest {
 					{"ABC-123Z"},
 					{"(ABC-123)"},
 					{"browse/ABC-123"},
-					{"3BC-23"}
+					{"3BC-23"},
+					{"A-999999999"},
+					{"A-1"},
 			});
 		}
 
