@@ -24,7 +24,7 @@ public class ToRocketChatMessageFactoryTest {
 
 		ToRocketChatMessage message = factory.create();
 
-		assertThat(message.getUsername()).isEqualTo(username);
+		assertThat(message.getAlias()).isEqualTo(username);
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class ToRocketChatMessageFactoryTest {
 
 		ToRocketChatMessage message = factory.create();
 
-		assertThat(message.getIconUrl()).isEqualTo(url);
+		assertThat(message.getAvatar()).isEqualTo(url);
 	}
 
 }

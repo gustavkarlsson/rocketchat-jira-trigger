@@ -14,8 +14,8 @@ public class ToRocketChatMessageFactory {
 
 	public ToRocketChatMessage create() {
 		ToRocketChatMessage message = new ToRocketChatMessage();
-		message.setUsername(username);
-		message.setIconUrl(iconUrl);
+		message.setAlias(username);
+		message.setAvatar(iconUrl);
 		return message;
 	}
 

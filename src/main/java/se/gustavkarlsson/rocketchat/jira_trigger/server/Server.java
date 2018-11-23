@@ -36,6 +36,7 @@ public class Server {
 	private static void logRequest(Request request) {
 		log.info("Incoming request: {} {} {} {}",
 				request.raw().getRemoteAddr(), request.requestMethod(), request.contentType(), request.pathInfo());
+		log.info(request.body());
 	}
 
 	private static void logResponse(Response response) {
