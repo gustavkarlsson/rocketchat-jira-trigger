@@ -50,9 +50,6 @@ public class AttachmentCreator {
 		attachment.setText(createText(issue));
 		attachment.setFields(getFields(issue));
 		attachment.setCollapsed(true);
-		// FIXME Consider attachment.setAuthorName(); (and removing from default fields)
-		// FIXME Consider attachment.setAuthorLink();
-		// FIXME Consider attachment.setAuthorIcon();
 		return attachment;
 	}
 
