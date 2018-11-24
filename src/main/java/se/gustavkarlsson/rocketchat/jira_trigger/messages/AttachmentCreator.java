@@ -28,7 +28,6 @@ public class AttachmentCreator {
 	private final URI baseUri;
 	private final int maxTextLength;
 
-	// TODO Move some of this into factory
 	AttachmentCreator(boolean priorityColors, String defaultColor, List<FieldCreator> fieldCreators, URI baseUri, int maxTextLength) {
 		this.priorityColors = priorityColors;
 		this.defaultColor = notNull(defaultColor);
@@ -38,19 +37,9 @@ public class AttachmentCreator {
 		this.maxTextLength = maxTextLength;
 	}
 
-	private static String stripReservedLinkCharacters(String text) {
-		return text.replaceAll("[<>]", "");
-	}
-
-	public ToRocketChatAttachment create(Issue issue) {
-		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
-		attachment.setTitle(getTitle(issue));
-		attachment.setTitleLink(getTitleLink(issue));
-		attachment.setColor(getColor(issue));
-		attachment.setText(createText(issue));
-		attachment.setFields(getFields(issue));
-		attachment.setCollapsed(true);
-		return attachment;
+	private static String cleanText(String summary) {
+		String unescaped = unescapeHtml(summary);
+		return stripReservedLinkCharacters(unescaped);
 	}
 
 	private String getTitleLink(Issue issue) {
@@ -59,6 +48,10 @@ public class AttachmentCreator {
 				.path(issue.getKey())
 				.build()
 				.toASCIIString();
+	}
+
+	private static String stripReservedLinkCharacters(String text) {
+		return text.replaceAll("[<>]", "");
 	}
 
 	private String getPriorityColor(BasicPriority priority, String fallbackColor) {
@@ -78,6 +71,17 @@ public class AttachmentCreator {
 		}
 	}
 
+	public ToRocketChatAttachment create(Issue issue) {
+		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
+		attachment.setCollapsed(true);
+		attachment.setTitle(getTitle(issue));
+		attachment.setTitleLink(getTitleLink(issue));
+		attachment.setColor(getColor(issue));
+		attachment.setText(createText(issue));
+		attachment.setFields(getFields(issue));
+		return attachment;
+	}
+
 	private String getColor(Issue issue) {
 		if (priorityColors && issue.getPriority() != null) {
 			return getPriorityColor(issue.getPriority(), defaultColor);
@@ -87,20 +91,22 @@ public class AttachmentCreator {
 	}
 
 	private String createText(Issue issue) {
-		String summary = Optional.ofNullable(issue.getDescription()).orElse("");
-		String unescaped = unescapeHtml(summary);
-		String text = stripReservedLinkCharacters(unescaped);
-		if (text.length() > maxTextLength) {
-			text = text.substring(0, maxTextLength - 1) + '…';
+		String description = Optional.ofNullable(issue.getDescription()).orElse("");
+		String cleaned = cleanText(description);
+		return trim(cleaned);
+	}
+
+	private String trim(String cleaned) {
+		if (cleaned.length() > maxTextLength) {
+			cleaned = cleaned.substring(0, maxTextLength - 1) + '…';
 		}
-		return text;
+		return cleaned;
 	}
 
 	private String getTitle(Issue issue) {
 		String summary = Optional.ofNullable(issue.getSummary()).orElse("");
-		String unescaped = unescapeHtml(summary);
-		String stripped = stripReservedLinkCharacters(unescaped);
-		return String.format("%s %s", issue.getKey(), stripped);
+		String cleaned = cleanText(summary);
+		return String.format("%s %s", issue.getKey(), cleaned);
 	}
 
 	private List<Field> getFields(Issue issue) {
