@@ -46,21 +46,14 @@ public class AttachmentCreator {
 		return text.replaceAll("[<>]", "");
 	}
 
-	private String createTitle(Issue issue) {
-		String summary = Optional.ofNullable(issue.getSummary()).orElse("");
-		String unescaped = unescapeHtml(summary);
-		String stripped = stripReservedLinkCharacters(unescaped);
-		return String.format("%s %s", issue.getKey(), stripped);
-	}
-
 	public ToRocketChatAttachment create(Issue issue, IssueDetail detail) {
 		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
-		attachment.setTitle(createTitle(issue));
+		attachment.setTitle(getTitle(issue));
 		attachment.setTitleLink(getTitleLink(issue));
 		attachment.setColor(getColor(issue));
 		attachment.setText(createText(issue));
 		attachment.setFields(getFields(issue, detail));
-		// FIXME make configurable attachment.setCollapsed(true);
+		attachment.setCollapsed(getCollapsed(detail));
 		// FIXME Consider attachment.setAuthorName(); (and removing from default fields)
 		// FIXME Consider attachment.setAuthorLink();
 		// FIXME Consider attachment.setAuthorIcon();
@@ -110,9 +103,20 @@ public class AttachmentCreator {
 		return text;
 	}
 
+	private String getTitle(Issue issue) {
+		String summary = Optional.ofNullable(issue.getSummary()).orElse("");
+		String unescaped = unescapeHtml(summary);
+		String stripped = stripReservedLinkCharacters(unescaped);
+		return String.format("%s %s", issue.getKey(), stripped);
+	}
+
 	private List<Field> getFields(Issue issue, IssueDetail detail) {
 		List<FieldCreator> fieldCreators = detail == EXTENDED ? extendedFieldCreators : defaultFieldCreators;
 		return fieldCreators.stream().map(fc -> fc.create(issue)).collect(Collectors.toList());
+	}
+
+	private boolean getCollapsed(IssueDetail detail) {
+		return detail == IssueDetail.NORMAL;
 	}
 
 }

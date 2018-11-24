@@ -16,7 +16,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 class FieldCreatorMapper {
 	private static final Logger log = getLogger(FieldCreatorMapper.class);
 
-	static final String DESCRIPTION_KEY = "description";
 	static final String ASSIGNEE_KEY = "assignee";
 	static final String STATUS_KEY = "status";
 	static final String REPORTER_KEY = "reporter";
@@ -29,7 +28,6 @@ class FieldCreatorMapper {
 	private final Map<String, FieldCreator> fieldCreatorsByName = new HashMap<>();
 
 	FieldCreatorMapper(boolean useRealNames, DateTimeFormatter dateTimeFormatter) {
-		fieldCreatorsByName.put(DESCRIPTION_KEY, new DescriptionFieldCreator());
 		fieldCreatorsByName.put(STATUS_KEY, new StatusFieldCreator());
 		fieldCreatorsByName.put(PRIORITY_KEY, new PriorityFieldCreator());
 		fieldCreatorsByName.put(TYPE_KEY, new TypeFieldCreator());
