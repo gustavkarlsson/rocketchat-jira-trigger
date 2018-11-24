@@ -7,7 +7,6 @@ import se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -42,8 +41,7 @@ class FieldCreatorMapper {
 	List<FieldCreator> getCreators(List<String> fields) {
 		log.debug("Fields to find creators for: {}", fields);
 		List<FieldCreator> fieldCreators = fields.stream()
-				.map(fieldCreatorsByName::get)
-				.filter(Objects::nonNull)
+				.map(f -> fieldCreatorsByName.getOrDefault(f.toLowerCase(), new FallbackFieldCreator(f)))
 				.collect(Collectors.toList());
 		log.debug("Found creators: {}", fieldCreators.stream().map(c -> c.getClass().getSimpleName()));
 		return fieldCreators;
