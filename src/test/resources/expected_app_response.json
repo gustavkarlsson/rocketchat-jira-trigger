@@ -29,6 +29,26 @@
           "title": "Priority",
           "value": "Unset",
           "short": true
+        },
+        {
+          "title": "Resolution",
+          "value": "Fixed",
+          "short": true
+        },
+        {
+          "title": "Type",
+          "value": "Task",
+          "short": true
+        },
+        {
+          "title": "Created",
+          "value": "Wed, 17 Dec, 2014",
+          "short": true
+        },
+        {
+          "title": "Updated",
+          "value": "Sun, 25 Jan, 2015",
+          "short": true
         }
       ]
     }

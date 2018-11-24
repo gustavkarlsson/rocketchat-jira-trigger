@@ -16,12 +16,12 @@ import spark.Request;
 import spark.Response;
 
 import javax.inject.Inject;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.Validate.noNullElements;
 import static org.apache.commons.lang3.Validate.notNull;
 import static org.eclipse.jetty.http.HttpStatus.NOT_FOUND_404;
@@ -56,22 +56,22 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		}
 
 		log.debug("Parsing keys from text: '{}'", fromRocketChatMessage.getText());
-		Map<String, IssueDetail> jiraKeys = jiraKeyParser.parse(fromRocketChatMessage.getText());
+		Set<String> jiraKeys = jiraKeyParser.parse(fromRocketChatMessage.getText());
 		if (jiraKeys.isEmpty()) {
 			log.info("No keys found. Ignoring");
 			return null;
 		}
 		log.info("Identified {} keys", jiraKeys.size());
-		log.debug("Keys: {}", jiraKeys.keySet());
+		log.debug("Keys: {}", jiraKeys);
 
 		log.debug("Fetching issues...");
-		Map<Issue, IssueDetail> issues = getIssues(jiraKeys);
+		Set<Issue> issues = getIssues(jiraKeys);
 		log.info("Found {} issues", issues.size());
 		if (issues.isEmpty()) {
 			log.info("No issues found. Ignoring");
 			return null;
 		}
-		log.debug("Issues: {}", issues.keySet().stream().map(Issue::getId).collect(toList()));
+		log.debug("Issues: {}", issues.stream().map(Issue::getId).collect(toList()));
 		log.debug("Creating message");
 		ToRocketChatMessage message = messageFactory.create();
 		message.setText(issues.size() == 1 ? "Found 1 issue" : "Found " + issues.size() + " issues");
@@ -84,11 +84,11 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		return validators.stream().allMatch(validator -> validator.isValid(fromRocketChatMessage));
 	}
 
-	private Map<Issue, IssueDetail> getIssues(Map<String, IssueDetail> jiraKeys) {
-		return jiraKeys.entrySet().parallelStream()
-				.map(e -> new SimpleEntry<>(getIssue(e.getKey()), e.getValue()))
-				.filter(e -> e.getKey() != null)
-				.collect(toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+	private Set<Issue> getIssues(Set<String> jiraKeys) {
+		return jiraKeys.parallelStream()
+				.map(this::getIssue)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toSet());
 	}
 
 	private Issue getIssue(String jiraKey) {
@@ -102,9 +102,9 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		}
 	}
 
-	private List<ToRocketChatAttachment> createAttachments(Map<Issue, IssueDetail> issues) {
-		return issues.entrySet().stream()
-				.map(e -> attachmentCreator.create(e.getKey(), e.getValue()))
+	private List<ToRocketChatAttachment> createAttachments(Set<Issue> issues) {
+		return issues.stream()
+				.map(attachmentCreator::create)
 				.collect(toList());
 	}
 }

@@ -3,7 +3,6 @@ package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators.FieldCreator;
-import se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
 
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
 import static org.apache.commons.lang3.Validate.*;
-import static se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail.EXTENDED;
 
 public class AttachmentCreator {
 	static final String BLOCKER_COLOR = "#FF4437";
@@ -26,17 +24,15 @@ public class AttachmentCreator {
 
 	private final boolean priorityColors;
 	private final String defaultColor;
-	private final List<FieldCreator> defaultFieldCreators;
-	private final List<FieldCreator> extendedFieldCreators;
+	private final List<FieldCreator> fieldCreators;
 	private final URI baseUri;
 	private final int maxTextLength;
 
 	// TODO Move some of this into factory
-	AttachmentCreator(boolean priorityColors, String defaultColor, List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators, URI baseUri, int maxTextLength) {
+	AttachmentCreator(boolean priorityColors, String defaultColor, List<FieldCreator> fieldCreators, URI baseUri, int maxTextLength) {
 		this.priorityColors = priorityColors;
 		this.defaultColor = notNull(defaultColor);
-		this.defaultFieldCreators = noNullElements(defaultFieldCreators);
-		this.extendedFieldCreators = noNullElements(extendedFieldCreators);
+		this.fieldCreators = noNullElements(fieldCreators);
 		this.baseUri = notNull(baseUri);
 		inclusiveBetween(1L, Integer.MAX_VALUE, maxTextLength, "maxTextLength");
 		this.maxTextLength = maxTextLength;
@@ -46,14 +42,14 @@ public class AttachmentCreator {
 		return text.replaceAll("[<>]", "");
 	}
 
-	public ToRocketChatAttachment create(Issue issue, IssueDetail detail) {
+	public ToRocketChatAttachment create(Issue issue) {
 		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
 		attachment.setTitle(getTitle(issue));
 		attachment.setTitleLink(getTitleLink(issue));
 		attachment.setColor(getColor(issue));
 		attachment.setText(createText(issue));
-		attachment.setFields(getFields(issue, detail));
-		attachment.setCollapsed(getCollapsed(detail));
+		attachment.setFields(getFields(issue));
+		attachment.setCollapsed(true);
 		// FIXME Consider attachment.setAuthorName(); (and removing from default fields)
 		// FIXME Consider attachment.setAuthorLink();
 		// FIXME Consider attachment.setAuthorIcon();
@@ -110,13 +106,8 @@ public class AttachmentCreator {
 		return String.format("%s %s", issue.getKey(), stripped);
 	}
 
-	private List<Field> getFields(Issue issue, IssueDetail detail) {
-		List<FieldCreator> fieldCreators = detail == EXTENDED ? extendedFieldCreators : defaultFieldCreators;
+	private List<Field> getFields(Issue issue) {
 		return fieldCreators.stream().map(fc -> fc.create(issue)).collect(Collectors.toList());
-	}
-
-	private boolean getCollapsed(IssueDetail detail) {
-		return detail == IssueDetail.NORMAL;
 	}
 
 }

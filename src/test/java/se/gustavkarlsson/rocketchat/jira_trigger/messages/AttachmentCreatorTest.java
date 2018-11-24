@@ -16,8 +16,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail.EXTENDED;
-import static se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail.NORMAL;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AttachmentCreatorTest {
@@ -34,39 +32,34 @@ public class AttachmentCreatorTest {
 
 	@Test(expected = NullPointerException.class)
 	public void createWithNullDefaultColorThrowsNPE() {
-		new AttachmentCreator(false, null, emptyList(), emptyList(), baseUri, 300);
+		new AttachmentCreator(false, null, emptyList(), baseUri, 300);
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void createWithNullDefaultFieldCreatorsThrowsNPE() {
-		new AttachmentCreator(false, DEFAULT_COLOR, null, emptyList(), baseUri, 300);
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void createWithNullExtendedFieldCreatorsConfigThrowsNPE() {
-		new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), null, baseUri, 300);
+	public void createWithNullFieldCreatorsThrowsNPE() {
+		new AttachmentCreator(false, DEFAULT_COLOR, null, baseUri, 300);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void createWithNullBaseUriThrowsNPE() {
-		new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), emptyList(), null, 300);
+		new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), null, 300);
 	}
 
 	@Test
 	public void convertWithBlockerPrioritySetsBlockerColor() {
 		when(mockIssue.getPriority()).thenReturn(new BasicPriority(null, 0L, "Blocker"));
-		AttachmentCreator converter = new AttachmentCreator(true, DEFAULT_COLOR, emptyList(), emptyList(), baseUri, 300);
+		AttachmentCreator converter = new AttachmentCreator(true, DEFAULT_COLOR, emptyList(), baseUri, 300);
 
-		ToRocketChatAttachment attachment = converter.create(mockIssue, NORMAL);
+		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
 		assertThat(attachment.getColor()).isEqualTo(AttachmentCreator.BLOCKER_COLOR);
 	}
 
 	@Test
 	public void convertWithoutPriorityColorsSetsDefaultColor() {
-		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), emptyList(), baseUri, 300);
+		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), baseUri, 300);
 
-		ToRocketChatAttachment attachment = converter.create(mockIssue, NORMAL);
+		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
 		assertThat(attachment.getColor()).isEqualTo(DEFAULT_COLOR);
 	}
@@ -74,29 +67,19 @@ public class AttachmentCreatorTest {
 	@Test
 	public void convertWithUnknownPrioritySetsDefaultColor() {
 		when(mockIssue.getPriority()).thenReturn(new BasicPriority(null, 0L, "Unknown"));
-		AttachmentCreator converter = new AttachmentCreator(true, DEFAULT_COLOR, emptyList(), emptyList(), baseUri, 300);
+		AttachmentCreator converter = new AttachmentCreator(true, DEFAULT_COLOR, emptyList(), baseUri, 300);
 
-		ToRocketChatAttachment attachment = converter.create(mockIssue, NORMAL);
+		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
 		assertThat(attachment.getColor()).isEqualTo(DEFAULT_COLOR);
 	}
 
 	@Test
-	public void convertWithSingleDefaultFieldCreator() {
+	public void convertWithSingleFieldCreator() {
 		Field field = new Field("title", "value", true);
-		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, singletonList(issue -> field), emptyList(), baseUri, 300);
+		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, singletonList(issue -> field), baseUri, 300);
 
-		ToRocketChatAttachment attachment = converter.create(mockIssue, NORMAL);
-
-		assertThat(attachment.getFields()).containsExactly(field);
-	}
-
-	@Test
-	public void convertWithSingleExtendedFieldCreator() {
-		Field field = new Field("title", "value", true);
-		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), singletonList(issue -> field), baseUri, 300);
-
-		ToRocketChatAttachment attachment = converter.create(mockIssue, EXTENDED);
+		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
 		assertThat(attachment.getFields()).containsExactly(field);
 	}
@@ -104,9 +87,9 @@ public class AttachmentCreatorTest {
 	@Test
 	public void htmlEncodedSummaryIsCleaned() {
 		when(mockIssue.getSummary()).thenReturn("&lt;Fran&ccedil;ais&gt;");
-		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), emptyList(), baseUri, 300);
+		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), baseUri, 300);
 
-		ToRocketChatAttachment attachment = converter.create(mockIssue, NORMAL);
+		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
 		assertThat(attachment.getTitle()).isEqualTo("ISS-1234 Français");
 	}
@@ -114,9 +97,9 @@ public class AttachmentCreatorTest {
 	@Test
 	public void htmlEncodedDescriptionIsCleaned() {
 		when(mockIssue.getDescription()).thenReturn("&lt;Fran&ccedil;ais&gt;");
-		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), emptyList(), baseUri, 300);
+		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), baseUri, 300);
 
-		ToRocketChatAttachment attachment = converter.create(mockIssue, NORMAL);
+		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
 		assertThat(attachment.getText()).isEqualTo("Français");
 	}
@@ -124,29 +107,24 @@ public class AttachmentCreatorTest {
 	@Test
 	public void descriptionIsEllipsized() {
 		when(mockIssue.getDescription()).thenReturn("I am 18 chars long");
-		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), emptyList(), baseUri, 8);
+		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), baseUri, 8);
 
-		ToRocketChatAttachment attachment = converter.create(mockIssue, NORMAL);
+		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
 		assertThat(attachment.getText()).isEqualTo("I am 18…");
 	}
 
 	@Test
 	public void linkIsCorrect() {
-		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), emptyList(), baseUri, 300);
+		AttachmentCreator converter = new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), baseUri, 300);
 
-		ToRocketChatAttachment attachment = converter.create(mockIssue, NORMAL);
+		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
 		assertThat(attachment.getTitleLink()).isEqualTo("http://my.jira/browse/ISS-1234");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void nullElementInDefaultFieldCreatorThrowsException() {
-		new AttachmentCreator(false, DEFAULT_COLOR, singletonList(null), emptyList(), baseUri, 300);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void nullElementInExtendedFieldCreatorThrowsException() {
-		new AttachmentCreator(false, DEFAULT_COLOR, emptyList(), singletonList(null), baseUri, 300);
+	public void nullElementInFieldCreatorThrowsException() {
+		new AttachmentCreator(false, DEFAULT_COLOR, singletonList(null), baseUri, 300);
 	}
 }

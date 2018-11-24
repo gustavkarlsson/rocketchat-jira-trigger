@@ -6,7 +6,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +59,7 @@ public class JiraKeyParserTest {
 		public void singleJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(emptySet(), emptySet());
 
-			Map<String, IssueDetail> keys = parser.parse(text);
+			Set<String> keys = parser.parse(text);
 
 			assertThat(keys).hasSize(1);
 		}
@@ -97,7 +100,7 @@ public class JiraKeyParserTest {
 		public void noJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(emptySet(), emptySet());
 
-			Map<String, IssueDetail> keys = parser.parse(text);
+			Set<String> keys = parser.parse(text);
 
 			assertThat(keys).isEmpty();
 		}
@@ -135,7 +138,7 @@ public class JiraKeyParserTest {
 		public void singleJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(whitelistedPrefixes, whitelistedSuffixes);
 
-			Map<String, IssueDetail> keys = parser.parse(text);
+			Set<String> keys = parser.parse(text);
 
 			assertThat(keys).hasSize(1);
 		}
