@@ -14,6 +14,7 @@ default_fields = ["assignee", "status", "reporter", "priority"] # Message fields
 extended_fields = ["description", "assignee", "status", "reporter", "priority", "resolution", "type", "created", "updated"] # Message fields to print for extended messages
 whitelisted_jira_key_prefixes = "([{<:" # Each character in the string is a valid prefix of a JIRA key. Allows for triggering in messages like "Jira key:ABC-123" and "(ABC-123)"
 whitelisted_jira_key_suffixes = ")]}>!?" # Each character in the string is a valid suffix of a JIRA key. Allows for triggering in messages like "Look at ABC-123!" and "<ABC-123>"
+max_text_length = 300
 
 [rocketchat]
 tokens = [] # Allowed Rocket.Chat tokens. An empty array means ALL tokens are allowed.

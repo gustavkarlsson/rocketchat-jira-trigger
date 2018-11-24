@@ -28,6 +28,7 @@ public class MessageConfiguration {
 	static final String EXTENDED_FIELDS_KEY = KEY_PREFIX + "extended_fields";
 	static final String WHITELISTED_KEY_PREFIXES_KEY = KEY_PREFIX + "whitelisted_jira_key_prefixes";
 	static final String WHITELISTED_KEY_SUFFIXES_KEY = KEY_PREFIX + "whitelisted_jira_key_suffixes";
+	static final String MAX_TEXT_LENGTH_KEY = KEY_PREFIX + "max_text_length";
 
 	private final String username;
 	private final boolean useRealNames;
@@ -39,6 +40,7 @@ public class MessageConfiguration {
 	private final List<String> extendedFields;
 	private final Set<Character> whitelistedJiraKeyPrefixes;
 	private final Set<Character> whitelistedJiraKeySuffixes;
+	private final int maxTextLength;
 
 	@Inject
 	MessageConfiguration(ConfigMap configMap) throws ValidationException {
@@ -56,6 +58,7 @@ public class MessageConfiguration {
 			extendedFields = Optional.ofNullable(configMap.getStringList(EXTENDED_FIELDS_KEY)).orElse(emptyList());
 			whitelistedJiraKeyPrefixes = toCharacterSet(Optional.ofNullable(configMap.getString(WHITELISTED_KEY_PREFIXES_KEY)).orElse(""));
 			whitelistedJiraKeySuffixes = toCharacterSet(Optional.ofNullable(configMap.getString(WHITELISTED_KEY_SUFFIXES_KEY)).orElse(""));
+			maxTextLength = notNull(configMap.getLong(MAX_TEXT_LENGTH_KEY), String.format("%s must be provided", MAX_TEXT_LENGTH_KEY)).intValue();
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
@@ -105,5 +108,9 @@ public class MessageConfiguration {
 
 	public Set<Character> getWhitelistedJiraKeySuffixes() {
 		return whitelistedJiraKeySuffixes;
+	}
+
+	public int getMaxTextLength() {
+		return maxTextLength;
 	}
 }

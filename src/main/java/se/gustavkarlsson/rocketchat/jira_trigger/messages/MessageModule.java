@@ -35,7 +35,7 @@ public class MessageModule extends AbstractModule {
 	@Provides
 	@Singleton
 	AttachmentCreator provideAttachmentConverter(MessageConfiguration messageConfig, JiraConfiguration jiraConfig, @Default List<FieldCreator> defaultFieldCreators, List<FieldCreator> extendedFieldCreators) {
-		return new AttachmentCreator(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldCreators, extendedFieldCreators, jiraConfig.getUri());
+		return new AttachmentCreator(messageConfig.isPriorityColors(), messageConfig.getDefaultColor(), defaultFieldCreators, extendedFieldCreators, jiraConfig.getUri(), messageConfig.getMaxTextLength());
 	}
 
 }
