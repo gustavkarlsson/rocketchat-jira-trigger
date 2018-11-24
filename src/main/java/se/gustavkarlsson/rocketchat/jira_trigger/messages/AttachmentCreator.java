@@ -42,24 +42,8 @@ public class AttachmentCreator {
 		this.maxTextLength = maxTextLength;
 	}
 
-	public ToRocketChatAttachment create(Issue issue, IssueDetail detail) {
-		List<FieldCreator> fieldCreators = detail == EXTENDED ? extendedFieldCreators : defaultFieldCreators;
-		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
-		attachment.setTitle(createTitle(issue));
-		attachment.setTitleLink(parseTitleLink(issue));
-		if (priorityColors && issue.getPriority() != null) {
-			attachment.setColor(getPriorityColor(issue.getPriority(), defaultColor));
-		} else {
-			attachment.setColor(defaultColor);
-		}
-		attachment.setText(createText(issue)); // FIXME Set ellipsize limit
-		// FIXME make configurable attachment.setCollapsed(true);
-		// FIXME Consider attachment.setAuthorName(); (and removing from default fields)
-		// FIXME Consider attachment.setAuthorLink();
-		// FIXME Consider attachment.setAuthorIcon();
-		List<Field> fields = fieldCreators.stream().map(fc -> fc.create(issue)).collect(Collectors.toList());
-		attachment.setFields(fields);
-		return attachment;
+	private static String stripReservedLinkCharacters(String text) {
+		return text.replaceAll("[<>]", "");
 	}
 
 	private String createTitle(Issue issue) {
@@ -69,26 +53,26 @@ public class AttachmentCreator {
 		return String.format("%s %s", issue.getKey(), stripped);
 	}
 
-	private static String stripReservedLinkCharacters(String text) {
-		return text.replaceAll("[<>]", "");
+	public ToRocketChatAttachment create(Issue issue, IssueDetail detail) {
+		ToRocketChatAttachment attachment = new ToRocketChatAttachment();
+		attachment.setTitle(createTitle(issue));
+		attachment.setTitleLink(getTitleLink(issue));
+		attachment.setColor(getColor(issue));
+		attachment.setText(createText(issue));
+		attachment.setFields(getFields(issue, detail));
+		// FIXME make configurable attachment.setCollapsed(true);
+		// FIXME Consider attachment.setAuthorName(); (and removing from default fields)
+		// FIXME Consider attachment.setAuthorLink();
+		// FIXME Consider attachment.setAuthorIcon();
+		return attachment;
 	}
 
-	private String parseTitleLink(Issue issue) {
+	private String getTitleLink(Issue issue) {
 		return UriBuilder.fromUri(baseUri)
 				.path("browse")
 				.path(issue.getKey())
 				.build()
 				.toASCIIString();
-	}
-
-	private String createText(Issue issue) {
-		String summary = Optional.ofNullable(issue.getDescription()).orElse("");
-		String unescaped = unescapeHtml(summary);
-		String text = stripReservedLinkCharacters(unescaped);
-		if (text.length() > maxTextLength) {
-			text = text.substring(0, maxTextLength - 1) + '…';
-		}
-		return text;
 	}
 
 	private String getPriorityColor(BasicPriority priority, String fallbackColor) {
@@ -106,6 +90,29 @@ public class AttachmentCreator {
 			default:
 				return fallbackColor;
 		}
+	}
+
+	private String getColor(Issue issue) {
+		if (priorityColors && issue.getPriority() != null) {
+			return getPriorityColor(issue.getPriority(), defaultColor);
+		} else {
+			return defaultColor;
+		}
+	}
+
+	private String createText(Issue issue) {
+		String summary = Optional.ofNullable(issue.getDescription()).orElse("");
+		String unescaped = unescapeHtml(summary);
+		String text = stripReservedLinkCharacters(unescaped);
+		if (text.length() > maxTextLength) {
+			text = text.substring(0, maxTextLength - 1) + '…';
+		}
+		return text;
+	}
+
+	private List<Field> getFields(Issue issue, IssueDetail detail) {
+		List<FieldCreator> fieldCreators = detail == EXTENDED ? extendedFieldCreators : defaultFieldCreators;
+		return fieldCreators.stream().map(fc -> fc.create(issue)).collect(Collectors.toList());
 	}
 
 }
