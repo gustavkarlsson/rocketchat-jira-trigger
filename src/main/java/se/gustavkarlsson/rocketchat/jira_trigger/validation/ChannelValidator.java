@@ -22,8 +22,9 @@ class ChannelValidator implements Validator {
 	@Override
 	public boolean isValid(FromRocketChatMessage message) {
 		String channelName = message.getChannelName();
-		if (!isAllowed(channelName)) {
-			log.info("Forbidden channel encountered: {}", channelName);
+		String channelId = message.getChannelId();
+		if (!isAllowed(channelName) || !isAllowed(channelId)) {
+			log.info("Forbidden channel encountered: {} ({})", channelName, channelId);
 			return false;
 		}
 		return true;
