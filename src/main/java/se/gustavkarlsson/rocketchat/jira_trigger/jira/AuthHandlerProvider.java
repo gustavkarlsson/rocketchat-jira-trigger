@@ -55,7 +55,7 @@ class AuthHandlerProvider implements Provider<AuthenticationHandler> {
 		if (console == null) {
 			throw new IllegalStateException("No console available for password input");
 		}
-		char[] password = console.readPassword("Enter JIRA password for user " + username + ": ");
+		char[] password = console.readPassword(String.format("Enter JIRA password for user %s: ", username));
 		return new String(password);
 	}
 }

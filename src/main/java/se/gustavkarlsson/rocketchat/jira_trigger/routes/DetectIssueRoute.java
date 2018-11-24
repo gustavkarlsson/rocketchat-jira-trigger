@@ -74,7 +74,7 @@ public class DetectIssueRoute extends RocketChatMessageRoute {
 		log.debug("Issues: {}", issues.stream().map(Issue::getId).collect(toList()));
 		log.debug("Creating message");
 		ToRocketChatMessage message = messageFactory.create();
-		message.setText(issues.size() == 1 ? "Found 1 issue" : "Found " + issues.size() + " issues");
+		message.setText(issues.size() == 1 ? "Found 1 issue" : String.format("Found %d issues", issues.size()));
 		List<ToRocketChatAttachment> attachments = createAttachments(issues);
 		message.setAttachments(attachments);
 		return message;

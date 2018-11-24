@@ -57,7 +57,7 @@ class EnvVarConfigMap implements ConfigMap {
 					} else if (string.equalsIgnoreCase("false")) {
 						return false;
 					} else {
-						throw new IllegalStateException("'" + string + "' could not be parsed to a boolean value");
+						throw new IllegalStateException(String.format("'%s' could not be parsed to a boolean value", string));
 					}
 				})
 				.orElse(null);
