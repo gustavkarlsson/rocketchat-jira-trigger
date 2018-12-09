@@ -24,10 +24,10 @@ public class MessageConfiguration {
 	static final String DATE_LOCALE_KEY = KEY_PREFIX + "date_locale";
 	static final String PRIORITY_COLORS_KEY = KEY_PREFIX + "priority_colors";
 	static final String DEFAULT_COLOR_KEY = KEY_PREFIX + "default_color";
-	static final String DEFAULT_FIELDS_KEY = KEY_PREFIX + "default_fields";
-	static final String EXTENDED_FIELDS_KEY = KEY_PREFIX + "extended_fields";
+	static final String FIELDS_KEY = KEY_PREFIX + "fields";
 	static final String WHITELISTED_KEY_PREFIXES_KEY = KEY_PREFIX + "whitelisted_jira_key_prefixes";
 	static final String WHITELISTED_KEY_SUFFIXES_KEY = KEY_PREFIX + "whitelisted_jira_key_suffixes";
+	static final String MAX_TEXT_LENGTH_KEY = KEY_PREFIX + "max_text_length";
 
 	private final String username;
 	private final boolean useRealNames;
@@ -35,10 +35,10 @@ public class MessageConfiguration {
 	private final DateTimeFormatter dateFormatter;
 	private final boolean priorityColors;
 	private final String defaultColor;
-	private final List<String> defaultFields;
-	private final List<String> extendedFields;
+	private final List<String> fields;
 	private final Set<Character> whitelistedJiraKeyPrefixes;
 	private final Set<Character> whitelistedJiraKeySuffixes;
+	private final int maxTextLength;
 
 	@Inject
 	MessageConfiguration(ConfigMap configMap) throws ValidationException {
@@ -52,10 +52,10 @@ public class MessageConfiguration {
 					.withLocale(Locale.forLanguageTag(notNull(configMap.getString(DATE_LOCALE_KEY), String.format("%s must be provided", DATE_LOCALE_KEY))));
 			priorityColors = notNull(configMap.getBoolean(PRIORITY_COLORS_KEY), String.format("%s must be provided", PRIORITY_COLORS_KEY));
 			defaultColor = notNull(configMap.getString(DEFAULT_COLOR_KEY), String.format("%s must be provided", DEFAULT_COLOR_KEY));
-			defaultFields = Optional.ofNullable(configMap.getStringList(DEFAULT_FIELDS_KEY)).orElse(emptyList());
-			extendedFields = Optional.ofNullable(configMap.getStringList(EXTENDED_FIELDS_KEY)).orElse(emptyList());
+			fields = Optional.ofNullable(configMap.getStringList(FIELDS_KEY)).orElse(emptyList());
 			whitelistedJiraKeyPrefixes = toCharacterSet(Optional.ofNullable(configMap.getString(WHITELISTED_KEY_PREFIXES_KEY)).orElse(""));
 			whitelistedJiraKeySuffixes = toCharacterSet(Optional.ofNullable(configMap.getString(WHITELISTED_KEY_SUFFIXES_KEY)).orElse(""));
+			maxTextLength = notNull(configMap.getLong(MAX_TEXT_LENGTH_KEY), String.format("%s must be provided", MAX_TEXT_LENGTH_KEY)).intValue();
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
@@ -91,12 +91,8 @@ public class MessageConfiguration {
 		return defaultColor;
 	}
 
-	public List<String> getDefaultFields() {
-		return defaultFields;
-	}
-
-	public List<String> getExtendedFields() {
-		return extendedFields;
+	public List<String> getFields() {
+		return fields;
 	}
 
 	public Set<Character> getWhitelistedJiraKeyPrefixes() {
@@ -105,5 +101,9 @@ public class MessageConfiguration {
 
 	public Set<Character> getWhitelistedJiraKeySuffixes() {
 		return whitelistedJiraKeySuffixes;
+	}
+
+	public int getMaxTextLength() {
+		return maxTextLength;
 	}
 }

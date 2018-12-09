@@ -3,17 +3,17 @@ package se.gustavkarlsson.rocketchat.jira_trigger.routes;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.collect.Sets.union;
 import static org.apache.commons.lang3.Validate.notNull;
-import static se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail.EXTENDED;
-import static se.gustavkarlsson.rocketchat.jira_trigger.routes.IssueDetail.NORMAL;
 
 class JiraKeyParser {
-	private static final Pattern JIRA_KEY = Pattern.compile("[A-Z]+-\\d+\\+?");
+	private static final Pattern JIRA_KEY = Pattern.compile("[A-Z][A-Z0-9]+-\\d+");
 	private static final Set<Character> ALWAYS_VALID = new HashSet<>(Arrays.asList(' ', '\t', '\n'));
 
 	private final Set<Character> whitelistedPrefixes;
@@ -41,19 +41,15 @@ class JiraKeyParser {
 		return contexts;
 	}
 
-	Map<String, IssueDetail> parse(String text) {
+	Set<String> parse(String text) {
 		Matcher matcher = JIRA_KEY.matcher(text);
-		Map<String, IssueDetail> jiraKeys = new HashMap<>();
+		Set<String> jiraKeys = new HashSet<>();
 		while (matcher.find()) {
 			String key = matcher.group();
 			if (!hasValidContext(key, text)) {
 				continue;
 			}
-			boolean extended = key.endsWith("+");
-			if (extended) {
-				key = key.substring(0, key.length() - 1);
-			}
-			jiraKeys.put(key, extended ? EXTENDED : NORMAL);
+			jiraKeys.add(key);
 		}
 		return jiraKeys;
 	}

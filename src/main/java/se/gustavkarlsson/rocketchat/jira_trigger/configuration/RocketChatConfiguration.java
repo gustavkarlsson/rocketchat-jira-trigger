@@ -18,12 +18,14 @@ public class RocketChatConfiguration {
 	static final String BLACKLISTED_USERS = KEY_PREFIX + "blacklisted_users";
 	static final String WHITELISTED_CHANNELS = KEY_PREFIX + "whitelisted_channels";
 	static final String BLACKLISTED_CHANNELS = KEY_PREFIX + "blacklisted_channels";
+	static final String IGNORE_BOTS = KEY_PREFIX + "ignore_bots";
 
 	private final Set<String> tokens;
 	private final Set<String> whitelistedUsers;
 	private final Set<String> blacklistedUsers;
 	private final Set<String> whitelistedChannels;
 	private final Set<String> blacklistedChannels;
+	private final boolean ignoreBots;
 
 	@Inject
 	RocketChatConfiguration(ConfigMap configMap) throws ValidationException {
@@ -34,6 +36,7 @@ public class RocketChatConfiguration {
 			blacklistedUsers = new HashSet<>(Optional.of(configMap.getStringList(BLACKLISTED_USERS)).orElse(Collections.emptyList()));
 			whitelistedChannels = new HashSet<>(Optional.of(configMap.getStringList(WHITELISTED_CHANNELS)).orElse(Collections.emptyList()));
 			blacklistedChannels = new HashSet<>(Optional.of(configMap.getStringList(BLACKLISTED_CHANNELS)).orElse(Collections.emptyList()));
+			ignoreBots = notNull(configMap.getBoolean(IGNORE_BOTS), String.format("%s must be provided", IGNORE_BOTS));
 		} catch (Exception e) {
 			throw new ValidationException(e);
 		}
@@ -57,5 +60,9 @@ public class RocketChatConfiguration {
 
 	public Set<String> getBlacklistedChannels() {
 		return blacklistedChannels;
+	}
+
+	public boolean isIgnoreBots() {
+		return ignoreBots;
 	}
 }

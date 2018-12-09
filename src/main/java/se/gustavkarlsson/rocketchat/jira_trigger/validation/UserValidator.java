@@ -22,8 +22,9 @@ class UserValidator implements Validator {
 	@Override
 	public boolean isValid(FromRocketChatMessage message) {
 		String userName = message.getUserName();
-		if (!isAllowed(userName)) {
-			log.info("Forbidden user encountered: {}", userName);
+		String userId = message.getUserId();
+		if (!isAllowed(userName) || !isAllowed(userId)) {
+			log.info("Forbidden user encountered: {} ({})", userName, userId);
 			return false;
 		}
 		return true;

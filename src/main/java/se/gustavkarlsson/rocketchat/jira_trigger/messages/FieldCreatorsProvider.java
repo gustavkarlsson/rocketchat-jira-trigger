@@ -11,18 +11,18 @@ import java.util.List;
 import static org.apache.commons.lang3.Validate.notNull;
 
 @Singleton
-class DefaultFieldCreatorsProvider implements Provider<List<FieldCreator>> {
+class FieldCreatorsProvider implements Provider<List<FieldCreator>> {
 	private final FieldCreatorMapper fieldCreatorMapper;
 	private final MessageConfiguration messageConfig;
 
 	@Inject
-	DefaultFieldCreatorsProvider(FieldCreatorMapper fieldCreatorMapper, MessageConfiguration messageConfig) {
+	FieldCreatorsProvider(FieldCreatorMapper fieldCreatorMapper, MessageConfiguration messageConfig) {
 		this.fieldCreatorMapper = notNull(fieldCreatorMapper);
 		this.messageConfig = notNull(messageConfig);
 	}
 
 	@Override
 	public List<FieldCreator> get() {
-		return fieldCreatorMapper.getCreators(messageConfig.getDefaultFields());
+		return fieldCreatorMapper.getCreators(messageConfig.getFields());
 	}
 }

@@ -109,8 +109,6 @@ and write a message containing a known JIRA issue to try it out. Example: `Let's
 
 Rocket.Chat should reply with details about the JIRA issue.
 
-*Tip: If you want more details, append a `+` like this: `Let's check out SUP-1234+`*
-
 ## Troubleshooting
 
 If your messages aren't getting any replies, first check the logs of Rocket.Chat and rocketchat-jira-trigger.

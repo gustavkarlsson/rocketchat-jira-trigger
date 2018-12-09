@@ -6,7 +6,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.util.Collections.emptySet;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,16 +42,16 @@ public class JiraKeyParserTest {
 		@Parameters(name = "{0}")
 		public static Collection<Object[]> data() {
 			return Arrays.asList(new Object[][]{
-					{"A-1"},
 					{"AB-1"},
-					{"A-999999999"},
 					{"AAAAAAAAAA-1"},
 					{"ZZZZZZZZZZ-9999999999"},
 					{"Lets try ABC-123"},
 					{"ABC-123 is a good one"},
 					{"\nABC-123\n"},
 					{"\tABC-123\t"},
-					{" ABC-123 "}
+					{" ABC-123 "},
+					{"A1BC3-123"},
+					{"AB3-123"}
 			});
 		}
 
@@ -56,7 +59,7 @@ public class JiraKeyParserTest {
 		public void singleJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(emptySet(), emptySet());
 
-			Map<String, IssueDetail> keys = parser.parse(text);
+			Set<String> keys = parser.parse(text);
 
 			assertThat(keys).hasSize(1);
 		}
@@ -86,7 +89,10 @@ public class JiraKeyParserTest {
 					{"abc-123"},
 					{"ABC-123Z"},
 					{"(ABC-123)"},
-					{"browse/ABC-123"}
+					{"browse/ABC-123"},
+					{"3BC-23"},
+					{"A-999999999"},
+					{"A-1"},
 			});
 		}
 
@@ -94,7 +100,7 @@ public class JiraKeyParserTest {
 		public void noJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(emptySet(), emptySet());
 
-			Map<String, IssueDetail> keys = parser.parse(text);
+			Set<String> keys = parser.parse(text);
 
 			assertThat(keys).isEmpty();
 		}
@@ -132,7 +138,7 @@ public class JiraKeyParserTest {
 		public void singleJiraKeyDetected() throws Exception {
 			JiraKeyParser parser = new JiraKeyParser(whitelistedPrefixes, whitelistedSuffixes);
 
-			Map<String, IssueDetail> keys = parser.parse(text);
+			Set<String> keys = parser.parse(text);
 
 			assertThat(keys).hasSize(1);
 		}

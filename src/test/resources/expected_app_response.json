@@ -1,12 +1,14 @@
 {
   "text": "Found 1 issue",
-  "username": "JIRA",
-  "icon_url": "https:\/\/confluence.atlassian.com\/alldoc\/files\/169118009\/169050326\/4\/1260504581635\/jira_logo.png",
+  "alias": "JIRA",
+  "avatar": "https:\/\/confluence.atlassian.com\/alldoc\/files\/169118009\/169050326\/4\/1260504581635\/jira_logo.png",
   "attachments": [
     {
       "color": "#205081",
-      "title": "STORM-2095",
-      "text": "<http:\/\/localhost:9999\/browse\/STORM-2095|Unable to change Presets when the Preset list contains Preset names using special characters or Preset names that are sorted higher alphabetically then the word Default.>",
+      "collapsed": true,
+      "title": "STORM-2095 Unable to change Presets when the Preset list contains Preset names using special characters or Preset names that are sorted higher alphabetically then the word Default.",
+      "title_link": "http://localhost:9999/browse/STORM-2095",
+      "text": "*Affected build:* Second Life 3.7.21 (297515) Dec 16 2014 10:11:21 (Second Life Test)\n\nh2. Steps To Reproduce - Part 1\n\n* Login on clean settings.\n* Go to Preferences - Graphics - Advanced\n* Make an obvious change to graphics settings, for example disable basic shaders\n* Go to \"Save as\" in the Presets section.\n* Save Preset with the name *Übercool* (note the Ü has an umlaut)\n* Observe that Übercool is now showing as your selected preset and that basic shaders are disabled.\n\n* Change back to the Default preset.\n\nh2. Observed Behaviour\n\n* After choosing the Default preset in the drop down menu,…",
       "fields": [
         {
           "title": "Assigned To",
@@ -26,6 +28,26 @@
         {
           "title": "Priority",
           "value": "Unset",
+          "short": true
+        },
+        {
+          "title": "Resolution",
+          "value": "Fixed",
+          "short": true
+        },
+        {
+          "title": "Type",
+          "value": "Task",
+          "short": true
+        },
+        {
+          "title": "Created",
+          "value": "Wed, 17 Dec, 2014",
+          "short": true
+        },
+        {
+          "title": "Updated",
+          "value": "Sun, 25 Jan, 2015",
           "short": true
         }
       ]
