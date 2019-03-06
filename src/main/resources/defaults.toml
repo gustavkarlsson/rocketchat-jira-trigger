@@ -22,3 +22,4 @@ blacklisted_users = [] # No messages from these users will be considered.
 whitelisted_channels = [] # Only messages from these channels are considered. An empty array accepts messages from all channels (unless blacklisted).
 blacklisted_channels = [] # No messages from these channels will be considered.
 ignore_bots = true # Whether to ignore all messages from bots
+ignore_edits = false # Whether to ignore messages that are marked as being edited

@@ -38,7 +38,7 @@ dependencies {
         dependency 'joda-time:joda-time:1.6.2'
         dependency 'org.apache.httpcomponents:httpmime:4.5.3'
     }
-    compile 'com.github.gustavkarlsson:rocketchat-outgoing-webhook-server:3.3.0'
+    compile 'com.github.bmagistro:rocketchat-outgoing-webhook-server:3.4.0'
     compile 'com.atlassian.fugue:fugue:2.6.1'
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'org.apache.commons:commons-lang3:3.6'

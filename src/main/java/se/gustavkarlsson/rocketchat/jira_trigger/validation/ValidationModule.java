@@ -40,7 +40,13 @@ public class ValidationModule extends AbstractModule {
 
 	@Provides
 	@Singleton
-	List<Validator> provideValidators(TokenValidator tokenValidator, UserValidator userValidator, ChannelValidator channelValidator, BotValidator botValidator) {
-		return Arrays.asList(tokenValidator, userValidator, channelValidator, botValidator);
+	EditValidator provideEditValidator(RocketChatConfiguration rocketChatConfig) {
+		return new EditValidator(rocketChatConfig.isIgnoreEdits());
+	}
+
+	@Provides
+	@Singleton
+	List<Validator> provideValidators(TokenValidator tokenValidator, UserValidator userValidator, ChannelValidator channelValidator, BotValidator botValidator, EditValidator editValidator) {
+		return Arrays.asList(tokenValidator, userValidator, channelValidator, botValidator, editValidator);
 	}
 }
