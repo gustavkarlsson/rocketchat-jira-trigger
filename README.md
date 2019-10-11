@@ -64,9 +64,11 @@ Create a file with the `.toml` extension and set it up like this:
 ```toml
 [jira]
 uri = "https://jira.mycompany.com"
-username = "someuser"
-password = "somepassword"
+username = "jira-registered@email.com"
+password = "API_TOKEN"
 ```
+
+Since mid 2019, Jira requieres e-mail and [API_TOKEN](https://confluence.atlassian.com/cloud/api-tokens-938839638.html) in order to access REST API services. 
 
 ### Environment variables
 
@@ -76,16 +78,16 @@ Environment variables should follow the pattern: `<section>_<key>`. Compare thes
 
 ```shell
 export jira_uri="https://jira.mycompany.com"
-export jira_username="someuser"
-export jira_password="somepassword"
+export jira_username="jira-registered@email.com"
+export jira_password="API_TOKEN"
 ```
 
 #### Configuring environment variables on Windows
 
 ```shell
 setx jira_uri "https://jira.mycompany.com"
-setx jira_username "someuser"
-setx jira_password "somepassword"
+setx jira_username "jira-registered@email.com"
+setx jira_password "API_TOKEN"
 ```
 
 For lists of values, use a comma as a separator:
