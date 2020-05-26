@@ -2,8 +2,9 @@ package se.gustavkarlsson.rocketchat.jira_trigger.server;
 
 import com.atlassian.jira.rest.client.api.MetadataRestClient;
 import com.atlassian.jira.rest.client.api.domain.ServerInfo;
-import com.atlassian.util.concurrent.Promise;
+
 import com.google.inject.Singleton;
+import io.atlassian.util.concurrent.Promise;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
