@@ -13,7 +13,11 @@ class BotValidator implements Validator {
 
 	@Override
 	public boolean isValid(FromRocketChatMessage message) {
-		Boolean isBot = Optional.ofNullable(message.getBot()).orElse(false);
-		return !isBot || !ignoreBots;
+		Object isBot = Optional.ofNullable(message.getBot() != null).orElse(false);
+		return !isaBoolean(isBot) || !ignoreBots;
+	}
+
+	private boolean isaBoolean(Object isBot) {
+		return isBot instanceof Boolean && !Boolean.valueOf(isBot.toString());
 	}
 }
