@@ -2,6 +2,7 @@ package se.gustavkarlsson.rocketchat.jira_trigger.messages;
 
 import com.atlassian.jira.rest.client.api.domain.BasicPriority;
 import com.atlassian.jira.rest.client.api.domain.Issue;
+import org.apache.commons.text.StringEscapeUtils;
 import se.gustavkarlsson.rocketchat.jira_trigger.messages.field_creators.FieldCreator;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.Field;
 import se.gustavkarlsson.rocketchat.models.to_rocket_chat.ToRocketChatAttachment;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang.StringEscapeUtils.unescapeHtml;
 import static org.apache.commons.lang3.Validate.*;
 
 public class AttachmentCreator {
@@ -101,7 +101,7 @@ public class AttachmentCreator {
 	}
 
 	private static String cleanText(String summary) {
-		String unescaped = unescapeHtml(summary);
+		String unescaped = StringEscapeUtils.unescapeHtml4(summary);
 		return stripReservedLinkCharacters(unescaped);
 	}
 

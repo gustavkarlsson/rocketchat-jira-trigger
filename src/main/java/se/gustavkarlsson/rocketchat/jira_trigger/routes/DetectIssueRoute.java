@@ -1,6 +1,7 @@
 package se.gustavkarlsson.rocketchat.jira_trigger.routes;
 
 import com.atlassian.jira.rest.client.api.IssueRestClient;
+import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.RestClientException;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.google.inject.Singleton;
