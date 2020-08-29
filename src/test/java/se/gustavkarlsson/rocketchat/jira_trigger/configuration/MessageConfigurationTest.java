@@ -41,19 +41,7 @@ public class MessageConfigurationTest {
 	}
 
 	@Test
-	public void createWithSwedishDateLocaleConfigMapProducesSwedishDate() throws Exception {
-		when(mockConfigMap.getString(DATE_LOCALE_KEY)).thenReturn("sv-SE");
-		when(mockConfigMap.getString(DATE_PATTERN_KEY)).thenReturn("E");
-		when(mockConfigMap.getString(DEFAULT_COLOR_KEY)).thenReturn("#123123");
-		MessageConfiguration messageConfig = new MessageConfiguration(mockConfigMap);
-
-		DateTimeFormatter dateFormatter = messageConfig.getDateFormatter();
-
-		assertThat(dateFormatter.print(EPOCH)).isEqualTo("to");
-	}
-
-	@Test
-	public void createWithUsEnglishDateLocaleConfigMapProducesSwedishDate() throws Exception {
+	public void createWithUsEnglishDateLocaleConfigMapProducesEnglishDate() throws Exception {
 		when(mockConfigMap.getString(DATE_LOCALE_KEY)).thenReturn("en-US");
 		when(mockConfigMap.getString(DATE_PATTERN_KEY)).thenReturn("E");
 		when(mockConfigMap.getString(DEFAULT_COLOR_KEY)).thenReturn("#123123");
