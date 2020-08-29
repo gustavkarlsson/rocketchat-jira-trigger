@@ -1,4 +1,5 @@
 [app]
+ip_address = "0.0.0.0" # The listening IP address of the server
 port = 4567 # The listening port of the server
 max_threads = 30 # Number of concurrent threads to handle requests from Rocket.Chat and communicate with JIRA.
 

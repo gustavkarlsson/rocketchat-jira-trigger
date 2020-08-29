@@ -6,8 +6,7 @@ import spark.Request;
 import spark.Response;
 import spark.Service;
 
-import static org.apache.commons.lang3.Validate.inclusiveBetween;
-import static org.apache.commons.lang3.Validate.notNull;
+import static org.apache.commons.lang3.Validate.*;
 import static org.slf4j.LoggerFactory.getLogger;
 import static spark.Service.ignite;
 
@@ -18,15 +17,17 @@ public class Server {
 	private static final String APPLICATION_JSON = "application/json";
 
 	private final int maxThreads;
+	private final String ipAddress;
 	private final int port;
 	private final DetectIssueRoute detectIssueRoute;
 	private final JiraServerInfoLogger jiraServerInfoLogger;
 
 	private Service service;
 
-	Server(int maxThreads, int port, DetectIssueRoute detectIssueRoute, JiraServerInfoLogger jiraServerInfoLogger) {
+	Server(int maxThreads, String ipAddress, int port, DetectIssueRoute detectIssueRoute, JiraServerInfoLogger jiraServerInfoLogger) {
 		this.maxThreads = maxThreads;
 		inclusiveBetween(1, Integer.MAX_VALUE, maxThreads);
+		this.ipAddress = notBlank(ipAddress);
 		this.port = port;
 		inclusiveBetween(1, MAX_PORT_NUMBER, port);
 		this.detectIssueRoute = notNull(detectIssueRoute);
@@ -52,6 +53,7 @@ public class Server {
 		Service service = ignite();
 		service.threadPool(maxThreads);
 		service.port(port);
+		service.ipAddress(ipAddress);
 		service.before((request, response) -> logRequest(request));
 		service.post("/", APPLICATION_JSON, detectIssueRoute);
 		service.after((request, response) -> logResponse(response));

@@ -9,8 +9,7 @@ import se.gustavkarlsson.rocketchat.jira_trigger.server.Server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration.MAX_THREADS_KEY;
-import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration.PORT_KEY;
+import static se.gustavkarlsson.rocketchat.jira_trigger.configuration.AppConfiguration.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppConfigurationTest {
@@ -26,12 +25,27 @@ public class AppConfigurationTest {
 	public void setUp() throws Exception {
 		when(mockConfigMap.getLong(PORT_KEY)).thenReturn((long) PORT);
 		when(mockConfigMap.getLong(MAX_THREADS_KEY)).thenReturn((long) MAX_THREADS);
+		when(mockConfigMap.getString(IP_ADDRESS_KEY)).thenReturn("1.2.3.4");
 		this.appConfig = new AppConfiguration(mockConfigMap);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void createWithNullConfigMapThrowsNPE() throws Exception {
 		new AppConfiguration(null);
+	}
+
+	@Test(expected = ValidationException.class)
+	public void createWithNullIpThrowsValidationException() throws Exception {
+		when(mockConfigMap.getString(IP_ADDRESS_KEY)).thenReturn(null);
+
+		new AppConfiguration(mockConfigMap);
+	}
+
+	@Test(expected = ValidationException.class)
+	public void createBlankIpThrowsValidationException() throws Exception {
+		when(mockConfigMap.getString(IP_ADDRESS_KEY)).thenReturn(" \t\n");
+
+		new AppConfiguration(mockConfigMap);
 	}
 
 	@Test(expected = ValidationException.class)

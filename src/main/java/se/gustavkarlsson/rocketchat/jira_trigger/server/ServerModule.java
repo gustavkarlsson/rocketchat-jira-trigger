@@ -14,6 +14,6 @@ public class ServerModule extends AbstractModule {
 	@Provides
 	@Singleton
 	Server provideServer(AppConfiguration appConfig, DetectIssueRoute detectIssueRoute, JiraServerInfoLogger jiraServerInfoLogger) {
-		return new Server(appConfig.getMaxThreads(), appConfig.getPort(), detectIssueRoute, jiraServerInfoLogger);
+		return new Server(appConfig.getMaxThreads(), appConfig.getIpAddress(), appConfig.getPort(), detectIssueRoute, jiraServerInfoLogger);
 	}
 }
