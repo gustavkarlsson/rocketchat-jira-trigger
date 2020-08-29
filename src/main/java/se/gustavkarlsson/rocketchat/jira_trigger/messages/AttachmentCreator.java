@@ -95,7 +95,7 @@ public class AttachmentCreator {
 
 	private String trim(String cleaned) {
 		if (cleaned.length() > maxTextLength) {
-			cleaned = cleaned.substring(0, maxTextLength - 1) + '…';
+			cleaned = cleaned.substring(0, maxTextLength - 1) + '\u2026';
 		}
 		return cleaned;
 	}

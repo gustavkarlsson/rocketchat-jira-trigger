@@ -51,7 +51,10 @@ public class JiraKeyParserTest {
 					{"\tABC-123\t"},
 					{" ABC-123 "},
 					{"A1BC3-123"},
-					{"AB3-123"}
+					{"AB3-123"},
+					{"abc-123"},
+					{"aBC-123"},
+					{"ABc-123"},
 			});
 		}
 
@@ -86,7 +89,6 @@ public class JiraKeyParserTest {
 					{"Å-123"},
 					{"ABC--123"},
 					{"ABC123"},
-					{"abc-123"},
 					{"ABC-123Z"},
 					{"(ABC-123)"},
 					{"browse/ABC-123"},
