@@ -13,7 +13,7 @@ import static com.google.common.collect.Sets.union;
 import static org.apache.commons.lang3.Validate.notNull;
 
 class JiraKeyParser {
-	private static final Pattern JIRA_KEY = Pattern.compile("[A-Z][A-Z0-9]+-\\d+");
+	private static final Pattern JIRA_KEY = Pattern.compile("[a-zA-Z][a-zA-Z0-9]+-\\d+");
 	private static final Set<Character> ALWAYS_VALID = new HashSet<>(Arrays.asList(' ', '\t', '\n'));
 
 	private final Set<Character> whitelistedPrefixes;
