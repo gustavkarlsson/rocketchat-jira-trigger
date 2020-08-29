@@ -91,7 +91,7 @@ public class AttachmentCreatorTest {
 
 		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
-		assertThat(attachment.getTitle()).isEqualTo("ISS-1234 Français");
+		assertThat(attachment.getTitle()).isEqualTo("ISS-1234 Fran\u00E7ais");
 	}
 
 	@Test
@@ -101,7 +101,7 @@ public class AttachmentCreatorTest {
 
 		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
-		assertThat(attachment.getText()).isEqualTo("Français");
+		assertThat(attachment.getText()).isEqualTo("Fran\u00E7ais");
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class AttachmentCreatorTest {
 
 		ToRocketChatAttachment attachment = converter.create(mockIssue);
 
-		assertThat(attachment.getText()).isEqualTo("I am 18…");
+		assertThat(attachment.getText()).isEqualTo("I am 18\u2026");
 	}
 
 	@Test
