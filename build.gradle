@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '1.2.4'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
     id 'pl.allegro.tech.build.axion-release' version '1.8.3'
 }
 
