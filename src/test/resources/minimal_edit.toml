@@ -1,0 +1,6 @@
+[app]
+port = 8888
+[jira]
+uri = "http://localhost:9999"
+[rocketchat]
+ignore_edits = true
